@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.6.0/leaflet.css">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #map {
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.6.0/leaflet.js"></script>
+<script>
+
+    const map = L.map("map").setView([10, 12], 7);
+    const osmTl = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+
+    var cities = new L.LayerGroup();
+
+    // create a SVG radial gradient
+    // create a temporary marker to get the default marker layer
+    let circleMarker = L.circle([14.0100298, 120.9965796], {
+        radius: 1
+    }).addTo(map);
+
+    // get a reference to the SVG element
+    const svg = circleMarker.getElement().farthestViewportElement
+    const defs = svg.querySelector('defs') || svg.insertBefore( document.createElementNS(svg.namespaceURI,'defs'), svg.firstChild);
+    circleMarker.remove()
+    function createGradient(svgElem, id, stops) {
+        const radGrad = document.createElementNS(svg.namespaceURI, "radialGradient");
+        radGrad.setAttribute("id", id);
+        for (let s of stops) {
+            const stop = document.createElementNS(svg.namespaceURI, "stop");
+            for (let k in s) {
+                stop.setAttribute(k, s[k]);
+            }
+            radGrad.appendChild(stop);
+        }
+        defs.appendChild(radGrad);
+    }
+    createGradient(svg, "radgrad", [
+        {offset: "0%", "stop-color": "#f00"},
+        {offset: "60%", "stop-color": "#ff7300"},
+        {offset: "75%", "stop-color": "rgb(0,157,255)"},
+        // {offset: "90%", "stop-color": "white"},
+        {offset: "95%", "stop-color": "rgba(255,255,255,0.2)"},
+        {offset: "100%", "stop-color": "rgba(255,255,255,0)"},
+    ]);
+    // end radial gradient creation
+    function getRandomCoord() {
+        let min = 1000;
+        let max = 90000;
+        return (Math.random() * (max - min) + min) / 1000;
+    }
+
+    for(i=0; i < 30000; i++) {
+
+        L.circle([getRandomCoord(), getRandomCoord()], {
+            fillColor: "url(#radgrad)", // id of the radial gradient
+            fillOpacity: 0.7,
+            stroke: false,
+            radius: 10000,
+        }).addTo(cities);
+
+    }
+
+    cities.addTo(map);
+    cities.getLayers().addTo(map);
+</script>
+</body>
+</html>
