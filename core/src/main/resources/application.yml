@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: nuke-demo-core
+
+feign:
+  client:
+    config:
+      overpassApiClient:
+        url: ${OVERPASS_API_URL:overpass-api.de}
