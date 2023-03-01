@@ -1,16 +1,22 @@
 package com.nukedemo.core;
 
 import com.nukedemo.core.services.client.OverpassApiClient;
+import hu.supercluster.overpasser.library.output.OutputModificator;
+import hu.supercluster.overpasser.library.output.OutputOrder;
+import hu.supercluster.overpasser.library.output.OutputVerbosity;
+import hu.supercluster.overpasser.library.query.OverpassQuery;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import static hu.supercluster.overpasser.library.output.OutputFormat.JSON;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-//@EnableFeignClients
+@Slf4j
 class CoreApplicationTests {
 
     @Autowired
@@ -18,6 +24,29 @@ class CoreApplicationTests {
 
     @Test
     public void testClient() {
-        client.interpret("data=%2F%2F+Limit+the+search+to+%E2%80%9CMexico%E2%80%9D%0Aarea(id%3A3601428125)-%3E.searchArea%3B%0A%2F%2F+Pull+together+the+results+that+we+want%0A(%0A+%2F%2F+Ask+for+the+objects+we+want%2C+and+the+tags+we+want%0A+way%5B%22landuse%22%3D%22military%22%5D(area.searchArea)%3B%0A+relation%5B%22landuse%22%3D%22military%22%5D(area.searchArea)%3B%0A+node%5B%22landuse%22%3D%22military%22%5D(area.searchArea)%3B%0A)%3B%0A%2F%2F+Print+out+the+results%0Aout+body%3B%0A%3E%3B%0Aout+skel+qt%3B");
+        String query = new OverpassQuery()
+                .format(JSON)
+                .timeout(30)
+                .filterQuery()
+                .node()
+                .amenity("parking")
+                .tagNot("access", "private")
+                .area().rel()
+                .boundingBox(
+                        47.48047027491862, 19.039797484874725,
+                        47.51331674014172, 19.07404761761427
+                )
+                .end()
+                .output(OutputVerbosity.BODY, OutputModificator.CENTER, OutputOrder.QT, 100)
+                .build();
+         log.info(query);
+        String res = client.getOverpassResponse(query);
+        log.info(query);
     }
+
+
+    String validQuery1 = "[out:json][timeout:25];(node[\"amenity\"=\"post_box\"](47.48047027491862,19.039797484874725,47.51331674014172,19.07404761761427););out body;>;out skel qt;";
+    String validQuery2 = "[out:json][timeout:30]; (node[\"amenity\"=\"parking\"][\"access\"!=\"private\"](47.48047027491862,19.039797484874725,47.51331674014172,19.07404761761427);<;); out body center qt 100;";
+    String validQuery3 = "[out:json][timeout:180]; area(id:3601428125)->.searchArea; (way[\"landuse\"=\"military\"](area.searchArea);<;); out body center qt 100;";
+
 }
