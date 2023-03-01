@@ -10,7 +10,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @FeignClient(value = "overpassApiClient",
-        url = "${feign.client.config.overpassApiClient.url}")
+        url = "http://overpass-api.de")
 public interface OverpassApiClient {
 
     @RequestMapping(method = POST, value = "api/interpreter", produces = APPLICATION_JSON_VALUE,
