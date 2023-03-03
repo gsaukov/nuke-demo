@@ -1,4 +1,4 @@
-package com.nukedemo.core.services.client;
+package com.nukedemo.core.services.overpass.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
