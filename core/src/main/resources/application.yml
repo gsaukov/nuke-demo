@@ -1,6 +1,18 @@
 spring:
   application:
     name: nuke-demo-core
+  datasource:
+    url: ${NKE_DMO_DATASOURCE_URL:jdbc:h2:file:./data/db/nke-demo-db;MODE=PostgreSQL}
+    username: ${NKE_DMO_DATASOURCE_USER:sa}
+    password: ${NKE_DMO_DATASOURCE_PASSWORD:}
+    type:
+    driver-class-name: ${NKE_DMO_DATASOURCE_DRIVER:org.h2.Driver}
+    hikari:
+      minimumIdle: ${NKE_DMO_CONNECTIONPOOL_SIZE_MIN:2}
+      maximumPoolSize: ${NKE_DMO_CONNECTIONPOOL_SIZE_MAX:6}
+      idleTimeout: ${NKE_DMO_CONNECTIONPOOL_IDLE_TIMEOUT:30000}
+      maxLifetime: ${NKE_DMO_CONNECTIONPOOL_MAX_LIFE_TIME:2000000}
+      connectionTimeout: ${NKE_DMO_CONNECTION_TIMEOUT:30000}
 
 #feign:
 #  client:
