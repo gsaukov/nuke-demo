@@ -1,13 +1,21 @@
 package com.nukedemo.core;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.nukedemo.core.services.nominatim.client.NominatimApiClient;
 import com.nukedemo.core.services.overpass.client.OverpassApiClient;
+import com.nukedemo.core.services.overpass.model.OverpassResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.geojson.FeatureCollection;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -37,5 +45,36 @@ class CoreApplicationTests {
         log.info(res);
     }
 
+    @Test
+    public void testNominatimMarshalling() {
+        deserializeFileToModel("file:../data/mil/usa.geojson");
+        deserializeFileToGeoJson("file:../data/mil/usa.geojson");
+    }
+
+    public OverpassResponse deserializeFileToModel(String location) {
+        ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        OverpassResponse sample = null;
+        try {
+            InputStream inJson = new PathMatchingResourcePatternResolver()
+                    .getResource(location).getInputStream();
+            sample = mapper.readValue(inJson, OverpassResponse.class);
+        } catch (IOException e) {
+            log.error("deserialization failed", e);
+        }
+        return sample;
+    }
+
+    public FeatureCollection deserializeFileToGeoJson(String location) {
+        ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        FeatureCollection sample = null;
+        try {
+            InputStream inJson = new PathMatchingResourcePatternResolver()
+                    .getResource(location).getInputStream();
+            sample = mapper.readValue(inJson, FeatureCollection.class);
+        } catch (IOException e) {
+            log.error("deserialization failed", e);
+        }
+        return sample;
+    }
 
 }
