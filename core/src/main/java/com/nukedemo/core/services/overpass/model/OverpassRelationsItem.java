@@ -1,11 +1,17 @@
 package com.nukedemo.core.services.overpass.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
 public class OverpassRelationsItem {
-	private String role;
-	private OverpassReltags reltags;
-	private String rel;
+	@JsonProperty("role")
+	String role;
+
+	@JsonProperty("reltags")
+	OverpassReltags reltags;
+
+	@JsonProperty("rel")
+	String rel;
 
 }
