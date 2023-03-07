@@ -1,14 +1,12 @@
 package com.nukedemo.core.services.overpass.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.List;
 
-@Getter
-@Setter
-public class Properties{
-	private List<RelationsItem> relations;
+@Data
+public class OverpassProperties {
+	private List<OverpassRelationsItem> relations;
 	private String id;
 	private String name;
 	private String military;

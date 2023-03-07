@@ -1,14 +1,12 @@
 package com.nukedemo.core.services.overpass.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.List;
 
-@Getter
-@Setter
-public class Response{
-	private List<FeaturesItem> features;
+@Data
+public class OverpassResponse {
+	private List<OverpassFeaturesItem> features;
 	private String copyright;
 	private String generator;
 	private String type;

@@ -1,11 +1,9 @@
 package com.nukedemo.core.services.overpass.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
-public class Reltags{
+@Data
+public class OverpassReltags {
 	private String website;
 	private String description;
 	private String military;
