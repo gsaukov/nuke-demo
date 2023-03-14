@@ -3,8 +3,11 @@ package com.nukedemo.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 import lombok.extern.slf4j.Slf4j;
 import org.geojson.FeatureCollection;
+import org.graalvm.polyglot.Context;
+import org.graalvm.polyglot.HostAccess;
 import org.junit.Test;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
@@ -25,8 +28,7 @@ public class OsmToGeoJsonConverterTest {
     private ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
     @Test
     public void testOverpassClient() throws Exception {
-        ScriptEngineManager manager = new ScriptEngineManager();
-        ScriptEngine engine = manager.getEngineByName("graal.js");
+        ScriptEngine engine = graalJSScriptEngine();
         Path path = new PathMatchingResourcePatternResolver().getResource("classpath:scripts/osmtogeojson.js").getFile().toPath();
         engine.eval(Files.newBufferedReader(path, StandardCharsets.UTF_8));
         engine.put("data", param);
@@ -35,7 +37,21 @@ public class OsmToGeoJsonConverterTest {
         convertOSMtoGeoJSON(res);
     }
 
-    public FeatureCollection convertOSMtoGeoJSON(String source) {
+    private ScriptEngine scriptEngine() {
+        ScriptEngineManager manager = new ScriptEngineManager();
+        return manager.getEngineByName("graal.js");
+    }
+
+    private ScriptEngine graalJSScriptEngine() {
+         return GraalJSScriptEngine.create(
+                null,
+                Context.newBuilder("js")
+                        .allowHostAccess(HostAccess.NONE)
+                        .allowAllAccess(false)
+                        .allowHostClassLookup(s -> false));
+    }
+
+    private FeatureCollection convertOSMtoGeoJSON(String source) {
         FeatureCollection sample = null;
         try {
             sample = mapper.readValue(source, FeatureCollection.class);
