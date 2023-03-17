@@ -3,10 +3,10 @@ package com.nukedemo.core.batch;
 import org.springframework.batch.item.ItemReader;
 
 
-public class GeoDataReader implements ItemReader<Object> {
+public class GeoDataReader implements ItemReader<String> {
 
     @Override
-    public Object read() {
+    public String read() {
         return null;
     }
 }

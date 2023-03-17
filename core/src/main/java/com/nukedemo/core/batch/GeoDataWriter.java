@@ -5,10 +5,10 @@ import org.springframework.batch.item.ItemWriter;
 
 import java.util.List;
 
-public class GeoDataWriter implements ItemWriter<Object> {
-
+public class GeoDataWriter implements ItemWriter<GeoDataItem> {
     @Override
-    public void write(Chunk<?> chunk) throws Exception {
+    public void write(Chunk<? extends GeoDataItem> chunk) throws Exception {
 
     }
+
 }
