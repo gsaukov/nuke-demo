@@ -3,6 +3,7 @@ package com.nukedemo.core;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.nukedemo.core.services.OsmToGeoJsonConverter;
 import com.nukedemo.core.services.nominatim.client.NominatimApiClient;
 import com.nukedemo.core.services.overpass.client.OverpassApiClient;
 import lombok.extern.slf4j.Slf4j;
@@ -39,12 +40,16 @@ class CoreApplicationTests {
     @Autowired
     NominatimApiClient nominatimClient;
 
+    @Autowired
+    OsmToGeoJsonConverter osmToGeoJsonConverter;
+
     @Test
-    public void testOverpassClient() throws JsonProcessingException {
+    public void testOverpassClient() throws Exception {
         log.info(overpassQuery4);
         String res = overpassClient.interpret(overpassQuery3);
         log.info(res);
-        mapper.readValue(res, FeatureCollection.class);
+        FeatureCollection features = osmToGeoJsonConverter.convert(res);
+        log.info(features.toString());
     }
 
     @Test
