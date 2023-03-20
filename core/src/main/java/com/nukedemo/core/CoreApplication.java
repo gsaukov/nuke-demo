@@ -1,12 +1,20 @@
 package com.nukedemo.core;
 
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignAutoConfiguration;
+import org.springframework.context.ApplicationContext;
+
+import java.util.Date;
 
 @SpringBootApplication
 @EnableFeignClients
@@ -14,7 +22,15 @@ import org.springframework.cloud.openfeign.FeignAutoConfiguration;
 public class CoreApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CoreApplication.class, args);
+        ApplicationContext context = SpringApplication.run(CoreApplication.class, args);
+        JobLauncher joblauncher = context.getBean("jobLauncher", JobLauncher.class);
+        Job job = context.getBean("processJob", Job.class);
+        try {
+            joblauncher.run(job, new JobParametersBuilder().addDate("dt", new Date()).toJobParameters());
+        } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
+                 | JobParametersInvalidException e) {
+            e.printStackTrace();
+        }
     }
 
 }
