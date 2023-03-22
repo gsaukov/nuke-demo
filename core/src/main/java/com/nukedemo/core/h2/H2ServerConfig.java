@@ -8,10 +8,10 @@ import org.springframework.context.annotation.Configuration;
 import java.sql.SQLException;
 
 @Configuration
-@ConditionalOnProperty(value="clnTaskManager.h2Enabled", havingValue = "true")
+@ConditionalOnProperty(value="nkeDemo.h2Enabled", havingValue = "true")
 public class H2ServerConfig {
 
-//    conn string jdbc:h2:tcp://localhost:9090/file:./data/db/clntaskmanager
+//    conn string jdbc:h2:tcp://localhost:9090/file:./data/db/nke-demo-db
     @Bean(initMethod = "start", destroyMethod = "stop")
     public Server inMemoryH2DatabaseServer() throws SQLException {
         return Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9090");

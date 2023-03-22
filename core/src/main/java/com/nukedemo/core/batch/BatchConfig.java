@@ -20,7 +20,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 @EnableBatchProcessing
 public class BatchConfig {
 
-
     @Autowired
     JobRepository jobRepository;
 
@@ -35,7 +34,7 @@ public class BatchConfig {
         return jobLauncher;
     }
 
-    @Bean
+    @Bean("geo-data-processing-job")
     public Job processJob() {
         return new JobBuilder("geo-data-processing-job", jobRepository)
                 .incrementer(new RunIdIncrementer())
