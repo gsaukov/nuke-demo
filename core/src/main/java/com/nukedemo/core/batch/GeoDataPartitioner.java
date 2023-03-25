@@ -2,6 +2,7 @@ package com.nukedemo.core.batch;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nukedemo.core.batch.inputmodel.BatchInput;
+import com.nukedemo.core.batch.inputmodel.InputItem;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.partition.support.Partitioner;
 import org.springframework.batch.item.ExecutionContext;
@@ -9,6 +10,8 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -19,7 +22,7 @@ public class GeoDataPartitioner implements Partitioner {
     @Override
     public Map<String, ExecutionContext> partition(int gridSize) {
         BatchInput inputModel = deserializeInputModel("classpath:inputdata/parties.json");
-        return null;
+        return executions(gridSize, inputModel.getInput());
     }
 
     public BatchInput deserializeInputModel(String location) {
@@ -32,5 +35,16 @@ public class GeoDataPartitioner implements Partitioner {
             log.error("deserialization failed", e);
         }
         return model;
+    }
+
+    private Map<String, ExecutionContext> executions(int gridSize, List<InputItem> items) {
+//        int itemsPerPartition = items.size() / gridSize + 1;
+        Map<String, ExecutionContext> result = new HashMap<>();
+        for (int i = 0; i<items.size(); i++) {
+            ExecutionContext context = new ExecutionContext();
+            context.put("country", items.get(i));
+            result.put("partition_" + i, context);
+        }
+        return result;
     }
 }
