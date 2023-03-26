@@ -1,4 +1,5 @@
 package com.nukedemo.core.batch;
+import com.nukedemo.core.batch.inputmodel.InputItem;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
@@ -28,7 +29,7 @@ public class BatchConfig {
     @Autowired
     private PlatformTransactionManager transactionManager;
 
-    private static final String INJECTED_IN_CONTEXT = null;
+    private static final InputItem INJECTED_IN_CONTEXT = null;
 
     @Bean
     public JobLauncher  jobLauncher() throws Exception {
@@ -71,7 +72,7 @@ public class BatchConfig {
     @Bean
     @StepScope
     public GeoDataReader geoDataReader(
-            @Value("#{stepExecutionContext['country']}") String country) {
+            @Value("#{stepExecutionContext['country']}") InputItem country) {
         return new GeoDataReader(country);
     }
 
