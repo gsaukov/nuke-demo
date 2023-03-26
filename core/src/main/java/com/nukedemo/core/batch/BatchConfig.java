@@ -3,6 +3,7 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
@@ -10,6 +11,7 @@ import org.springframework.batch.core.launch.support.TaskExecutorJobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
@@ -21,10 +23,12 @@ import org.springframework.transaction.PlatformTransactionManager;
 public class BatchConfig {
 
     @Autowired
-    JobRepository jobRepository;
+    private JobRepository jobRepository;
 
     @Autowired
-    PlatformTransactionManager transactionManager;
+    private PlatformTransactionManager transactionManager;
+
+    private static final String INJECTED_IN_CONTEXT = null;
 
     @Bean
     public JobLauncher  jobLauncher() throws Exception {
@@ -58,10 +62,29 @@ public class BatchConfig {
     public Step step() {
         return new StepBuilder("data-processing-step", jobRepository)
                 .<String, GeoDataItem> chunk(1, transactionManager)
-                .reader(new GeoDataReader())
-                .processor(new GeoDataProcessor())
-                .writer(new GeoDataWriter())
+                .reader(geoDataReader(INJECTED_IN_CONTEXT))
+                .processor(geoDataProcessor())
+                .writer(geoDataWriter())
                 .build();
+    }
+
+    @Bean
+    @StepScope
+    public GeoDataReader geoDataReader(
+            @Value("#{stepExecutionContext['country']}") String country) {
+        return new GeoDataReader(country);
+    }
+
+    @Bean
+    @StepScope
+    public GeoDataProcessor geoDataProcessor() {
+        return new GeoDataProcessor();
+    }
+
+    @Bean
+    @StepScope
+    public GeoDataWriter geoDataWriter() {
+        return new GeoDataWriter();
     }
 
     @Bean
