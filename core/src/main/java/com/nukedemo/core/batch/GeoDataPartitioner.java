@@ -4,15 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nukedemo.core.batch.inputmodel.BatchInput;
 import com.nukedemo.core.batch.inputmodel.InputItem;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.ListUtils;
 import org.springframework.batch.core.partition.support.Partitioner;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 public class GeoDataPartitioner implements Partitioner {
@@ -38,13 +37,25 @@ public class GeoDataPartitioner implements Partitioner {
     }
 
     private Map<String, ExecutionContext> executions(int gridSize, List<InputItem> items) {
-//        int itemsPerPartition = items.size() / gridSize + 1;
+        int itemsPerPartition = items.size() / gridSize + 1;
+        List<List<InputItem>> partitions = ListUtils.partition(items, itemsPerPartition);
         Map<String, ExecutionContext> result = new HashMap<>();
-        for (int i = 0; i<items.size(); i++) {
+        for (int i = 0; i < partitions.size(); i++) {
             ExecutionContext context = new ExecutionContext();
-            context.put("country", items.get(i));
-            result.put("partition_" + i, context);
+            List<InputItem> partition = partitions.get(i);
+            context.put("country", new ArrayList<>(partition));
+            result.put("partition_" + i + "_" + getPartitionName(partition), context);
         }
         return result;
     }
+
+    private String getPartitionName(List<InputItem> partition) {
+        if(partition.isEmpty()) {
+            return "";
+        }
+        String first = partition.get(0).getCode();
+        String last = partition.get(partition.size() - 1).getCode();
+        return first + "-" + last;
+    }
+
 }

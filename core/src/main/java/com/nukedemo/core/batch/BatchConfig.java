@@ -19,6 +19,8 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.util.List;
+
 @Configuration
 @EnableBatchProcessing
 public class BatchConfig {
@@ -29,7 +31,7 @@ public class BatchConfig {
     @Autowired
     private PlatformTransactionManager transactionManager;
 
-    private static final InputItem INJECTED_IN_CONTEXT = null;
+    private static final List<InputItem> INJECTED_IN_CONTEXT = null;
 
     @Bean
     public JobLauncher  jobLauncher() throws Exception {
@@ -72,8 +74,8 @@ public class BatchConfig {
     @Bean
     @StepScope
     public GeoDataReader geoDataReader(
-            @Value("#{stepExecutionContext['country']}") InputItem country) {
-        return new GeoDataReader(country);
+            @Value("#{stepExecutionContext['country']}") List<InputItem> countries) {
+        return new GeoDataReader(countries);
     }
 
     @Bean
