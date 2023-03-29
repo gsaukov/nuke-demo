@@ -1,4 +1,4 @@
-package com.nukedemo.core.services.nominatim.client;
+package com.nukedemo.core.services.clients.nominatim;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
