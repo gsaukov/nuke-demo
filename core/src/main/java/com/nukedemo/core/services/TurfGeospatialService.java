@@ -23,8 +23,8 @@ public class TurfGeospatialService {
 
     public BigDecimal calculateArea(Polygon source) throws Exception {
         ScriptEngine engine = graalJSScriptEngine.graalJSScriptEngine(TURF_LIBRARY);
-        engine.put("data", source);
-        String res = engine.eval("JSON.stringify(turf.area(turf.polygon(data)))").toString();
+        engine.put("data", NdJsonUtils.toJson(source.getCoordinates()));
+        String res = engine.eval("JSON.stringify(turf.area(turf.polygon(JSON.parse(data))))").toString();
         log.info(res);
         return new BigDecimal(res);
     }

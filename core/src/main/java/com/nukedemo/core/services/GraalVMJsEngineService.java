@@ -20,6 +20,13 @@ import java.nio.file.Path;
 @Service
 public class GraalVMJsEngineService {
 
+    public GraalVMJsEngineService() {
+        /*
+        * Disables redundant warning in log.
+         */
+        System.setProperty("polyglot.engine.WarnInterpreterOnly", "false");
+    }
+
     /*
      * 1. In a polyglot application, an arbitrary number of JS runtimes can be created, but they should be used by one thread at a time.
      * 2. Concurrent access to Java objects is allowed: any Java object can be accessed by any Java or JavaScript thread, concurrently.
