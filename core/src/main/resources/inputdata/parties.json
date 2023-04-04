@@ -1,0 +1,136 @@
+{
+  "input": [
+    {
+      "name": "Albania",
+      "code": "AL"
+    },
+    {
+      "name": "Belgium",
+      "code": "BE"
+    },
+    {
+      "name": "Bulgaria",
+      "code": "BG"
+    },
+    {
+      "name": "Canada",
+      "code": "CA"
+    },
+    {
+      "name": "Croatia",
+      "code": "HR"
+    },
+    {
+      "name": "Czech Republic",
+      "code": "CZ"
+    },
+    {
+      "name": "Denmark",
+      "code": "DK"
+    },
+    {
+      "name": "Estonia",
+      "code": "EE"
+    },
+    {
+      "name": "France",
+      "code": "FR"
+    },
+    {
+      "name": "Finland",
+      "code": "FI"
+    },
+    {
+      "name": "France",
+      "code": "FR"
+    },
+    {
+      "name": "Germany",
+      "code": "DE"
+    },
+    {
+      "name": "Greece",
+      "code": "GR"
+    },
+    {
+      "name": "Hungary",
+      "code": "HU"
+    },
+    {
+      "name": "Iceland",
+      "code": "IS"
+    },
+    {
+      "name": "Italy",
+      "code": "IT"
+    },
+    {
+      "name": "Latvia",
+      "code": "LV"
+    },
+    {
+      "name": "Lithuania",
+      "code": "LT"
+    },
+    {
+      "name": "Luxembourg",
+      "code": "LU"
+    },
+    {
+      "name": "Macedonia",
+      "code": "MK"
+    },
+    {
+      "name": "Netherlands",
+      "code": "NL"
+    },
+    {
+      "name": "Norway",
+      "code": "NO"
+    },
+    {
+      "name": "Poland",
+      "code": "PL"
+    },
+    {
+      "name": "Portugal",
+      "code": "PT"
+    },
+    {
+      "name": "Romania",
+      "code": "RO"
+    },
+    {
+      "name": "Montenegro",
+      "code": "CS"
+    },
+    {
+      "name": "Slovakia",
+      "code": "SK"
+    },
+    {
+      "name": "Slovenia",
+      "code": "SI"
+    },
+    {
+      "name": "Spain",
+      "code": "ES"
+    },
+    {
+      "name": "Sweden",
+      "code": "SE"
+    },
+    {
+      "name": "Turkey",
+      "code": "TR"
+    },
+    {
+      "name": "United Kingdom",
+      "code": "GB"
+    },
+    {
+      "name": "United States",
+      "code": "US"
+    }
+  ]
+}
