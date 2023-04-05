@@ -3,9 +3,7 @@ package com.nukedemo.core.services;
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 import lombok.extern.slf4j.Slf4j;
 import org.graalvm.polyglot.Context;
-import org.graalvm.polyglot.Engine;
 import org.graalvm.polyglot.HostAccess;
-import org.graalvm.polyglot.Source;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +33,7 @@ public class GraalVMJsEngineService {
      * https://www.graalvm.org/22.0/reference-manual/embed-languages/#code-caching-across-multiple-contexts
      *
      * Now new GraalJSScriptEngine is created for every request to JS scripting engine.
+     * GraalJSScriptEngine vs Context implementation details: https://www.graalvm.org/latest/reference-manual/js/ScriptEngine/
      * [TODO] Create multiple, isolated, JS runtimes by either session scope beans to exclude simultaneous access, or pool of engines that are returned to pool via java.io.Closeable
      */
     public ScriptEngine graalJSScriptEngine() {
