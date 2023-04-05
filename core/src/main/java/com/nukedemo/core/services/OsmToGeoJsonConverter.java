@@ -17,10 +17,10 @@ public class OsmToGeoJsonConverter {
     private static final String OSMTOGEOJSON_LIBRARY = "classpath:scripts/osmtogeojson.js";
 
     @Autowired
-    private GraalVMJsEngineService graalJSScriptEngine;
+    private GraalVMJSScriptingEngineService graalJSScriptingEngine;
 
     public FeatureCollection convert(String source) throws Exception {
-        ScriptEngine engine = graalJSScriptEngine.graalJSScriptEngine(OSMTOGEOJSON_LIBRARY);
+        ScriptEngine engine = graalJSScriptingEngine.graalJSScriptEngine(OSMTOGEOJSON_LIBRARY);
         engine.put("data", source);
         String res = engine.eval("JSON.stringify(osmtogeojson(JSON.parse(data)))").toString();
         log.info(res);

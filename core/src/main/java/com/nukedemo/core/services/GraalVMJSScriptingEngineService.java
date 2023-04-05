@@ -16,9 +16,13 @@ import java.nio.file.Path;
 
 @Slf4j
 @Service
-public class GraalVMJsEngineService {
+/**
+ * @deprecated use {@link GraalVMJSEngineService}
+ */
+@Deprecated
+public class GraalVMJSScriptingEngineService {
 
-    public GraalVMJsEngineService() {
+    public GraalVMJSScriptingEngineService() {
         /*
         * Disables redundant warning in log.
          */
