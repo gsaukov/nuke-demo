@@ -35,6 +35,7 @@ public class GraalVMJsEngineService {
      * Now new GraalJSScriptEngine is created for every request to JS scripting engine.
      * GraalJSScriptEngine vs Context implementation details: https://www.graalvm.org/latest/reference-manual/js/ScriptEngine/
      * [TODO] Create multiple, isolated, JS runtimes by either session scope beans to exclude simultaneous access, or pool of engines that are returned to pool via java.io.Closeable
+     * [TODO] Migrate to Graalvm context for more fine grained execution features.
      */
     public ScriptEngine graalJSScriptEngine() {
         return GraalJSScriptEngine.create(
