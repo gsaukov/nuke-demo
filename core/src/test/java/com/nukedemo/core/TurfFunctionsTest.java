@@ -1,5 +1,6 @@
 package com.nukedemo.core;
 
+import com.mapbox.turf.TurfMeasurement;
 import com.nukedemo.core.services.exceptions.NdException;
 import com.nukedemo.core.services.utils.NdJsonUtils;
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
@@ -106,6 +107,13 @@ public class TurfFunctionsTest {
         Value area = turf.getMember("area").execute(polygon);
 
         log.info(String.valueOf(area.asDouble()));
+    }
+
+    @Test
+    public void testMapBoxTurf() {
+        com.mapbox.geojson.FeatureCollection f =  com.mapbox.geojson.FeatureCollection.fromJson(param);
+        double area = TurfMeasurement.area(f);
+        log.info(String.valueOf(area));
     }
 
     private Feature getFeature() throws NdException {
