@@ -4,6 +4,7 @@ import com.nukedemo.core.services.utils.NdJsonUtils;
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 import lombok.extern.slf4j.Slf4j;
 import org.geojson.FeatureCollection;
+import org.geojson.LngLatAlt;
 import org.geojson.Polygon;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
@@ -11,13 +12,19 @@ import org.junit.Test;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Random;
 
 @Slf4j
 public class TurfFunctionsTest {
+
+    {
+        System.setProperty("polyglot.engine.WarnInterpreterOnly", "false");
+    }
+
+    private static final String TURF_LIBRARY = "classpath:scripts/turf.js";
 
     @Test
     public void testTurf() throws Exception {
@@ -46,6 +53,32 @@ public class TurfFunctionsTest {
         engine.put("data", NdJsonUtils.toJson(source.getCoordinates()));
         String res = engine.eval("JSON.stringify(turf.area(turf.polygon(JSON.parse(data))))").toString();
         log.info(res);
+    }
+
+    @Test
+    public void testTurfOnRandomCoordinatesReuseEngine() throws Exception {
+        Random r = new Random();
+        FeatureCollection features = NdJsonUtils.fromJson(param, FeatureCollection.class);
+        Polygon source = (Polygon)features.getFeatures().get(0).getGeometry();
+        ScriptEngine engine = graalJSScriptEngine();
+        Path path = new PathMatchingResourcePatternResolver().getResource(TURF_LIBRARY).getFile().toPath();
+        engine.eval(Files.newBufferedReader(path, StandardCharsets.UTF_8));
+        for(int i = 0; i < 1000; i++) {
+            int size = source.getCoordinates().get(0).size() - 2;
+            int randomCoord = r.nextInt(1, size);
+            int randomPos = r.nextInt(0, 1);
+            LngLatAlt lngLatAlt = source.getCoordinates().get(0).get(randomCoord);
+            if(randomPos==0){
+                double l = lngLatAlt.getLongitude();
+                lngLatAlt.setLongitude(l*1.0001);
+            } else {
+                double l = lngLatAlt.getLatitude();
+                lngLatAlt.setLatitude(l*1.0001);
+            }
+            engine.put("data", NdJsonUtils.toJson(source.getCoordinates()));
+            String res = engine.eval("JSON.stringify(turf.area(turf.polygon(JSON.parse(data))))").toString();
+            log.info(res);
+        }
     }
 
     private ScriptEngine graalJSScriptEngine() {
