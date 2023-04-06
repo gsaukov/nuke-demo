@@ -1,13 +1,17 @@
 package com.nukedemo.core;
 
+import com.nukedemo.core.services.exceptions.NdException;
 import com.nukedemo.core.services.utils.NdJsonUtils;
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 import lombok.extern.slf4j.Slf4j;
+import org.geojson.Feature;
 import org.geojson.FeatureCollection;
 import org.geojson.LngLatAlt;
 import org.geojson.Polygon;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
+import org.graalvm.polyglot.Source;
+import org.graalvm.polyglot.Value;
 import org.junit.Test;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
@@ -46,7 +50,7 @@ public class TurfFunctionsTest {
     @Test
     public void testTurfWithPolygon() throws Exception {
         FeatureCollection features = NdJsonUtils.fromJson(param, FeatureCollection.class);
-        Polygon source = (Polygon)features.getFeatures().get(0).getGeometry();
+        Polygon source = (Polygon) features.getFeatures().get(0).getGeometry();
         ScriptEngine engine = graalJSScriptEngine();
         Path path = new PathMatchingResourcePatternResolver().getResource("classpath:scripts/turf.js").getFile().toPath();
         engine.eval(Files.newBufferedReader(path, StandardCharsets.UTF_8));
@@ -58,22 +62,21 @@ public class TurfFunctionsTest {
     @Test
     public void testTurfOnRandomCoordinatesReuseEngine() throws Exception {
         Random r = new Random();
-        FeatureCollection features = NdJsonUtils.fromJson(param, FeatureCollection.class);
-        Polygon source = (Polygon)features.getFeatures().get(0).getGeometry();
+        Polygon source = (Polygon) getFeature().getGeometry();
         ScriptEngine engine = graalJSScriptEngine();
         Path path = new PathMatchingResourcePatternResolver().getResource(TURF_LIBRARY).getFile().toPath();
         engine.eval(Files.newBufferedReader(path, StandardCharsets.UTF_8));
-        for(int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 1000; i++) {
             int size = source.getCoordinates().get(0).size() - 2;
             int randomCoord = r.nextInt(1, size);
             int randomPos = r.nextInt(0, 1);
             LngLatAlt lngLatAlt = source.getCoordinates().get(0).get(randomCoord);
-            if(randomPos==0){
+            if (randomPos == 0) {
                 double l = lngLatAlt.getLongitude();
-                lngLatAlt.setLongitude(l*1.0001);
+                lngLatAlt.setLongitude(l * 1.0001);
             } else {
                 double l = lngLatAlt.getLatitude();
-                lngLatAlt.setLatitude(l*1.0001);
+                lngLatAlt.setLatitude(l * 1.0001);
             }
             engine.put("data", NdJsonUtils.toJson(source.getCoordinates()));
             String res = engine.eval("JSON.stringify(turf.area(turf.polygon(JSON.parse(data))))").toString();
@@ -81,8 +84,37 @@ public class TurfFunctionsTest {
         }
     }
 
+    @Test
+    public void testTurfWithPureGraalEngineAndContext() throws Exception {
+        Context context = Context.newBuilder("js")
+                .allowHostAccess(HostAccess.NONE)
+                .allowAllAccess(false)
+                .allowHostClassLookup(s -> false)
+                .build();
+
+        Path jsFile = new PathMatchingResourcePatternResolver().getResource(TURF_LIBRARY).getFile().toPath();
+        String turfCode = Files.readString(jsFile);
+        context.eval(Source.newBuilder("js", turfCode, "turf.js").build());
+
+        String featureJson = NdJsonUtils.toJson(getFeature());
+
+        Value json = context.eval("js", "JSON.parse('" + featureJson + "')");
+        Value coordinates = json.getMember("geometry").getMember("coordinates");
+        Value turf = context.getBindings("js").getMember("turf");
+        Value polygon = turf.getMember("polygon").execute(coordinates);
+
+        Value area = turf.getMember("area").execute(polygon);
+
+        log.info(String.valueOf(area.asDouble()));
+    }
+
+    private Feature getFeature() throws NdException {
+        FeatureCollection features = NdJsonUtils.fromJson(param, FeatureCollection.class);
+        return features.getFeatures().get(0);
+    }
+
     private ScriptEngine graalJSScriptEngine() {
-         return GraalJSScriptEngine.create(
+        return GraalJSScriptEngine.create(
                 null,
                 Context.newBuilder("js")
                         .allowHostAccess(HostAccess.NONE)
