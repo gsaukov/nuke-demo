@@ -24,3 +24,8 @@ Query sample for [Overpass](https://overpass-turbo.eu/):
      out body;
      >;
      out skel qt;
+
+## Libraries
+mapbox-sdk-turf might be handy, has turf functions and other GeoJSON specific things [Mapbox turf SDK](https://docs.mapbox.com/android/java/guides/turf/)  
+
+    implementation 'com.mapbox.mapboxsdk:mapbox-sdk-turf:5.8.0'
