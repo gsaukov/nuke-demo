@@ -9,8 +9,6 @@ import org.junit.Test;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,11 +24,6 @@ public class OsmToGeoJsonConverterTest {
         String res = engine.eval("JSON.stringify(osmtogeojson(JSON.parse(data)))").toString();
         log.info(res);
         NdJsonUtils.toJson(res);
-    }
-
-    private ScriptEngine scriptEngine() {
-        ScriptEngineManager manager = new ScriptEngineManager();
-        return manager.getEngineByName("graal.js");
     }
 
     private ScriptEngine graalJSScriptEngine() {
