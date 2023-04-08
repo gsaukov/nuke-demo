@@ -93,6 +93,7 @@ public class BatchConfig {
 
     @Bean
     @StepScope
+    //[TODO] adjust this service to be fully configured to transform and process entities.
     public GraalVMJSScriptingEngineService scriptingEngineService() {
         return new GraalVMJSScriptingEngineService();
     }
