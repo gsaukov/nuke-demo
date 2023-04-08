@@ -16,10 +16,6 @@ import java.nio.file.Path;
 
 @Slf4j
 @Service
-/**
- * @deprecated use {@link GraalVMJSEngineService}
- */
-@Deprecated
 public class GraalVMJSScriptingEngineService {
 
     public GraalVMJSScriptingEngineService() {
