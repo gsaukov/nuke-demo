@@ -1,5 +1,6 @@
 package com.nukedemo.core.batch;
 import com.nukedemo.core.batch.inputmodel.InputItem;
+import com.nukedemo.core.services.GraalVMJSScriptingEngineService;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
@@ -66,7 +67,7 @@ public class BatchConfig {
         return new StepBuilder("data-processing-step", jobRepository)
                 .<String, GeoDataItem> chunk(1, transactionManager)
                 .reader(geoDataReader(INJECTED_IN_CONTEXT))
-                .processor(geoDataProcessor())
+                .processor(geoDataProcessor(scriptingEngineService()))
                 .writer(geoDataWriter())
                 .build();
     }
@@ -80,14 +81,20 @@ public class BatchConfig {
 
     @Bean
     @StepScope
-    public GeoDataProcessor geoDataProcessor() {
-        return new GeoDataProcessor();
+    public GeoDataProcessor geoDataProcessor(GraalVMJSScriptingEngineService service) {
+        return new GeoDataProcessor(service);
     }
 
     @Bean
     @StepScope
     public GeoDataWriter geoDataWriter() {
         return new GeoDataWriter();
+    }
+
+    @Bean
+    @StepScope
+    public GraalVMJSScriptingEngineService scriptingEngineService() {
+        return new GraalVMJSScriptingEngineService();
     }
 
     @Bean
