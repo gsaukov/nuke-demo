@@ -43,6 +43,7 @@ public class ScriptingEngineTest {
         bindings.remove("data");
     }
 
+    @Test
     public void graalJSBindingMultyThreadedTest () throws IOException, ScriptException {
         String osmToJson = getFromResource(OSMTOGEOJSON_LIBRARY);
         String turfLib = getFromResource(TURF_LIBRARY);
@@ -51,7 +52,6 @@ public class ScriptingEngineTest {
         sampleEngine.eval(turfLib);
         Bindings bindings = sampleEngine.getBindings(ScriptContext.ENGINE_SCOPE);
         runExecutor(25, bindings);
-
     }
 
     private ThreadPoolExecutor runExecutor(int numThreads, Bindings bindings) throws IOException {
@@ -85,7 +85,7 @@ public class ScriptingEngineTest {
 
         @Override
         public void run() {
-            String dataKey = "data-" + UUID.randomUUID();
+            String dataKey = "data" + UUID.randomUUID().toString().replace("-","");
             bindings.put(dataKey, data);
             String res = "";
             try {
