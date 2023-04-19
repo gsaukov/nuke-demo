@@ -1,11 +1,8 @@
 package com.nukedemo.core.batch;
-import com.nukedemo.core.batch.inputmodel.InputItem;
-import com.nukedemo.core.services.GraalVMJSScriptingEngineService;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
@@ -13,7 +10,6 @@ import org.springframework.batch.core.launch.support.TaskExecutorJobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
@@ -32,7 +28,14 @@ public class BatchConfig {
     @Autowired
     private PlatformTransactionManager transactionManager;
 
-    private static final List<InputItem> INJECTED_IN_CONTEXT = null;
+    @Autowired
+    GeoDataReader geoDataReader;
+
+    @Autowired
+    GeoDataProcessor geoDataProcessor;
+
+    @Autowired
+    GeoDataWriter geoDataWriter;
 
     @Bean
     public JobLauncher  jobLauncher() throws Exception {
@@ -66,36 +69,10 @@ public class BatchConfig {
     public Step step() {
         return new StepBuilder("data-processing-step", jobRepository)
                 .<String, GeoDataItem> chunk(1, transactionManager)
-                .reader(geoDataReader(INJECTED_IN_CONTEXT))
-                .processor(geoDataProcessor(scriptingEngineService()))
-                .writer(geoDataWriter())
+                .reader(geoDataReader)
+                .processor(geoDataProcessor)
+                .writer(geoDataWriter)
                 .build();
-    }
-
-    @Bean
-    @StepScope
-    public GeoDataReader geoDataReader(
-            @Value("#{stepExecutionContext['country']}") List<InputItem> countries) {
-        return new GeoDataReader(countries);
-    }
-
-    @Bean
-    @StepScope
-    public GeoDataProcessor geoDataProcessor(GraalVMJSScriptingEngineService service) {
-        return new GeoDataProcessor(service);
-    }
-
-    @Bean
-    @StepScope
-    public GeoDataWriter geoDataWriter() {
-        return new GeoDataWriter();
-    }
-
-    @Bean
-    @StepScope
-    //[TODO] adjust this service to be fully configured to transform and process entities.
-    public GraalVMJSScriptingEngineService scriptingEngineService() {
-        return new GraalVMJSScriptingEngineService();
     }
 
     @Bean
