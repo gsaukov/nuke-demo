@@ -4,6 +4,8 @@ import com.nukedemo.core.services.GraalVMJSScriptingEngineService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -24,6 +26,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 @SpringBootTest(classes = CoreApplication.class)
 @RunWith(SpringRunner.class)
 @Slf4j
+@StepScope
+@SpringBatchTest
 public class ScriptingEngineTest {
 
     private static final String OSMTOGEOJSON_LIBRARY = "classpath:scripts/osmtogeojson.js";
@@ -35,7 +39,8 @@ public class ScriptingEngineTest {
 
     @Test
     public void testOverpassClient() throws ScriptException, IOException {
-        ScriptEngine engine = service.graalJSScriptEngine(OSMTOGEOJSON_LIBRARY);
+        service.registerPathResource(OSMTOGEOJSON_LIBRARY);
+        ScriptEngine engine = service.getScriptEngine();
         engine.put("data", param);
         String res = engine.eval("JSON.stringify(osmtogeojson(JSON.parse(data)))").toString();
         log.info(res);
@@ -45,11 +50,9 @@ public class ScriptingEngineTest {
 
     @Test
     public void graalJSBindingMultyThreadedTest () throws IOException, ScriptException {
-        String osmToJson = getFromResource(OSMTOGEOJSON_LIBRARY);
-        String turfLib = getFromResource(TURF_LIBRARY);
-        ScriptEngine sampleEngine = service.graalJSScriptEngine();
-        sampleEngine.eval(osmToJson);
-        sampleEngine.eval(turfLib);
+        service.registerPathResource(OSMTOGEOJSON_LIBRARY);
+        service.registerPathResource(TURF_LIBRARY);
+        ScriptEngine sampleEngine = service.getScriptEngine();
         Bindings bindings = sampleEngine.getBindings(ScriptContext.ENGINE_SCOPE);
         runExecutor(25, bindings);
     }
@@ -57,7 +60,7 @@ public class ScriptingEngineTest {
     private ThreadPoolExecutor runExecutor(int numThreads, Bindings bindings) throws IOException {
         ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(numThreads);
         for(int i = 0; i < numThreads; i++) {
-            executor.submit(new GraalJSEngineRunner(bindings, service.graalJSScriptEngine(), param));
+            executor.submit(new GraalJSEngineRunner(bindings, service.getScriptEngine(), param));
         }
         return executor;
     }
@@ -72,13 +75,10 @@ public class ScriptingEngineTest {
 
 
     private static class GraalJSEngineRunner implements Runnable {
-
-        private Bindings bindings;
         private ScriptEngine engine;
         private String data;
 
         public GraalJSEngineRunner(Bindings bindings, ScriptEngine engine, String data) {
-            this.bindings = bindings;
             this.engine = engine;
             this.data = data;
         }
@@ -86,11 +86,11 @@ public class ScriptingEngineTest {
         @Override
         public void run() {
             String dataKey = "data" + UUID.randomUUID().toString().replace("-","");
-            bindings.put(dataKey, data);
+            engine.put(dataKey, data);
             String res = "";
             try {
                 for(int i = 0; i < 1000; i++) {
-                    res = engine.eval("JSON.stringify(osmtogeojson(JSON.parse(" + dataKey + ")))", bindings).toString();
+                    res = engine.eval("JSON.stringify(osmtogeojson(JSON.parse(" + dataKey + ")))").toString();
                 }
             } catch (ScriptException e) {
                 throw new RuntimeException(e);

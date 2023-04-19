@@ -14,7 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @Slf4j
-public class OsmToGeoJsonConverterTest {
+public class OsmToGeoJsonServiceTest {
     @Test
     public void testOverpassClient() throws Exception {
         ScriptEngine engine = graalJSScriptEngine();
