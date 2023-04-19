@@ -4,6 +4,7 @@ import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 import lombok.extern.slf4j.Slf4j;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Service;
 
@@ -15,14 +16,25 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @Slf4j
-@Service
+@Service //should be constructed in batch configuration with step context.
+@StepScope
 public class GraalVMJSScriptingEngineService {
 
-    public GraalVMJSScriptingEngineService() {
+    static {
         /*
-        * Disables redundant warning in log.
+         * Disables redundant warning in log.
          */
+
         System.setProperty("polyglot.engine.WarnInterpreterOnly", "false");
+    }
+
+    private static final String OSMTOGEOJSON_LIBRARY = "classpath:scripts/osmtogeojson.js";
+    private static final String TURF_LIBRARY = "classpath:scripts/turf.js";
+
+    private final GraalJSScriptEngine scriptEngine;
+
+    public GraalVMJSScriptingEngineService() {
+        this.scriptEngine = graalJSScriptEngine();
     }
 
     /*
@@ -37,7 +49,7 @@ public class GraalVMJSScriptingEngineService {
      * [TODO] Create multiple, isolated, JS runtimes by either session scope beans to exclude simultaneous access, or pool of engines that are returned to pool via java.io.Closeable
      * [TODO] Migrate to Graalvm context for more fine grained execution features.
      */
-    public ScriptEngine graalJSScriptEngine() {
+    private GraalJSScriptEngine graalJSScriptEngine() {
         return GraalJSScriptEngine.create(
                 null,
                 Context.newBuilder("js")
@@ -46,11 +58,13 @@ public class GraalVMJSScriptingEngineService {
                         .allowHostClassLookup(s -> false));
     }
 
-    public ScriptEngine graalJSScriptEngine(String resource) throws IOException, ScriptException {
-        ScriptEngine engine = graalJSScriptEngine();
+    public void registerPathResource(String resource) throws IOException, ScriptException {
         Path path = new PathMatchingResourcePatternResolver().getResource(resource).getFile().toPath();
-        engine.eval(Files.newBufferedReader(path, StandardCharsets.UTF_8));
-        return engine;
+        scriptEngine.eval(Files.newBufferedReader(path, StandardCharsets.UTF_8));
+    }
+
+    public GraalJSScriptEngine getScriptEngine() {
+        return scriptEngine;
     }
 
 }
