@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+<div id="map"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.5.0/turf.min.js"></script>
+<script>
+    let points = turf.randomPoint(1000, {bbox: [-180, -90, 180, 90]})
+    console.log("start")
+    let res = JSON.stringify(turf.clustersDbscan(JSON.parse(points), 100))
+    console.log("end")
+    console.log(res)
+</script>
+</body>
+</html>
