@@ -1,22 +1,20 @@
 package com.nukedemo.core;
 
 import com.mapbox.turf.TurfMeasurement;
-import com.nukedemo.core.services.exceptions.NdException;
 import com.nukedemo.core.services.utils.NdJsonUtils;
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 import lombok.extern.slf4j.Slf4j;
-import org.geojson.Feature;
 import org.geojson.FeatureCollection;
-import org.geojson.LngLatAlt;
 import org.geojson.Polygon;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
-import org.graalvm.polyglot.Source;
-import org.graalvm.polyglot.Value;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import javax.script.ScriptEngine;
+import javax.script.ScriptException;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,11 +29,17 @@ public class TurfFunctionsTest {
 
     private static final String TURF_LIBRARY = "classpath:scripts/turf.js";
 
+    private ScriptEngine engine;
+
+    @Before
+    public void setUp() throws IOException, ScriptException {
+        engine = graalJSScriptEngine();
+        Path path = new PathMatchingResourcePatternResolver().getResource(TURF_LIBRARY).getFile().toPath();
+        engine.eval(Files.newBufferedReader(path, StandardCharsets.UTF_8));
+    }
+
     @Test
     public void testTurf() throws Exception {
-        ScriptEngine engine = graalJSScriptEngine();
-        Path path = new PathMatchingResourcePatternResolver().getResource("classpath:scripts/turf.js").getFile().toPath();
-        engine.eval(Files.newBufferedReader(path, StandardCharsets.UTF_8));
         String res = engine.eval("JSON.stringify(turf.area(turf.polygon([[[125, -15], [113, -22], [154, -27], [144, -15], [125, -15]]])))").toString();
         log.info(res);
         res = engine.eval("JSON.stringify(turf.area(turf.polygon([[[125, -13], [113, -20], [154, -27], [144, -15], [125, -13]]])))").toString();
@@ -49,76 +53,36 @@ public class TurfFunctionsTest {
     }
 
     @Test
-    public void testTurfWithPolygon() throws Exception {
+    public void testTurfAreaWithPolygon() throws Exception {
         FeatureCollection features = NdJsonUtils.fromJson(param, FeatureCollection.class);
         Polygon source = (Polygon) features.getFeatures().get(0).getGeometry();
-        ScriptEngine engine = graalJSScriptEngine();
-        Path path = new PathMatchingResourcePatternResolver().getResource("classpath:scripts/turf.js").getFile().toPath();
-        engine.eval(Files.newBufferedReader(path, StandardCharsets.UTF_8));
         engine.put("data", NdJsonUtils.toJson(source.getCoordinates()));
         String res = engine.eval("JSON.stringify(turf.area(turf.polygon(JSON.parse(data))))").toString();
         log.info(res);
     }
 
+    // O(n^2) Calculation aproximation on Mac M1
+    // 1000 - 6sec;
+    // 10000 ~ 600sec, 10 minutes
+    // 100000 ~ 60000sec, 1000 minutes, ~17 hours.
     @Test
-    public void testTurfOnRandomCoordinatesReuseEngine() throws Exception {
-        Random r = new Random();
-        Polygon source = (Polygon) getFeature().getGeometry();
-        ScriptEngine engine = graalJSScriptEngine();
-        Path path = new PathMatchingResourcePatternResolver().getResource(TURF_LIBRARY).getFile().toPath();
-        engine.eval(Files.newBufferedReader(path, StandardCharsets.UTF_8));
-        for (int i = 0; i < 1000; i++) {
-            int size = source.getCoordinates().get(0).size() - 2;
-            int randomCoord = r.nextInt(1, size);
-            int randomPos = r.nextInt(0, 1);
-            LngLatAlt lngLatAlt = source.getCoordinates().get(0).get(randomCoord);
-            if (randomPos == 0) {
-                double l = lngLatAlt.getLongitude();
-                lngLatAlt.setLongitude(l * 1.0001);
-            } else {
-                double l = lngLatAlt.getLatitude();
-                lngLatAlt.setLatitude(l * 1.0001);
-            }
-            engine.put("data", NdJsonUtils.toJson(source.getCoordinates()));
-            String res = engine.eval("JSON.stringify(turf.area(turf.polygon(JSON.parse(data))))").toString();
-            log.info(res);
-        }
+    public void testTurfClustersDbScan() throws Exception {
+//        Path path = new PathMatchingResourcePatternResolver().getResource("file:../data/mil/canada_cropped.geojson").getFile().toPath();
+//        String data = Files.readString(path, StandardCharsets.UTF_8);
+        String data = engine.eval("JSON.stringify(turf.randomPoint(100, {bbox: [-180, -90, 180, 90]}))").toString();
+        engine.put("data", data);
+        log.info("start");
+        String res = engine.eval("JSON.stringify(turf.clustersDbscan(JSON.parse(data), 100))").toString();
+        log.info("end");
+        log.info(res);
     }
 
-    @Test
-    public void testTurfWithPureGraalEngineAndContext() throws Exception {
-        Context context = Context.newBuilder("js")
-                .allowHostAccess(HostAccess.NONE)
-                .allowAllAccess(false)
-                .allowHostClassLookup(s -> false)
-                .build();
-
-        Path jsFile = new PathMatchingResourcePatternResolver().getResource(TURF_LIBRARY).getFile().toPath();
-        String turfCode = Files.readString(jsFile);
-        context.eval(Source.newBuilder("js", turfCode, "turf.js").build());
-
-        String featureJson = NdJsonUtils.toJson(getFeature());
-
-        Value json = context.eval("js", "JSON.parse('" + featureJson + "')");
-        Value coordinates = json.getMember("geometry").getMember("coordinates");
-        Value turf = context.getBindings("js").getMember("turf");
-        Value polygon = turf.getMember("polygon").execute(coordinates);
-
-        Value area = turf.getMember("area").execute(polygon);
-
-        log.info(String.valueOf(area.asDouble()));
-    }
 
     @Test
     public void testMapBoxTurf() {
         com.mapbox.geojson.FeatureCollection f =  com.mapbox.geojson.FeatureCollection.fromJson(param);
         double area = TurfMeasurement.area(f);
         log.info(String.valueOf(area));
-    }
-
-    private Feature getFeature() throws NdException {
-        FeatureCollection features = NdJsonUtils.fromJson(param, FeatureCollection.class);
-        return features.getFeatures().get(0);
     }
 
     private ScriptEngine graalJSScriptEngine() {
