@@ -79,6 +79,29 @@ public class GraalEngineTest {
         log.info(String.valueOf(area.asDouble()));
     }
 
+    @Test
+    public void testTurfDBScanPerformance() throws Exception {
+        Context context = Context.newBuilder("js")
+                .allowHostAccess(HostAccess.NONE)
+                .allowAllAccess(false)
+                .allowHostClassLookup(s -> false)
+                .build();
+
+        Path jsFile = new PathMatchingResourcePatternResolver().getResource(TURF_LIBRARY).getFile().toPath();
+        String turfCode = Files.readString(jsFile);
+        context.eval(Source.newBuilder("js", turfCode, "turf.js").build());
+
+//        let points = turf.randomPoint(10000, {bbox: [-180, -90, 180, 90]})
+//        let res = JSON.stringify(turf.clustersDbscan(points, 100))
+
+        Value bbox = context.eval("js", "JSON.parse('{\"bbox\": [-180, -90, 180, 90]}')");
+        Value turf = context.getBindings("js").getMember("turf");
+        Value points = turf.getMember("randomPoint").execute(100, bbox);
+        log.info("start");
+        Value res = turf.getMember("clustersDbscan").execute(points, 100);
+        log.info("end");
+    }
+
     private Feature getFeature() throws NdException {
         FeatureCollection features = NdJsonUtils.fromJson(param, FeatureCollection.class);
         return features.getFeatures().get(0);
