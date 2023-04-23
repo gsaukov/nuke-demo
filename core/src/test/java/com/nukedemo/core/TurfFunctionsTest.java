@@ -65,6 +65,7 @@ public class TurfFunctionsTest {
     // 1000 - 6sec;
     // 10000 ~ 600sec, 10 minutes
     // 100000 ~ 60000sec, 1000 minutes, ~17 hours.
+    // JS execution in turf_test.html 10000 - 12 seconds.
     @Test
     public void testTurfClustersDbScan() throws Exception {
 //        Path path = new PathMatchingResourcePatternResolver().getResource("file:../data/mil/canada_cropped.geojson").getFile().toPath();
@@ -77,6 +78,16 @@ public class TurfFunctionsTest {
         log.info(res);
     }
 
+    public void testTurfCentroid() throws Exception {
+//        Path path = new PathMatchingResourcePatternResolver().getResource("file:../data/mil/canada_cropped.geojson").getFile().toPath();
+//        String data = Files.readString(path, StandardCharsets.UTF_8);
+        String data = engine.eval("JSON.stringify(turf.randomPoint(100, {bbox: [-180, -90, 180, 90]}))").toString();
+        engine.put("data", data);
+        log.info("start");
+        String res = engine.eval("JSON.stringify(turf.clustersDbscan(JSON.parse(data), 100))").toString();
+        log.info("end");
+        log.info(res);
+    }
 
     @Test
     public void testMapBoxTurf() {
