@@ -10,7 +10,6 @@ repositories {
 }
 
 dependencies {
-
     implementation 'org.locationtech.jts:jts-core:1.19.0'
     implementation 'org.locationtech.jts.io:jts-io-common:1.19.0'
 
@@ -20,10 +19,6 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
-
-//tasks.named('test') {
-//    useJUnitPlatform()
-//}
 
 test {
     useJUnitPlatform()

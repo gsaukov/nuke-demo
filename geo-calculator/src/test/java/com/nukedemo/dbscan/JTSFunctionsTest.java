@@ -1,15 +1,9 @@
-package com.nukedemo.core;
+package com.nukedemo.dbscan;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nukedemo.core.analysis.DBSCAN;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.*;
-import org.locationtech.jts.io.geojson.GeoJsonReader;
 import org.locationtech.jts.io.ParseException;
-import org.junit.Test;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import org.locationtech.jts.io.geojson.GeoJsonReader;
 
 public class JTSFunctionsTest {
 
@@ -41,7 +35,6 @@ public class JTSFunctionsTest {
         String geoJsonStr = "{\"type\": \"Feature\", \"properties\": {}, \"geometry\": {\"type\": \"Polygon\", \"coordinates\": [[[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]]]}}";
 
         // Convert GeoJSON feature to JTS Polygon object
-        ObjectMapper objectMapper = new ObjectMapper();
         GeoJsonReader reader = new GeoJsonReader();
         Geometry geometry = reader.read(geoJsonStr);
         Polygon polygon = (Polygon) geometry;
