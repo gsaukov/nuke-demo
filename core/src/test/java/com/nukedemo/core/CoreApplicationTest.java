@@ -8,6 +8,8 @@ import com.nukedemo.core.services.clients.overpass.OverpassApiClient;
 import lombok.extern.slf4j.Slf4j;
 import org.geojson.FeatureCollection;
 import org.junit.jupiter.api.Test;
+import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -21,6 +23,8 @@ import static com.nukedemo.core.services.clients.nominatim.NominatimApiClient.FO
 
 @SpringBootTest(classes = CoreApplication.class)
 @Slf4j
+@StepScope
+@SpringBatchTest
 class CoreApplicationTest {
 
       private String overpassQuery1 = "[out:json][timeout:25];(node[\"amenity\"=\"post_box\"](47.48047027491862,19.039797484874725,47.51331674014172,19.07404761761427););out body;>;out skel qt;";
@@ -57,7 +61,7 @@ class CoreApplicationTest {
     @Test
     public void testOverpassUnmarshalling() {
         FeatureCollection featureCollection = deserializeFileToGeoJson("file:../data/mil/usa.geojson");
-        featureCollection.getFeatures().get(0).<Map>getProperty("geocoding").get("osm_id");
+        featureCollection.getFeatures().get(0).getProperty("name");
     }
 
     @Test
