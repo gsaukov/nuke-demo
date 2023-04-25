@@ -1,31 +1,27 @@
 package com.nukedemo.core;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.nukedemo.core.services.OsmToGeoJsonConverter;
-import com.nukedemo.core.services.nominatim.client.NominatimApiClient;
-import com.nukedemo.core.services.overpass.client.OverpassApiClient;
+import com.nukedemo.core.services.OsmToGeoJsonService;
+import com.nukedemo.core.services.clients.nominatim.NominatimApiClient;
+import com.nukedemo.core.services.clients.overpass.OverpassApiClient;
 import lombok.extern.slf4j.Slf4j;
 import org.geojson.FeatureCollection;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-import static com.nukedemo.core.services.nominatim.client.NominatimApiClient.FEATURE_TYPE_COUNTRY;
-import static com.nukedemo.core.services.nominatim.client.NominatimApiClient.FORMAT;
+import static com.nukedemo.core.services.clients.nominatim.NominatimApiClient.FEATURE_TYPE_COUNTRY;
+import static com.nukedemo.core.services.clients.nominatim.NominatimApiClient.FORMAT;
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
+@SpringBootTest(classes = CoreApplication.class)
 @Slf4j
-class CoreApplicationTests {
+class CoreApplicationTest {
 
       private String overpassQuery1 = "[out:json][timeout:25];(node[\"amenity\"=\"post_box\"](47.48047027491862,19.039797484874725,47.51331674014172,19.07404761761427););out body;>;out skel qt;";
       private String overpassQuery2 = "[out:json][timeout:30]; (node[\"amenity\"=\"parking\"][\"access\"!=\"private\"](47.48047027491862,19.039797484874725,47.51331674014172,19.07404761761427);<;); out body center qt 100;";
@@ -41,14 +37,14 @@ class CoreApplicationTests {
     NominatimApiClient nominatimClient;
 
     @Autowired
-    OsmToGeoJsonConverter osmToGeoJsonConverter;
+    OsmToGeoJsonService osmToGeoJsonService;
 
     @Test
     public void testOverpassClient() throws Exception {
         log.info(overpassQuery4);
         String res = overpassClient.interpret(overpassQuery3);
         log.info(res);
-        FeatureCollection features = osmToGeoJsonConverter.convert(res);
+        FeatureCollection features = osmToGeoJsonService.convert(res);
         log.info(features.toString());
     }
 

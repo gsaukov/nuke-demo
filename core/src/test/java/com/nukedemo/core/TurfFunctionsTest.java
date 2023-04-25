@@ -8,8 +8,8 @@ import org.geojson.FeatureCollection;
 import org.geojson.Polygon;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import javax.script.ScriptEngine;
@@ -30,7 +30,7 @@ public class TurfFunctionsTest {
 
     private ScriptEngine engine;
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException, ScriptException {
         engine = graalJSScriptEngine();
         Path path = new PathMatchingResourcePatternResolver().getResource(TURF_LIBRARY).getFile().toPath();

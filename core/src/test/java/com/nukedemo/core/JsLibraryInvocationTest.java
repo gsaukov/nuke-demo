@@ -5,8 +5,7 @@ import com.nukedemo.core.services.utils.NdJsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.geojson.FeatureCollection;
 import org.geojson.Polygon;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,7 +14,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.math.BigDecimal;
 
 @SpringBootTest(classes=CoreApplication.class)
-@RunWith(SpringRunner.class)
 @Slf4j
 @SpringBatchTest
 public class JsLibraryInvocationTest {
