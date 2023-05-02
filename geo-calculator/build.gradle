@@ -16,6 +16,8 @@ dependencies {
     implementation 'com.esri.geometry:esri-geometry-api:2.2.4'
     implementation 'net.sf.geographiclib:GeographicLib-Java:1.46'
 
+    implementation 'com.mapbox.mapboxsdk:mapbox-sdk-turf:5.8.0'
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }

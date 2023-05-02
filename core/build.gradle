@@ -31,7 +31,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.0.1'
     implementation 'de.grundid.opendatalab:geojson-jackson:1.14'
-    implementation 'com.mapbox.mapboxsdk:mapbox-sdk-turf:5.8.0'
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     compileOnly 'org.projectlombok:lombok'

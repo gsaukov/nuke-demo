@@ -1,6 +1,5 @@
 package com.nukedemo.core;
 
-import com.mapbox.turf.TurfMeasurement;
 import com.nukedemo.core.services.utils.NdJsonUtils;
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 import lombok.extern.slf4j.Slf4j;
@@ -86,13 +85,6 @@ public class TurfFunctionsTest {
         String res = engine.eval("JSON.stringify(turf.clustersDbscan(JSON.parse(data), 100))").toString();
         log.info("end");
         log.info(res);
-    }
-
-    @Test
-    public void testMapBoxTurf() {
-        com.mapbox.geojson.FeatureCollection f =  com.mapbox.geojson.FeatureCollection.fromJson(param);
-        double area = TurfMeasurement.area(f);
-        log.info(String.valueOf(area));
     }
 
     private ScriptEngine graalJSScriptEngine() {
