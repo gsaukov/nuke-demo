@@ -30,11 +30,14 @@ public class MapboxTurfFunctionsTest {
         Point sample = (Point)(TurfMeasurement.center(fc.features().get(0)).geometry());
 
         for (Feature f : fc.features()) {
+            Geometry g = f.geometry();
             Point center = (Point)(TurfMeasurement.center(f).geometry());
+            System.out.print("Type: " + g.type());
+            System.out.print(" || center ");
             System.out.print(center.toJson());
-            System.out.print("|| area ");
+            System.out.print(" || area ");
             System.out.print(TurfMeasurement.area(f));
-            System.out.print("|| distance ");
+            System.out.print(" || distance ");
             System.out.print(TurfMeasurement.distance(center, sample));
             System.out.println(" ");
         }
