@@ -1,6 +1,7 @@
 package com.nukedemo.dbscanturf;
 
 import com.mapbox.geojson.Point;
+import com.mapbox.turf.TurfMeasurement;
 import org.apache.commons.math3.stat.clustering.Clusterable;
 
 import java.io.Serializable;
@@ -22,7 +23,7 @@ public class TPoint implements Serializable, Clusterable<TPoint> {
 
     @Override
     public double distanceFrom(TPoint p) {
-        return 0;
+        return TurfMeasurement.distance(point, p.point);
     }
 
     @Override
