@@ -1,23 +1,28 @@
 package com.nukedemo.dbscanturf;
 
+import com.mapbox.geojson.Feature;
+import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.geojson.Point;
 import com.mapbox.turf.TurfMeasurement;
 import org.apache.commons.math3.stat.clustering.Clusterable;
+import org.hamcrest.Factory;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class TPoint implements Serializable, Clusterable<TPoint> {
 
     private final Point point;
-    private final int id;
+    private final String id;
 
-    public TPoint(int id, Point point) {
+    public TPoint(String id, Point point) {
         this.point = point;
         this.id = id;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -28,6 +33,8 @@ public class TPoint implements Serializable, Clusterable<TPoint> {
 
     @Override
     public TPoint centroidOf(Collection<TPoint> collection) {
-        return null;
+        List<Feature> points = collection.stream().map(e -> Feature.fromGeometry(e.point)).collect(Collectors.toList());
+        Feature center = TurfMeasurement.center(FeatureCollection.fromFeatures(points));
+        return new TPoint("center", (Point) center.geometry());
     }
 }
