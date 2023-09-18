@@ -25,6 +25,7 @@ import static com.nukedemo.core.services.clients.nominatim.NominatimApiClient.FO
 @StepScope
 public class GeoDataReader implements ItemReader<String> {
 
+    private static final Object COUNTRY_ID_PREFIX = "36";
 
     @Autowired
     NominatimApiClient nominatimClient;
@@ -45,8 +46,9 @@ public class GeoDataReader implements ItemReader<String> {
         log.info("Reader ID: " + uuid + " Item: " + country.getName());
         //read items from nominatim
         FeatureCollection countryFeature = readCountryFromNominatim(country.getName());
-        String osmId = getOsmId(countryFeature);
-        log.info("Reader ID: " + uuid + " Item: " + country.getName() + ", OSM_ID: " + osmId);
+        Integer osmId = getOsmId(countryFeature);
+        Integer nominatimCountryId = getOsmId(countryFeature);
+        log.info("Reader ID: " + uuid + " Item: " + country.getName() + ", OSM_ID: " + osmId + "Nominatim ID" + nominatimCountryId);
         return country.getName();
     }
 
@@ -55,7 +57,13 @@ public class GeoDataReader implements ItemReader<String> {
         return NdJsonUtils.fromJson(res, FeatureCollection.class);
     }
 
-    private String getOsmId(FeatureCollection countryFeature) {
-        return countryFeature.getFeatures().get(0).<Map>getProperty("geocoding").get("osm_id").toString();
+    private Integer getOsmId(FeatureCollection countryFeature) {
+        return (Integer)countryFeature.getFeatures().get(0).<Map>getProperty("geocoding").get("osm_id");
     }
+
+    private String getNominatimCountryId(Integer osmId) {
+        String formatted = String.format("%08d", osmId);
+        return COUNTRY_ID_PREFIX + formatted;
+    }
+
 }
