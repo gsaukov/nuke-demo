@@ -24,17 +24,16 @@ import static com.nukedemo.core.services.clients.nominatim.NominatimApiClient.FO
 @Slf4j
 @Service
 @StepScope
-public class GeoDataReader implements ItemReader<String> {
+public class GeoDataReader implements ItemReader<GeoDataItem> {
 
     private static final String COUNTRY_ID_PREFIX = "36";
     private static final String OVERPASS_QUERY = "[out:json][timeout:180]; area(id:%s)->.searchArea; (way[\"military\"~\"barracks|office|danger_area|training_area|airfield|base|naval_base\"](area.searchArea); relation[\"military\"~\"barracks|office|danger_area|training_area|airfield|base|naval_base\"](area.searchArea);); out body;>;out skel qt;";
 
+    @Autowired
+    private NominatimApiClient nominatimClient;
 
     @Autowired
-    NominatimApiClient nominatimClient;
-
-    @Autowired
-    OverpassApiClient overpassClient;
+    private OverpassApiClient overpassClient;
 
     private UUID uuid = UUID.randomUUID();
     private LinkedList<InputItem> countries;
@@ -44,19 +43,20 @@ public class GeoDataReader implements ItemReader<String> {
     }
 
     @Override
-    public String read() throws NdException {
+    public GeoDataItem read() throws NdException {
         InputItem country = countries.poll();
         if(country == null){
             return null; //Stop batch job
         }
         log.info("Reader ID: " + uuid + " Item: " + country.getName());
+        GeoDataItem item = new GeoDataItem(country.getName());
         //read items from nominatim
         FeatureCollection countryFeature = readCountryFromNominatim(country.getName());
         Integer osmId = getOsmId(countryFeature);
         String overpassCountryId = getOverpassCountryId(osmId);
         log.info("Reader ID: " + uuid + " Item: " + country.getName() + ", OSM_ID: " + osmId + "Nominatim ID" + overpassCountryId);
-        queryOverpass(overpassCountryId);
-        return country.getName();
+        item.setCountryOsm(queryOverpass(overpassCountryId));
+        return item;
     }
 
     private FeatureCollection readCountryFromNominatim(String countryName) throws NdException {
@@ -66,9 +66,7 @@ public class GeoDataReader implements ItemReader<String> {
 
     private String queryOverpass(String overpassCountryId) {
         String overpassQuery = String.format(OVERPASS_QUERY, overpassCountryId);
-        log.info(overpassQuery);
         String res = overpassClient.interpret(overpassQuery);
-        log.info(res);
         return res;
     }
 
