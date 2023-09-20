@@ -38,7 +38,7 @@ public class GeoDataProcessor implements ItemProcessor<GeoDataItem, GeoDataItem>
 //        Polygon source = (Polygon)features.getFeatures().get(0).getGeometry();
 //        //process/Convert GeorJson items from nominatim
 //        turfService.calculateArea(source);
-        item.setCountryGeoJson(features.toString());
+        item.setCountryGeoJson(NdJsonUtils.toJson(features));
         return item;
     }
 
