@@ -68,7 +68,7 @@ public class BatchConfig {
     @Bean
     public Step step() {
         return new StepBuilder("data-processing-step", jobRepository)
-                .<String, GeoDataItem> chunk(1, transactionManager)
+                .<GeoDataItem, GeoDataItem> chunk(1, transactionManager)
                 .reader(geoDataReader)
                 .processor(geoDataProcessor)
                 .writer(geoDataWriter)
