@@ -7,10 +7,14 @@ import java.util.UUID;
 @Data
 public class GeoDataItem {
 
-    private String country;
+    private String countryName;
 
-    public GeoDataItem(String country) {
-        this.country = country;
+    private String countryOsm;
+
+    private String countryGeoJson;
+
+    public GeoDataItem(String countryName) {
+        this.countryName = countryName;
     }
 
 }
