@@ -18,6 +18,14 @@ public class NdJsonUtils {
         }
     }
 
+    public static String toPrettyJson(Object object) throws NdException {
+        try {
+            return MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+        } catch (final IOException e) {
+            throw new NdException("JSON serialization failed.", e);
+        }
+    }
+
     public static <T> T fromJson(String json, Class<T> clazz) throws NdException {
         try {
             return MAPPER.readValue(json, clazz);
