@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -51,12 +53,26 @@ public class GeoDataReader implements ItemReader<GeoDataItem> {
         log.info("Reader ID: " + uuid + " Item: " + country.getName());
         GeoDataItem item = new GeoDataItem(country.getName());
         //read items from nominatim
-        FeatureCollection countryFeature = readCountryFromNominatim(country.getName());
-        Integer osmId = getOsmId(countryFeature);
-        String overpassCountryId = getOverpassCountryId(osmId);
-        log.info("Reader ID: " + uuid + " Item: " + country.getName() + ", OSM_ID: " + osmId + "Nominatim ID" + overpassCountryId);
-        item.setCountryOsm(queryOverpass(overpassCountryId));
+//        FeatureCollection countryFeature = readCountryFromNominatim(country.getName());
+//        Integer osmId = getOsmId(countryFeature);
+//        String overpassCountryId = getOverpassCountryId(osmId);
+//        log.info("Reader ID: " + uuid + " Item: " + country.getName() + ", OSM_ID: " + osmId + "Nominatim ID" + overpassCountryId);
+//        item.setCountryOsm(queryOverpass(overpassCountryId));
+
+        //DUMMY
+        item.setCountryOsm(queryDummyFileOverpass(country.getName()));
+
+
         return item;
+    }
+
+    private String queryDummyFileOverpass(String countryName) {
+        String res = "";
+        try {
+            res = Files.readString(Paths.get("./res/osm/" + countryName + "_osm.json"));
+        } catch (Exception e) {
+        }
+        return res;
     }
 
     private FeatureCollection readCountryFromNominatim(String countryName) throws NdException {
