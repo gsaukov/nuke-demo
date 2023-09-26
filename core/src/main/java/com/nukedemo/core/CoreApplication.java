@@ -33,6 +33,7 @@ public class CoreApplication {
                  | JobParametersInvalidException e) {
             e.printStackTrace();
         }
+        System.exit(SpringApplication.exit(context));
     }
 
 }
