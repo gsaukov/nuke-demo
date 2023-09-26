@@ -1,12 +1,12 @@
-package com.nukedemo.dbscan;
+package com.nukedemo.geocalculator.dbscan;
 
 
 import com.esri.core.geometry.Envelope2D;
 import com.esri.core.geometry.Point;
 import com.esri.core.geometry.QuadTree;
 import com.esri.core.geometry.QuadTree.QuadTreeIterator;
-import com.nukedemo.dbscan.spatial.Geography;
-import com.nukedemo.dbscan.spatial.SpatialOperator;
+import com.nukedemo.geocalculator.dbscan.spatial.Geography;
+import com.nukedemo.geocalculator.dbscan.spatial.SpatialOperator;
 
 import java.util.*;
 

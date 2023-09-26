@@ -1,11 +1,11 @@
-package com.nukedemo.dbscan.spatial;
+package com.nukedemo.geocalculator.dbscan.spatial;
 
 
 import com.esri.core.geometry.*;
 import com.esri.core.geometry.Geometry.Type;
 import com.esri.core.geometry.QuadTree.QuadTreeIterator;
-import com.nukedemo.dbscan.util.Triple;
-import com.nukedemo.dbscan.util.Tuple;
+import com.nukedemo.geocalculator.dbscan.util.Triple;
+import com.nukedemo.geocalculator.dbscan.util.Tuple;
 
 import java.io.Serializable;
 import java.nio.ByteBuffer;

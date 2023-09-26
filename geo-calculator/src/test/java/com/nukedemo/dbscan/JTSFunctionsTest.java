@@ -5,6 +5,13 @@ import org.locationtech.jts.geom.*;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.geojson.GeoJsonReader;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class JTSFunctionsTest {
 
     @Test
@@ -41,8 +48,21 @@ public class JTSFunctionsTest {
 
         // Calculate polygon area
         double area = polygon.getArea();
-
         System.out.println("Polygon area: " + area);
+    }
+
+    @Test
+    public void testCenterCalculations() throws IOException, URISyntaxException, ParseException {
+        String fileContent = new String(Files.readAllBytes(Paths.get("../data/mil/usa.geojson")));
+        GeoJsonReader reader = new GeoJsonReader();
+        GeometryCollection gc = (GeometryCollection)reader.read(fileContent);
+
+        for (int i = 0; i < gc.getNumGeometries(); i++) {
+            Geometry g = gc.getGeometryN(i);
+            g.toString();
+            g.toText();
+        }
+
     }
 
 }

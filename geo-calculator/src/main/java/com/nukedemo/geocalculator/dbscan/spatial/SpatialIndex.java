@@ -1,4 +1,4 @@
-package com.nukedemo.dbscan.spatial;
+package com.nukedemo.geocalculator.dbscan.spatial;
 
 import com.esri.core.geometry.Point;
 

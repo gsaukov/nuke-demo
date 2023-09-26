@@ -1,11 +1,10 @@
-package com.nukedemo.dbscanturf;
+package com.nukedemo.geocalculator.dbscanturf;
 
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.geojson.Point;
 import com.mapbox.turf.TurfMeasurement;
 import org.apache.commons.math3.stat.clustering.Clusterable;
-import org.hamcrest.Factory;
 
 import java.io.Serializable;
 import java.util.Collection;

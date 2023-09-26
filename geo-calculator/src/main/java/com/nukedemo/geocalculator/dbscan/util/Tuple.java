@@ -1,4 +1,4 @@
-package com.nukedemo.dbscan.util;
+package com.nukedemo.geocalculator.dbscan.util;
 
 import java.io.Serializable;
 

@@ -1,8 +1,8 @@
 package com.nukedemo.dbscan;
 
 import com.esri.core.geometry.Point;
+import com.nukedemo.geocalculator.dbscan.DBSCAN;
 import org.junit.jupiter.api.Test;
-
 
 import java.util.LinkedList;
 import java.util.List;
@@ -19,7 +19,7 @@ class DBSCANTest {
         points.add(new Point(11.557062, 48.176892));
         points.add(new Point(11.558105, 48.177123));
         points.add(new Point(11.557182, 48.177492));
-        Set<List<Point>> results = DBSCAN.cluster(points, 75, 2);
+        Set<List<Point>> results = DBSCAN.cluster(points, 75, 1);
     }
 
 }

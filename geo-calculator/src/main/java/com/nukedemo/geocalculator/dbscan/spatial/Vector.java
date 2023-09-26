@@ -1,7 +1,7 @@
 /**
  * Implementation of the net.sf.geographiclib.Vector class
  */
-package com.nukedemo.dbscan.spatial;
+package com.nukedemo.geocalculator.dbscan.spatial;
 
 /**
  * Vector in three-dimensional space.

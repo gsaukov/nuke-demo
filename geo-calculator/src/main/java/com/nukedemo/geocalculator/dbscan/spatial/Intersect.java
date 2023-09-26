@@ -1,7 +1,7 @@
 /**
  * Implementation of the net.sf.geographiclib.Intersect class
  */
-package com.nukedemo.dbscan.spatial;
+package com.nukedemo.geocalculator.dbscan.spatial;
 
 import net.sf.geographiclib.*;
 

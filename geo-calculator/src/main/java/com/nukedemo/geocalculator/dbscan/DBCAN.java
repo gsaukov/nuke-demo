@@ -1,4 +1,4 @@
-package com.nukedemo.dbscan;
+package com.nukedemo.geocalculator.dbscan;
 
 import java.util.*;
 

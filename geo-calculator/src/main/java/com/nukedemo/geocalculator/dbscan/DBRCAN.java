@@ -1,6 +1,6 @@
-package com.nukedemo.dbscan;
+package com.nukedemo.geocalculator.dbscan;
 
-import com.nukedemo.dbscan.util.Tuple;
+import com.nukedemo.geocalculator.dbscan.util.Tuple;
 
 import java.util.*;
 import java.util.Map.Entry;
