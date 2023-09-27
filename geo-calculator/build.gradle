@@ -29,7 +29,12 @@ dependencies {
     implementation 'net.sf.geographiclib:GeographicLib-Java:1.46'
 
     implementation 'com.mapbox.mapboxsdk:mapbox-sdk-turf:5.8.0'
-    implementation 'org.projectlombok:lombok:1.18.22'
+
+    implementation 'org.slf4j:slf4j-api'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 
     implementation 'org.springframework:spring-context'
 
