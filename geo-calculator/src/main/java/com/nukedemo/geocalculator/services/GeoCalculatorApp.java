@@ -17,11 +17,11 @@ public class GeoCalculatorApp {
     private static final String PROPERTY_PREFIX = "ND:";
 
     public String calculate(String geojson) throws IOException {
-        FeatureCollection featureCollection = readJson(geojson);
+        FeatureCollection featureCollection = FeatureCollection.fromJson(geojson);
         for (Feature feature : featureCollection.features()) {
             preCalculate(feature);
         }
-        return featureCollection.toJson();
+        return printPrettyJson(featureCollection);
     }
 
     private void preCalculate(Feature feature) {
@@ -36,13 +36,13 @@ public class GeoCalculatorApp {
 
     }
 
-    private FeatureCollection readJson(String json) {
+    private String printPrettyJson(FeatureCollection json) {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapterFactory(GeoJsonAdapterFactory.create())
                 .registerTypeAdapterFactory(GeometryAdapterFactory.create())
                 .setPrettyPrinting()
                 .create();
-        return gson.fromJson(json, FeatureCollection.class);
+        return gson.toJson(json);
     }
 
 
