@@ -5,10 +5,15 @@ import com.google.gson.GsonBuilder;
 import com.mapbox.geojson.*;
 import com.mapbox.geojson.gson.GeoJsonAdapterFactory;
 import com.mapbox.turf.TurfMeasurement;
+import com.nukedemo.geocalculator.dbscanturf.TPoint;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.math3.stat.clustering.Cluster;
+import org.apache.commons.math3.stat.clustering.DBSCANClusterer;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -43,6 +48,33 @@ public class GeoCalculatorApp {
                 .setPrettyPrinting()
                 .create();
         return gson.toJson(json);
+    }
+
+    public List<Cluster> getDBScanCluster(FeatureCollection fc) {
+        List<TPoint> points = new ArrayList<>();
+        for (int i = 0; i < fc.features().size(); i++) {
+            Feature feature = fc.features().get(i);
+            Point center = (Point)(TurfMeasurement.center(feature).geometry());
+            points.add(new TPoint(feature.id(), center));
+        }
+
+        DBSCANClusterer dbscan = new DBSCANClusterer(1, 0);
+        Long start = System.nanoTime();
+        List<Cluster> clusters = dbscan.cluster(points);
+        Long end = System.nanoTime();
+        System.out.println("For " + points.size() + " points calculated: " + clusters.size() + " clusters with exec time ms: " + ((end - start)/1000000));
+        int totalSize = 0;
+        System.out.print("Individual clusters: ");
+        for (int i = 0; i < clusters.size(); i++) {
+            int cSize = clusters.get(i).getPoints().size();
+            totalSize = totalSize + cSize;
+            System.out.print(i +"[" + cSize + "], ");
+            if(i != 0 && i % 30 == 0){
+                System.out.println("");
+            }
+        }
+        System.out.println(System.lineSeparator() + "Total nodes points included into cluster: " + totalSize);
+        return clusters;
     }
 
 
