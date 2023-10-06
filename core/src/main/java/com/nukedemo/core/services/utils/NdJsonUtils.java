@@ -26,6 +26,15 @@ public class NdJsonUtils {
         }
     }
 
+    public static String toPrettyJson(String str) throws NdException {
+        try {
+            Object json = MAPPER.readValue(str, Object.class);
+            return MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(json);
+        } catch (final IOException e) {
+            throw new NdException("JSON serialization failed.", e);
+        }
+    }
+
     public static <T> T fromJson(String json, Class<T> clazz) throws NdException {
         try {
             return MAPPER.readValue(json, clazz);

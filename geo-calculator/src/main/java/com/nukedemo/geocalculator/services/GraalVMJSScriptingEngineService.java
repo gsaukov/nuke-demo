@@ -1,10 +1,9 @@
-package com.nukedemo.core.services;
+package com.nukedemo.geocalculator.services;
 
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 import lombok.extern.slf4j.Slf4j;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
-import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,6 @@ import java.nio.file.Path;
 
 @Slf4j
 @Service
-@StepScope
 public class GraalVMJSScriptingEngineService {
 
     static {

@@ -58,7 +58,7 @@ public class MapboxTurfFunctionsTest {
         for (int i = 0; i < fc.features().size(); i++) {
             Feature feature = fc.features().get(i);
             Point center = (Point)(TurfMeasurement.center(feature).geometry());
-            points.add(new TPoint(feature.id(), center));
+            points.add(new TPoint(feature.id(), center, feature));
         }
 
         DBSCANClusterer dbscan = new DBSCANClusterer(1, 0);

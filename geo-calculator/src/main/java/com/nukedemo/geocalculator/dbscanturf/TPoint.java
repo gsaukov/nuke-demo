@@ -13,16 +13,28 @@ import java.util.stream.Collectors;
 
 public class TPoint implements Serializable, Clusterable<TPoint> {
 
-    private final Point point;
     private final String id;
 
-    public TPoint(String id, Point point) {
-        this.point = point;
+    private final Point point;
+
+    private final Feature feature;
+
+    public TPoint(String id, Point point, Feature feature) {
         this.id = id;
+        this.point = point;
+        this.feature = feature;
     }
 
     public String getId() {
         return id;
+    }
+
+    public Point getPoint() {
+        return point;
+    }
+
+    public Feature getFeature() {
+        return feature;
     }
 
     @Override
@@ -34,6 +46,6 @@ public class TPoint implements Serializable, Clusterable<TPoint> {
     public TPoint centroidOf(Collection<TPoint> collection) {
         List<Feature> points = collection.stream().map(e -> Feature.fromGeometry(e.point)).collect(Collectors.toList());
         Feature center = TurfMeasurement.center(FeatureCollection.fromFeatures(points));
-        return new TPoint("center", (Point) center.geometry());
+        return new TPoint("center", (Point) center.geometry(), null);
     }
 }

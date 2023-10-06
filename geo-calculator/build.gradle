@@ -20,6 +20,12 @@ repositories {
 }
 
 dependencies {
+
+    //ONLY FOR OSM TO GEOJSON CONVERSION VIA resources/scripts/osmtogeojson.js
+    implementation 'org.graalvm.js:js:22.3.1'
+    implementation 'org.graalvm.js:js-scriptengine:22.3.1'
+    //ONLY FOR OSM TO GEOJSON CONVERSION VIA resources/scripts/osmtogeojson.js
+
     implementation 'org.apache.commons:commons-math3:3.6.1'
 
     implementation 'org.locationtech.jts:jts-core:1.19.0'

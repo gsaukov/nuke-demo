@@ -1,10 +1,8 @@
 package com.nukedemo.core;
 
-import com.nukedemo.core.services.GraalVMJSScriptingEngineService;
+import com.nukedemo.geocalculator.services.GraalVMJSScriptingEngineService;
 import lombok.extern.slf4j.Slf4j;
-//import org.junit.Test;
 import org.junit.jupiter.api.Test;
-//import org.junit.runner.RunWith;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;

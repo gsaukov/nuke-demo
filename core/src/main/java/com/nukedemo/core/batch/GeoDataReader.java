@@ -53,7 +53,7 @@ public class GeoDataReader implements ItemReader<GeoDataItem> {
         log.info("Reader ID: " + uuid + " Item: " + country.getName());
         GeoDataItem item = new GeoDataItem(country.getName());
         //read items from nominatim
-//        FeatureCollection countryFeature = readCountryFromNominatim(country.getName());
+        FeatureCollection countryFeature = readCountryFromNominatim(country.getName());
 //        Integer osmId = getOsmId(countryFeature);
 //        String overpassCountryId = getOverpassCountryId(osmId);
 //        log.info("Reader ID: " + uuid + " Item: " + country.getName() + ", OSM_ID: " + osmId + "Nominatim ID" + overpassCountryId);

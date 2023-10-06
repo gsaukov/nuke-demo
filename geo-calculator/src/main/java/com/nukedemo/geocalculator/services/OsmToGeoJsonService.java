@@ -1,11 +1,8 @@
-package com.nukedemo.core.services;
+package com.nukedemo.geocalculator.services;
 
 
-import com.nukedemo.core.services.exceptions.NdException;
-import com.nukedemo.core.services.utils.NdJsonUtils;
+import com.mapbox.geojson.FeatureCollection;
 import lombok.extern.slf4j.Slf4j;
-import org.geojson.FeatureCollection;
-import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.stereotype.Service;
 
 import javax.script.ScriptException;
@@ -13,7 +10,6 @@ import java.io.IOException;
 
 @Slf4j
 @Service
-@StepScope
 public class OsmToGeoJsonService {
 
     private static final String OSMTOGEOJSON_LIBRARY = "classpath:scripts/osmtogeojson.js";
@@ -24,15 +20,15 @@ public class OsmToGeoJsonService {
         this.engine.registerPathResource(OSMTOGEOJSON_LIBRARY);
     }
 
-    public FeatureCollection convert(String source) throws Exception {
+    public String convert(String source) throws Exception {
         engine.getScriptEngine().put("data", source);
         String res = engine.getScriptEngine().eval("JSON.stringify(osmtogeojson(JSON.parse(data)))").toString();
-        log.info(res);
-        return convertOSMtoGeoJSON(res);
+//        log.info(res);
+        return res;
     }
 
-    private FeatureCollection convertOSMtoGeoJSON(String source) throws NdException {
-        return NdJsonUtils.fromJson(source, FeatureCollection.class);
+    private FeatureCollection convertOSMtoGeoJSON(String source) {
+        return FeatureCollection.fromJson(source);
     }
 
 }

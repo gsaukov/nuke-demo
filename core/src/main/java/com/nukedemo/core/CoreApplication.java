@@ -18,7 +18,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 import java.util.Date;
 @EnableFeignClients
-@ComponentScan
+@ComponentScan("com.nukedemo.*")
 @EnableAutoConfiguration
 @ImportAutoConfiguration({FeignAutoConfiguration.class})
 public class CoreApplication {

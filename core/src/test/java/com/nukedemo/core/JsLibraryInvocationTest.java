@@ -1,7 +1,7 @@
 package com.nukedemo.core;
 
-import com.nukedemo.core.services.TurfGeospatialService;
 import com.nukedemo.core.services.utils.NdJsonUtils;
+import com.nukedemo.geocalculator.services.TurfGeospatialService;
 import lombok.extern.slf4j.Slf4j;
 import org.geojson.FeatureCollection;
 import org.geojson.Polygon;
@@ -25,7 +25,7 @@ public class JsLibraryInvocationTest {
     public void testOverpassClient() throws Exception {
         FeatureCollection features = NdJsonUtils.fromJson(param, FeatureCollection.class);
         Polygon source = (Polygon)features.getFeatures().get(0).getGeometry();
-        BigDecimal res = turfGeospatialService.calculateArea(source);
+        BigDecimal res = turfGeospatialService.calculateArea(NdJsonUtils.toJson(source.getCoordinates()));
         log.info(res.toString());
     }
 

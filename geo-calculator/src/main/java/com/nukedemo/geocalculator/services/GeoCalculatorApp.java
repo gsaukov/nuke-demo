@@ -9,6 +9,7 @@ import com.nukedemo.geocalculator.dbscanturf.TPoint;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.math3.stat.clustering.Cluster;
 import org.apache.commons.math3.stat.clustering.DBSCANClusterer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -21,11 +22,19 @@ public class GeoCalculatorApp {
 
     private static final String PROPERTY_PREFIX = "ND:";
 
+    @Autowired
+    private TurfGeospatialService turfGeospatialService;
+
     public String calculate(String geojson) throws IOException {
         FeatureCollection featureCollection = FeatureCollection.fromJson(geojson);
         for (Feature feature : featureCollection.features()) {
             preCalculate(feature);
         }
+
+//        featureCollection.
+//        addProperty(feature, "center", center.toJson());
+        List<Cluster<TPoint>> clusters = getDBScanCluster(featureCollection);
+        clusterGeometry(clusters);
         return printPrettyJson(featureCollection);
     }
 
@@ -34,6 +43,20 @@ public class GeoCalculatorApp {
         Point center = (Point) (TurfMeasurement.center(feature).geometry());
         addProperty(feature, "center", center.toJson());
         addProperty(feature, "area", String.valueOf(TurfMeasurement.area(feature)));
+    }
+
+    private void clusterGeometry(List<Cluster<TPoint>> clusters) {
+        for(Cluster<TPoint> cluster : clusters){
+            List<Feature> features = new ArrayList<>();
+            for(TPoint point : cluster.getPoints()) {
+                features.add(point.getFeature());
+            }
+            try {
+                System.out.println(turfGeospatialService.union(features).toJson());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     private static void addProperty(Feature feature, String name, String value) {
@@ -50,17 +73,17 @@ public class GeoCalculatorApp {
         return gson.toJson(json);
     }
 
-    public List<Cluster> getDBScanCluster(FeatureCollection fc) {
+    public List<Cluster<TPoint>> getDBScanCluster(FeatureCollection fc) {
         List<TPoint> points = new ArrayList<>();
         for (int i = 0; i < fc.features().size(); i++) {
             Feature feature = fc.features().get(i);
             Point center = (Point)(TurfMeasurement.center(feature).geometry());
-            points.add(new TPoint(feature.id(), center));
+            points.add(new TPoint(feature.id(), center, feature));
         }
 
-        DBSCANClusterer dbscan = new DBSCANClusterer(1, 0);
+        DBSCANClusterer dbscan = new DBSCANClusterer(2, 0);
         Long start = System.nanoTime();
-        List<Cluster> clusters = dbscan.cluster(points);
+        List<Cluster<TPoint>> clusters = dbscan.cluster(points);
         Long end = System.nanoTime();
         System.out.println("For " + points.size() + " points calculated: " + clusters.size() + " clusters with exec time ms: " + ((end - start)/1000000));
         int totalSize = 0;
