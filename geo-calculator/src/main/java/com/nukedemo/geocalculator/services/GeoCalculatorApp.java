@@ -23,7 +23,7 @@ public class GeoCalculatorApp {
     private static final String PROPERTY_PREFIX = "ND:";
 
     @Autowired
-    private TurfGeospatialService turfGeospatialService;
+    private JtsCalculationService jtsCalculationService;
 
     public String calculate(String geojson) throws IOException {
         FeatureCollection featureCollection = FeatureCollection.fromJson(geojson);
@@ -52,7 +52,7 @@ public class GeoCalculatorApp {
                 features.add(point.getFeature());
             }
             try {
-                System.out.println(turfGeospatialService.union(features).toJson());
+                System.out.println(jtsCalculationService.union(features).toJson());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
