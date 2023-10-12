@@ -1,7 +1,5 @@
 package com.nukedemo.geocalculator.services;
 
-import com.mapbox.geojson.Feature;
-import com.mapbox.geojson.Geometry;
 import org.locationtech.jts.geom.*;
 import org.springframework.stereotype.Service;
 
@@ -12,25 +10,29 @@ import java.util.stream.Collectors;
 @Service
 public class JtsCalculationService {
 
-    public Geometry union(List<Feature> features) throws Exception {
-        List<Polygonal> polygons = getJtSPolygons(features);
-        if(polygons.isEmpty()){
+    public com.mapbox.geojson.Geometry union(List<com.mapbox.geojson.Feature> features) throws Exception {
+        List<Geometry> polygons = getJtSPolygons(features);
+        if (polygons.isEmpty()) {
             return null;
         }
-        if(polygons.size()<2){
+        if (polygons.size() < 2) {
             return toTurfGeometry(polygons.get(0));
         }
+        Geometry cumulative = polygons.get(0);
 
+        for (int i = 1; i < polygons.size(); i++) {//skip first
+            cumulative.union(polygons.get(i));
+        }
 
         return null;
     }
 
-    private List<Polygonal> getJtSPolygons(List<Feature> features) {
-        List<Polygonal> polygons = features.stream()
+    private List<Geometry> getJtSPolygons(List<com.mapbox.geojson.Feature> features) {
+        List<Geometry> polygons = features.stream()
                 .filter(f -> (f.geometry() instanceof com.mapbox.geojson.Polygon))
                 .map(f -> toJtsPolygon(f)).collect(Collectors.toList());
 
-        List<Polygonal> multiPolygons = features.stream()
+        List<Geometry> multiPolygons = features.stream()
                 .filter(f -> (f.geometry() instanceof com.mapbox.geojson.MultiPolygon))
                 .map(f -> toJtsMultyPolygon(f)).collect(Collectors.toList());
 
@@ -38,16 +40,16 @@ public class JtsCalculationService {
         return polygons;
     }
 
-    private MultiPolygon toJtsMultyPolygon(Feature f) {
+    private MultiPolygon toJtsMultyPolygon(com.mapbox.geojson.Feature f) {
         return null;
     }
 
 
-    public Polygon toJtsPolygon(Feature feature) {
-        com.mapbox.geojson.Polygon turfPolygon = (com.mapbox.geojson.Polygon)(feature.geometry());
+    public Polygon toJtsPolygon(com.mapbox.geojson.Feature feature) {
+        com.mapbox.geojson.Polygon turfPolygon = (com.mapbox.geojson.Polygon) (feature.geometry());
         List<com.mapbox.geojson.Point> exteriorRings = turfPolygon.coordinates().get(0);//only exterior ring is used holes are omited
         List<Coordinate> coordinates = new ArrayList<>();
-        for(com.mapbox.geojson.Point point : exteriorRings) {
+        for (com.mapbox.geojson.Point point : exteriorRings) {
             coordinates.add(new Coordinate(point.latitude(), point.latitude(), point.altitude()));
         }
 
@@ -61,7 +63,7 @@ public class JtsCalculationService {
     }
 
 
-    public Geometry toTurfGeometry(Polygonal polygonal) {
+    public com.mapbox.geojson.Geometry toTurfGeometry(Geometry geometry) {
         return null;
     }
 }
