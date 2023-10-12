@@ -47,7 +47,7 @@ public class JtsCalculationService {
 
     public Polygon toJtsPolygon(com.mapbox.geojson.Feature feature) {
         com.mapbox.geojson.Polygon turfPolygon = (com.mapbox.geojson.Polygon) (feature.geometry());
-        List<com.mapbox.geojson.Point> exteriorRings = turfPolygon.coordinates().get(0);//only exterior ring is used holes are omited
+        List<com.mapbox.geojson.Point> exteriorRings = turfPolygon.coordinates().get(0);//only exterior ring is used holes are omitted
         List<Coordinate> coordinates = new ArrayList<>();
         for (com.mapbox.geojson.Point point : exteriorRings) {
             coordinates.add(new Coordinate(point.latitude(), point.latitude(), point.altitude()));
@@ -64,6 +64,34 @@ public class JtsCalculationService {
 
 
     public com.mapbox.geojson.Geometry toTurfGeometry(Geometry geometry) {
-        return null;
+        Coordinate[] coordinates;
+        if (Geometry.TYPENAME_MULTIPOLYGON.equals(geometry.getGeometryType())) {
+            MultiPolygon multiPolygon = (MultiPolygon) geometry;
+            List<Geometry> geometries = new ArrayList<>();
+            for (int i = 0; i < multiPolygon.getNumGeometries(); i++) {
+                geometries.add(multiPolygon.getGeometryN(i));
+            }
+//            geometries.get
+            return null;
+        } else {
+            Polygon polygon = (Polygon) geometry;
+            coordinates = polygon.getExteriorRing().getCoordinates();//only exterior ring is used holes are omitted
+            List<com.mapbox.geojson.Point> turfPoints = new ArrayList<>();
+            List<List<com.mapbox.geojson.Point>> exteriorPoints = new ArrayList<>();
+            exteriorPoints.add(turfPoints);
+            return com.mapbox.geojson.Polygon.fromLngLats(exteriorPoints);
+        }
+    }
+
+    public List<com.mapbox.geojson.Point> toTurfPoints(Coordinate[] coordinates) {
+        List<com.mapbox.geojson.Point> turfPoints = new ArrayList<>();
+        for (Coordinate coordinate : coordinates) {
+            turfPoints.add(toTurfPoint(coordinate));
+        }
+        return turfPoints;
+    }
+
+    public com.mapbox.geojson.Point toTurfPoint(Coordinate coordinate) {
+        return com.mapbox.geojson.Point.fromLngLat(coordinate.getX(), coordinate.getY(), coordinate.getZ());
     }
 }
