@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 @Service
 public class JtsCalculationService {
 
+    //longitude values are considered the x-coordinate, while latitude values are the y-coordinate
+
     public com.mapbox.geojson.Geometry union(List<com.mapbox.geojson.Feature> features) throws Exception {
         List<Geometry> polygons = getJtSPolygons(features);
         if (polygons.isEmpty()) {
@@ -46,17 +48,24 @@ public class JtsCalculationService {
     }
 
     private MultiPolygon toJtsMultyPolygon(com.mapbox.geojson.Feature feature) {
-        com.mapbox.geojson.MultiPolygon multiPolygon = (com.mapbox.geojson.MultiPolygon) (feature.geometry());
-        return null;
+        com.mapbox.geojson.MultiPolygon turfMultiPolygon = (com.mapbox.geojson.MultiPolygon) (feature.geometry());
+        List<Polygon> polygons = new ArrayList<>();
+        for(com.mapbox.geojson.Polygon polygon : turfMultiPolygon.polygons()) {
+            polygons.add(toJtsPolygon(polygon));
+        }
+        return new MultiPolygon(polygons.toArray(new Polygon[0]), new GeometryFactory());
     }
 
 
     public Polygon toJtsPolygon(com.mapbox.geojson.Feature feature) {
-        com.mapbox.geojson.Polygon turfPolygon = (com.mapbox.geojson.Polygon) (feature.geometry());
+        return toJtsPolygon((com.mapbox.geojson.Polygon) (feature.geometry()));
+    }
+
+    public Polygon toJtsPolygon(com.mapbox.geojson.Polygon turfPolygon) {
         List<com.mapbox.geojson.Point> exteriorRings = turfPolygon.coordinates().get(0);//only exterior ring is used holes are omitted
         List<Coordinate> coordinates = new ArrayList<>();
         for (com.mapbox.geojson.Point point : exteriorRings) {
-            coordinates.add(new Coordinate(point.latitude(), point.latitude(), point.altitude()));
+            coordinates.add(new Coordinate(point.longitude(), point.latitude(), point.altitude()));
         }
 
         // Create a LinearRing from the array of coordinates
