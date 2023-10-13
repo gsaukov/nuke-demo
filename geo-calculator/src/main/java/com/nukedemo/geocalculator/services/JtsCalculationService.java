@@ -74,13 +74,16 @@ public class JtsCalculationService {
 //            geometries.get
             return null;
         } else {
-            Polygon polygon = (Polygon) geometry;
-            coordinates = polygon.getExteriorRing().getCoordinates();//only exterior ring is used holes are omitted
-            List<com.mapbox.geojson.Point> turfPoints = new ArrayList<>();
-            List<List<com.mapbox.geojson.Point>> exteriorPoints = new ArrayList<>();
-            exteriorPoints.add(turfPoints);
-            return com.mapbox.geojson.Polygon.fromLngLats(exteriorPoints);
+            return toTurfPolygon((Polygon) geometry);
         }
+    }
+
+    public com.mapbox.geojson.Polygon toTurfPolygon(Polygon polygon) {
+        Coordinate[] coordinates = polygon.getExteriorRing().getCoordinates();//only exterior ring is used holes are omitted
+        List<com.mapbox.geojson.Point> turfPoints = toTurfPoints(coordinates);
+        List<List<com.mapbox.geojson.Point>> exteriorPoints = new ArrayList<>();
+        exteriorPoints.add(turfPoints);
+        return com.mapbox.geojson.Polygon.fromLngLats(exteriorPoints);
     }
 
     public List<com.mapbox.geojson.Point> toTurfPoints(Coordinate[] coordinates) {
