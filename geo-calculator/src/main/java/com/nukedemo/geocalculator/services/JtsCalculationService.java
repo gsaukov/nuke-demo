@@ -18,13 +18,18 @@ public class JtsCalculationService {
         if (polygons.size() < 2) {
             return toTurfGeometry(polygons.get(0));
         }
-        Geometry cumulative = polygons.get(0);
+        Geometry init = polygons.get(0);
+        MultiPolygon cumulative;
+        if(init instanceof MultiPolygon) {
+            cumulative = (MultiPolygon)init;
+        } else {
+            cumulative = new MultiPolygon(new Polygon[]{(Polygon) init}, new GeometryFactory());
+        }
 
         for (int i = 1; i < polygons.size(); i++) {//skip first
             cumulative.union(polygons.get(i));
         }
-
-        return null;
+        return toTurfGeometry(cumulative);
     }
 
     private List<Geometry> getJtSPolygons(List<com.mapbox.geojson.Feature> features) {
@@ -40,7 +45,8 @@ public class JtsCalculationService {
         return polygons;
     }
 
-    private MultiPolygon toJtsMultyPolygon(com.mapbox.geojson.Feature f) {
+    private MultiPolygon toJtsMultyPolygon(com.mapbox.geojson.Feature feature) {
+        com.mapbox.geojson.MultiPolygon multiPolygon = (com.mapbox.geojson.MultiPolygon) (feature.geometry());
         return null;
     }
 
@@ -66,17 +72,24 @@ public class JtsCalculationService {
     public com.mapbox.geojson.Geometry toTurfGeometry(Geometry geometry) {
         Coordinate[] coordinates;
         if (Geometry.TYPENAME_MULTIPOLYGON.equals(geometry.getGeometryType())) {
-            MultiPolygon multiPolygon = (MultiPolygon) geometry;
-            List<Geometry> geometries = new ArrayList<>();
-            for (int i = 0; i < multiPolygon.getNumGeometries(); i++) {
-                geometries.add(multiPolygon.getGeometryN(i));
-            }
-//            geometries.get
-            return null;
+            return toTurfMultiPolygon((MultiPolygon) geometry);
         } else {
             return toTurfPolygon((Polygon) geometry);
         }
     }
+
+    public com.mapbox.geojson.MultiPolygon toTurfMultiPolygon(MultiPolygon multiPolygon) {
+        List<Geometry> geometries = new ArrayList<>();
+        for (int i = 0; i < multiPolygon.getNumGeometries(); i++) {
+            geometries.add(multiPolygon.getGeometryN(i));
+        }
+        List<com.mapbox.geojson.Polygon > polygons = new ArrayList<>();
+        for(Geometry geometry : geometries){
+            polygons.add(toTurfPolygon((Polygon)geometry));
+        }
+        return com.mapbox.geojson.MultiPolygon.fromPolygons(polygons);
+    }
+
 
     public com.mapbox.geojson.Polygon toTurfPolygon(Polygon polygon) {
         Coordinate[] coordinates = polygon.getExteriorRing().getCoordinates();//only exterior ring is used holes are omitted
