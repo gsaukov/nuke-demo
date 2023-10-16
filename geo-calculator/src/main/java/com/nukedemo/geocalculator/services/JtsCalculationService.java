@@ -18,7 +18,7 @@ public class JtsCalculationService {
             return null;
         }
         if (polygons.size() < 2) {
-            return toTurfGeometry(polygons.get(0));
+            return toTurfGeometry(new MultiPolygon(new Polygon[]{(Polygon) polygons.get(0)}, new GeometryFactory()));
         }
         Geometry init = polygons.get(0);
         MultiPolygon cumulative;
