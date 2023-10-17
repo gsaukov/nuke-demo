@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 public class JtsCalculationService {
 
     //longitude values are considered the x-coordinate, while latitude values are the y-coordinate
+    private final GeometryFactory geometryFactory = new GeometryFactory();
 
     public com.mapbox.geojson.Geometry union(List<com.mapbox.geojson.Feature> features) throws Exception {
         List<Geometry> polygons = getJtSPolygons(features);
@@ -18,16 +19,15 @@ public class JtsCalculationService {
             return null;
         }
         if (polygons.size() < 2) {
-            return toTurfGeometry(new MultiPolygon(new Polygon[]{(Polygon) polygons.get(0)}, new GeometryFactory()));
+            return toTurfGeometry(new MultiPolygon(new Polygon[]{(Polygon) polygons.get(0)}, geometryFactory));
         }
         Geometry init = polygons.get(0);
         MultiPolygon cumulative;
-        if(init instanceof MultiPolygon) {
-            cumulative = (MultiPolygon)init;
+        if (init instanceof MultiPolygon) {
+            cumulative = (MultiPolygon) init;
         } else {
-            cumulative = new MultiPolygon(new Polygon[]{(Polygon) init}, new GeometryFactory());
+            cumulative = new MultiPolygon(new Polygon[]{(Polygon) init}, geometryFactory);
         }
-
         for (int i = 1; i < polygons.size(); i++) {//skip first
             cumulative.union(polygons.get(i));
         }
@@ -50,7 +50,7 @@ public class JtsCalculationService {
     private MultiPolygon toJtsMultyPolygon(com.mapbox.geojson.Feature feature) {
         com.mapbox.geojson.MultiPolygon turfMultiPolygon = (com.mapbox.geojson.MultiPolygon) (feature.geometry());
         List<Polygon> polygons = new ArrayList<>();
-        for(com.mapbox.geojson.Polygon polygon : turfMultiPolygon.polygons()) {
+        for (com.mapbox.geojson.Polygon polygon : turfMultiPolygon.polygons()) {
             polygons.add(toJtsPolygon(polygon));
         }
         return new MultiPolygon(polygons.toArray(new Polygon[0]), new GeometryFactory());
@@ -69,12 +69,10 @@ public class JtsCalculationService {
         }
 
         // Create a LinearRing from the array of coordinates
-        GeometryFactory geometryFactory = new GeometryFactory();
         LinearRing linearRing = geometryFactory.createLinearRing(coordinates.toArray(new Coordinate[0]));
 
         // Create a Polygon from the LinearRing
-        Polygon polygon = geometryFactory.createPolygon(linearRing, null);
-        return polygon;
+        return geometryFactory.createPolygon(linearRing, null);
     }
 
 
@@ -92,9 +90,9 @@ public class JtsCalculationService {
         for (int i = 0; i < multiPolygon.getNumGeometries(); i++) {
             geometries.add(multiPolygon.getGeometryN(i));
         }
-        List<com.mapbox.geojson.Polygon > polygons = new ArrayList<>();
-        for(Geometry geometry : geometries){
-            polygons.add(toTurfPolygon((Polygon)geometry));
+        List<com.mapbox.geojson.Polygon> polygons = new ArrayList<>();
+        for (Geometry geometry : geometries) {
+            polygons.add(toTurfPolygon((Polygon) geometry));
         }
         return com.mapbox.geojson.MultiPolygon.fromPolygons(polygons);
     }
