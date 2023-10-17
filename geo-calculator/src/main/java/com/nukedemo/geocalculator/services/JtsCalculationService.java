@@ -36,6 +36,13 @@ public class JtsCalculationService {
         }
     }
 
+    private Polygon validateAndFix(Polygon polygon) {
+        if(!polygon.isValid()) {
+            polygon = (Polygon) polygon.buffer(0);
+        }
+        return polygon;
+    }
+
     private List<Geometry> getJtSPolygons(List<com.mapbox.geojson.Feature> features) {
         List<Geometry> polygons = features.stream()
                 .filter(f -> (f.geometry() instanceof com.mapbox.geojson.Polygon))
@@ -74,7 +81,7 @@ public class JtsCalculationService {
         LinearRing linearRing = geometryFactory.createLinearRing(coordinates.toArray(new Coordinate[0]));
 
         // Create a Polygon from the LinearRing
-        return geometryFactory.createPolygon(linearRing, null);
+        return validateAndFix(geometryFactory.createPolygon(linearRing, null));
     }
 
 
