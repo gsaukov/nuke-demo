@@ -18,20 +18,22 @@ public class JtsCalculationService {
         if (polygons.isEmpty()) {
             return null;
         }
+        MultiPolygon cumulative = toMultiPolygon(polygons.get(0));
         if (polygons.size() < 2) {
-            return toTurfGeometry(new MultiPolygon(new Polygon[]{(Polygon) polygons.get(0)}, geometryFactory));
-        }
-        Geometry init = polygons.get(0);
-        MultiPolygon cumulative;
-        if (init instanceof MultiPolygon) {
-            cumulative = (MultiPolygon) init;
-        } else {
-            cumulative = new MultiPolygon(new Polygon[]{(Polygon) init}, geometryFactory);
+            return toTurfGeometry(cumulative);
         }
         for (int i = 1; i < polygons.size(); i++) {//skip first
             cumulative.union(polygons.get(i));
         }
         return toTurfGeometry(cumulative);
+    }
+
+    private MultiPolygon toMultiPolygon(Geometry geometry) {
+        if (geometry instanceof MultiPolygon) {
+            return (MultiPolygon) geometry;
+        } else {
+            return new MultiPolygon(new Polygon[]{(Polygon) geometry}, geometryFactory);
+        }
     }
 
     private List<Geometry> getJtSPolygons(List<com.mapbox.geojson.Feature> features) {
