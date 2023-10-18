@@ -6,6 +6,8 @@
 * Openstreet map key info: https://wiki.openstreetmap.org/wiki/Key:military
 * Available tags and usage: https://taginfo.openstreetmap.org/keys/military#overview 
 * Overview: https://securityforcemonitor.org/2018/07/06/openstreetmap-is-sometimes-a-handy-database-of-national-security-locations-heres-how-to-see-them/
+* [GeoJSON validation](https://geojsonlint.com/)
+* [GeoJSON visualization](https://geojson.io/)
 
 
 ## Samples
@@ -29,3 +31,5 @@ Query sample for [Overpass](https://overpass-turbo.eu/):
 mapbox-sdk-turf might be handy, has turf functions and other GeoJSON specific things [Mapbox turf SDK](https://docs.mapbox.com/android/java/guides/turf/)  
 
     implementation 'com.mapbox.mapboxsdk:mapbox-sdk-turf:5.8.0'
+
+
