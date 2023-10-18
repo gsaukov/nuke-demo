@@ -1,7 +1,6 @@
 package com.nukedemo.geocalculator.services;
 
 import org.locationtech.jts.geom.*;
-import org.locationtech.jts.geom.util.GeometryFixer;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -87,7 +86,9 @@ public class JtsCalculationService {
 
     private Polygon validateAndFixPolygon(Polygon polygon) {
         if (!polygon.isValid()) {
-            polygon = (Polygon) GeometryFixer.fix(polygon, false);
+            //perhaps fix polygon with GeometryFixer.fix(polygon); which fixes poligon by creation of multipoligon for line intersections.
+            //Bugffer creates a line aroumd polygon consuming whole intersections.
+            polygon = (Polygon) polygon.buffer(0);
         }
         return polygon;
     }
