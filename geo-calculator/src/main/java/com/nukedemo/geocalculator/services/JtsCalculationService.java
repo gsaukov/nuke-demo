@@ -1,6 +1,7 @@
 package com.nukedemo.geocalculator.services;
 
 import org.locationtech.jts.geom.*;
+import org.locationtech.jts.geom.util.GeometryFixer;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,13 +35,6 @@ public class JtsCalculationService {
         } else {
             return new MultiPolygon(new Polygon[]{(Polygon) geometry}, geometryFactory);
         }
-    }
-
-    private Polygon validateAndFix(Polygon polygon) {
-        if(!polygon.isValid()) {
-            polygon = (Polygon) polygon.buffer(0);
-        }
-        return polygon;
     }
 
     private List<Geometry> getJtSPolygons(List<com.mapbox.geojson.Feature> features) {
@@ -78,15 +72,28 @@ public class JtsCalculationService {
         }
 
         // Create a LinearRing from the array of coordinates
+        validateAndFixLinearRing(coordinates);
         LinearRing linearRing = geometryFactory.createLinearRing(coordinates.toArray(new Coordinate[0]));
 
         // Create a Polygon from the LinearRing
-        return validateAndFix(geometryFactory.createPolygon(linearRing, null));
+        return validateAndFixPolygon(geometryFactory.createPolygon(linearRing, null));
+    }
+
+    private void validateAndFixLinearRing(List<Coordinate> coordinates) {
+        if (!coordinates.get(0).equals(coordinates.get(coordinates.size() - 1))) {
+            coordinates.add(coordinates.get(0));
+        }
+    }
+
+    private Polygon validateAndFixPolygon(Polygon polygon) {
+        if (!polygon.isValid()) {
+            polygon = (Polygon) GeometryFixer.fix(polygon, false);
+        }
+        return polygon;
     }
 
 
     public com.mapbox.geojson.Geometry toTurfGeometry(Geometry geometry) {
-        Coordinate[] coordinates;
         if (Geometry.TYPENAME_MULTIPOLYGON.equals(geometry.getGeometryType())) {
             return toTurfMultiPolygon((MultiPolygon) geometry);
         } else {
