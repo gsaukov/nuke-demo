@@ -88,7 +88,12 @@ public class JtsCalculationService {
         if (!polygon.isValid()) {
             //perhaps fix polygon with GeometryFixer.fix(polygon); which fixes poligon by creation of multipoligon for line intersections.
             //Bugffer creates a line aroumd polygon consuming whole intersections.
-            polygon = (Polygon) polygon.buffer(0);
+            try{
+                polygon = (Polygon) polygon.buffer(0);
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+
         }
         return polygon;
     }
