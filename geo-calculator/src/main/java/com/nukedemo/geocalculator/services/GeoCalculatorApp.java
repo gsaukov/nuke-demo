@@ -52,7 +52,10 @@ public class GeoCalculatorApp {
                 features.add(point.getFeature());
             }
             try {
-                System.out.println(jtsCalculationService.union(features).toJson());
+                Geometry g = jtsCalculationService.union(features);
+                if(g != null) {
+                    System.out.println(g.toJson());
+                }
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
