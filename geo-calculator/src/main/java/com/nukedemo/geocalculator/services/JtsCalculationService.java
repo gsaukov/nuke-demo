@@ -1,6 +1,7 @@
 package com.nukedemo.geocalculator.services;
 
 import org.locationtech.jts.geom.*;
+import org.locationtech.jts.geom.util.GeometryFixer;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -53,17 +54,18 @@ public class JtsCalculationService {
         com.mapbox.geojson.MultiPolygon turfMultiPolygon = (com.mapbox.geojson.MultiPolygon) (feature.geometry());
         List<Polygon> polygons = new ArrayList<>();
         for (com.mapbox.geojson.Polygon polygon : turfMultiPolygon.polygons()) {
-            polygons.add(toJtsPolygon(polygon));
+             List<Polygon> poligonsFromMultipolygon = (List<Polygon>)(List<?>) (polygonsFromMultiPoligon(toJtsPolygon(polygon)));
+            polygons.addAll(poligonsFromMultipolygon);
         }
         return new MultiPolygon(polygons.toArray(new Polygon[0]), new GeometryFactory());
     }
 
 
-    public Polygon toJtsPolygon(com.mapbox.geojson.Feature feature) {
+    public MultiPolygon toJtsPolygon(com.mapbox.geojson.Feature feature) {
         return toJtsPolygon((com.mapbox.geojson.Polygon) (feature.geometry()));
     }
 
-    public Polygon toJtsPolygon(com.mapbox.geojson.Polygon turfPolygon) {
+    public MultiPolygon toJtsPolygon(com.mapbox.geojson.Polygon turfPolygon) {
         List<com.mapbox.geojson.Point> exteriorRings = turfPolygon.coordinates().get(0);//only exterior ring is used holes are omitted
         List<Coordinate> coordinates = new ArrayList<>();
         for (com.mapbox.geojson.Point point : exteriorRings) {
@@ -73,9 +75,10 @@ public class JtsCalculationService {
         // Create a LinearRing from the array of coordinates
         validateAndFixLinearRing(coordinates);
         LinearRing linearRing = geometryFactory.createLinearRing(coordinates.toArray(new Coordinate[0]));
-
+        Polygon polygon = geometryFactory.createPolygon(linearRing, null);
+        MultiPolygon multiPolygon = geometryFactory.createMultiPolygon(new Polygon[]{polygon});
         // Create a Polygon from the LinearRing
-        return validateAndFixPolygon(geometryFactory.createPolygon(linearRing, null));
+        return validateAndFixPolygon(multiPolygon);
     }
 
     private void validateAndFixLinearRing(List<Coordinate> coordinates) {
@@ -84,18 +87,18 @@ public class JtsCalculationService {
         }
     }
 
-    private Polygon validateAndFixPolygon(Polygon polygon) {
-        if (!polygon.isValid()) {
+    private MultiPolygon validateAndFixPolygon(MultiPolygon multiPolygon) {
+        if (!multiPolygon.isValid()) {
             //perhaps fix polygon with GeometryFixer.fix(polygon); which fixes poligon by creation of multipoligon for line intersections.
             //Bugffer creates a line aroumd polygon consuming whole intersections.
             try{
-                polygon = (Polygon) polygon.buffer(0);
+                multiPolygon = (MultiPolygon) multiPolygon.buffer(0);
             } catch (Exception e){
                 e.printStackTrace();
             }
 
         }
-        return polygon;
+        return multiPolygon;
     }
 
 
