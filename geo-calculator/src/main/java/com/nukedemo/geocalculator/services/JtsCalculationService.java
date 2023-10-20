@@ -108,13 +108,10 @@ public class JtsCalculationService {
     }
 
     public com.mapbox.geojson.MultiPolygon toTurfMultiPolygon(MultiPolygon multiPolygon) {
-        List<Geometry> geometries = new ArrayList<>();
-        for (int i = 0; i < multiPolygon.getNumGeometries(); i++) {
-            geometries.add(multiPolygon.getGeometryN(i));
-        }
+        List<Polygon> geometries = polygonsFromMultiPoligon(multiPolygon);
         List<com.mapbox.geojson.Polygon> polygons = new ArrayList<>();
-        for (Geometry geometry : geometries) {
-            polygons.add(toTurfPolygon((Polygon) geometry));
+        for (Polygon polygon : geometries) {
+            polygons.add(toTurfPolygon(polygon));
         }
         return com.mapbox.geojson.MultiPolygon.fromPolygons(polygons);
     }
@@ -138,5 +135,13 @@ public class JtsCalculationService {
 
     public com.mapbox.geojson.Point toTurfPoint(Coordinate coordinate) {
         return com.mapbox.geojson.Point.fromLngLat(coordinate.getX(), coordinate.getY(), coordinate.getZ());
+    }
+
+    public List<Polygon> polygonsFromMultiPoligon(MultiPolygon multiPolygon) {
+        List<Polygon> polygons = new ArrayList<>();
+        for (int i = 0; i < multiPolygon.getNumGeometries(); i++) {
+            polygons.add((Polygon)multiPolygon.getGeometryN(i));
+        }
+        return polygons;
     }
 }
