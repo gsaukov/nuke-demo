@@ -54,8 +54,7 @@ public class JtsCalculationService {
         com.mapbox.geojson.MultiPolygon turfMultiPolygon = (com.mapbox.geojson.MultiPolygon) (feature.geometry());
         List<Polygon> polygons = new ArrayList<>();
         for (com.mapbox.geojson.Polygon polygon : turfMultiPolygon.polygons()) {
-             List<Polygon> poligonsFromMultipolygon = (List<Polygon>)(List<?>) (polygonsFromMultiPoligon(toJtsPolygon(polygon)));
-            polygons.addAll(poligonsFromMultipolygon);
+            polygons.addAll(polygonsFromMultiPoligon(toJtsPolygon(polygon)));
         }
         return new MultiPolygon(polygons.toArray(new Polygon[0]), new GeometryFactory());
     }
@@ -76,7 +75,7 @@ public class JtsCalculationService {
         validateAndFixLinearRing(coordinates);
         LinearRing linearRing = geometryFactory.createLinearRing(coordinates.toArray(new Coordinate[0]));
         Polygon polygon = geometryFactory.createPolygon(linearRing, null);
-        MultiPolygon multiPolygon = geometryFactory.createMultiPolygon(new Polygon[]{polygon});
+        MultiPolygon multiPolygon = toMultiPolygon(polygon);
         // Create a Polygon from the LinearRing
         return validateAndFixPolygon(multiPolygon);
     }
@@ -92,7 +91,7 @@ public class JtsCalculationService {
             //perhaps fix polygon with GeometryFixer.fix(polygon); which fixes poligon by creation of multipoligon for line intersections.
             //Bugffer creates a line aroumd polygon consuming whole intersections.
             try{
-                multiPolygon = (MultiPolygon) multiPolygon.buffer(0);
+                multiPolygon = toMultiPolygon(multiPolygon.buffer(0));
             } catch (Exception e){
                 e.printStackTrace();
             }
