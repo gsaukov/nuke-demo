@@ -27,6 +27,13 @@ Query sample for [Overpass](https://overpass-turbo.eu/):
      >;
      out skel qt;
 
+Search city boundaries:
+
+    {{geocodeArea: Munich }};
+    rel(pivot);
+    // print results
+    out body geom;
+
 ## Libraries
 mapbox-sdk-turf might be handy, has turf functions and other GeoJSON specific things [Mapbox turf SDK](https://docs.mapbox.com/android/java/guides/turf/)  
 
