@@ -8,6 +8,7 @@
 * Overview: https://securityforcemonitor.org/2018/07/06/openstreetmap-is-sometimes-a-handy-database-of-national-security-locations-heres-how-to-see-them/
 * [GeoJSON validation](https://geojsonlint.com/)
 * [GeoJSON visualization](https://geojson.io/)
+* [Population density matrixes data](https://ghsl.jrc.ec.europa.eu/download.php)
 
 
 ## Samples
