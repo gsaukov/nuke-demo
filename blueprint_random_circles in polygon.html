@@ -20,6 +20,8 @@
 <div id="map"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.6.0/leaflet.js"></script>
 <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
+<script src='https://unpkg.com/osmtogeojson@3.0.0-beta.5/osmtogeojson.js'></script>
+
 <script>
 
     const map = L.map("map").setView([48.1140951, 37.7551389], 13);
@@ -101,8 +103,10 @@
         });
 
         const answer = await api.json();
-        console.log(JSON.stringify(answer));
-        console.log(answer);
+        // console.log(JSON.stringify(answer));
+        // console.log(answer);
+        const geojson = osmtogeojson(answer);
+        console.log(geojson);
     }
 
     getPolygonFromOverpass();
