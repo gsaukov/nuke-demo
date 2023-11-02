@@ -40,11 +40,10 @@ export class MapPageComponent implements OnInit {
       target: 'ol-map'
     });
 
-    var layer = new Vector({
-      source: new VectorSource({
-        // projection: 'EPSG:4326',
-        features: [new Feature(new Circle([10, 10], 400000))]
-      }),
+    const vectorSource = new VectorSource();
+
+    const layer = new Vector({
+      source: vectorSource,
       style: [
         new Style({
           stroke: new Stroke({
@@ -57,6 +56,12 @@ export class MapPageComponent implements OnInit {
         })
       ]
     });
+
+    for(let i=0; i < 1000; i++) {
+      let coord = this.turfService.randomPointInPolygon(this.turfService.geoJsonObject.features[0]).geometry.coordinates
+      vectorSource.addFeature(new Feature(new Circle([coord[1],coord[0]], 400000)));
+    }
+
     this.map.addLayer(layer);
   }
 }
