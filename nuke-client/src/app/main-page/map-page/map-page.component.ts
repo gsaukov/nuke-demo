@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
+import {TurfService} from "../../services/turf.service";
 
 @Component({
   selector: 'app-map-page',
@@ -12,6 +13,9 @@ import OSM from 'ol/source/OSM';
 export class MapPageComponent implements OnInit {
 
   private map!: Map;
+
+  constructor(private turfService: TurfService) {
+  }
 
   ngOnInit(): void {
     this.map = new Map({
@@ -29,4 +33,5 @@ export class MapPageComponent implements OnInit {
       ],
       target: 'ol-map'
     });
-  }}
+  }
+}
