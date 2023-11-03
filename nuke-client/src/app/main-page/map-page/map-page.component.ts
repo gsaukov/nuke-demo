@@ -9,6 +9,8 @@ import {Fill, Stroke, Style} from "ol/style";
 import {Feature} from "ol";
 import {Circle} from "ol/geom";
 import {Vector} from "ol/layer";
+import {fromLonLat, transformExtent} from "ol/proj";
+import {GeoJSON} from "ol/format";
 
 
 @Component({
@@ -56,11 +58,19 @@ export class MapPageComponent implements OnInit {
         })
       ]
     });
-
+    // const top : topology = []
     for(let i=0; i < 1000; i++) {
       let coord = this.turfService.randomPointInPolygon(this.turfService.geoJsonObject.features[0]).geometry.coordinates
-      vectorSource.addFeature(new Feature(new Circle([coord[1],coord[0]], 400000)));
+      vectorSource.addFeature(new Feature(new Circle(fromLonLat(coord, 'EPSG:3857'), 20)));
     }
+
+    const geojsonFormat = new GeoJSON();
+
+    const features = geojsonFormat.readFeatures(this.turfService.geoJsonObject, {
+      featureProjection: 'EPSG:3857',
+    });
+
+    vectorSource.addFeatures(features)
 
     this.map.addLayer(layer);
   }
