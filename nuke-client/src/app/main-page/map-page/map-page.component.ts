@@ -28,8 +28,8 @@ export class MapPageComponent implements OnInit {
   ngOnInit(): void {
     this.map = new Map({
       view: new View({
-        center: [0, 0],
-        zoom: 1,
+        center: fromLonLat([69.2787079, 41.3123363], 'EPSG:3857'),
+        zoom: 12,
       }),
       layers: [
         new TileLayer({
@@ -86,11 +86,11 @@ export class MapPageComponent implements OnInit {
         const outerRadius = radius * 1.4;
 
         const gradient = ctx.createRadialGradient(x, y, innerRadius, x, y, outerRadius);
-        gradient.addColorStop(0, 'rgb(255,0,0, 0.7)');
-        gradient.addColorStop(0.6, 'rgb(255,115,0, 0.7)');
-        gradient.addColorStop(0.75, 'rgb(0,157,255, 0.7)');
-        gradient.addColorStop(0.95, 'rgba(255,255,255,0.2)');
-        gradient.addColorStop(1, 'rgba(255,255,255, 0)');
+        gradient.addColorStop(0, 'rgba(255,0,0, 0.7)');
+        gradient.addColorStop(0.6, 'rgba(255,115,0, 0.7)');
+        gradient.addColorStop(0.75, 'rgba(0,157,255, 0.7)');
+        gradient.addColorStop(0.80, 'rgba(255,255,255,0.6)');
+        gradient.addColorStop(1, 'rgba(255,255,255, 0.1)');
         ctx.beginPath();
         ctx.arc(x, y, radius, 0, 2 * Math.PI, true);
         ctx.fillStyle = gradient;
