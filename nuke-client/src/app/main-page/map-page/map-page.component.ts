@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, OnInit} from '@angular/core';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
@@ -51,21 +51,19 @@ export class MapPageComponent implements OnInit {
           stroke: new Stroke({
             color: 'blue',
             width: 3
-          }),
-          fill: new Fill({
-            color: 'rgba(0, 0, 255, 0.1)'
           })
         })
       ]
     });
-    // const top : topology = []
-    for(let i=0; i < 1000; i++) {
+
+    for(let i=0; i < 10; i++) {
       let coord = this.turfService.randomPointInPolygon(this.turfService.geoJsonObject.features[0]).geometry.coordinates
-      vectorSource.addFeature(new Feature(new Circle(fromLonLat(coord, 'EPSG:3857'), 20)));
+      const circleFeature = new Feature(new Circle(fromLonLat(coord, 'EPSG:3857'), 2000));
+      circleFeature.setStyle(this.radialGraientStylre());
+      vectorSource.addFeature(circleFeature);
     }
 
     const geojsonFormat = new GeoJSON();
-
     const features = geojsonFormat.readFeatures(this.turfService.geoJsonObject, {
       featureProjection: 'EPSG:3857',
     });
@@ -73,5 +71,35 @@ export class MapPageComponent implements OnInit {
     vectorSource.addFeatures(features)
 
     this.map.addLayer(layer);
+  }
+
+  private radialGraientStylre():Style{
+    return new Style({
+      renderer(coordinates:any, state:any) {
+        const [[x, y], [x1, y1]] = coordinates;
+        const ctx = state.context;
+        const dx = x1 - x;
+        const dy = y1 - y;
+        const radius = Math.sqrt(dx * dx + dy * dy);
+
+        const innerRadius = 0;
+        const outerRadius = radius * 1.4;
+
+        const gradient = ctx.createRadialGradient(x, y, innerRadius, x, y, outerRadius);
+        gradient.addColorStop(0, 'rgb(255,0,0, 0.7)');
+        gradient.addColorStop(0.6, 'rgb(255,115,0, 0.7)');
+        gradient.addColorStop(0.75, 'rgb(0,157,255, 0.7)');
+        gradient.addColorStop(0.95, 'rgba(255,255,255,0.2)');
+        gradient.addColorStop(1, 'rgba(255,255,255, 0)');
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, 2 * Math.PI, true);
+        ctx.fillStyle = gradient;
+        ctx.fill();
+
+        // ctx.arc(x, y, radius, 0, 2 * Math.PI, true);
+        // ctx.strokeStyle = 'rgb(0,0,190)';
+        // ctx.stroke();
+      },
+    })
   }
 }
