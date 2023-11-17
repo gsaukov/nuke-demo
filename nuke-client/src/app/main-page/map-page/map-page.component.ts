@@ -9,8 +9,9 @@ import {Fill, Stroke, Style} from "ol/style";
 import {Feature} from "ol";
 import {Circle} from "ol/geom";
 import {Vector} from "ol/layer";
-import {fromLonLat, transformExtent} from "ol/proj";
+import {fromLonLat} from "ol/proj";
 import {GeoJSON} from "ol/format";
+import {Feature as TurfFeature, MultiPolygon, Polygon} from "@turf/turf";
 
 
 @Component({
@@ -26,6 +27,12 @@ export class MapPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.buildMap();
+    this.addGeometryLayer(this.map, this.turfService.geoJsonObject)
+    this.addCircles(this.map, this.turfService.geoJsonObject.features[0], 10, 2000)
+  }
+
+  private buildMap() {
     this.map = new Map({
       view: new View({
         center: fromLonLat([69.2787079, 41.3123363], 'EPSG:3857'),
@@ -41,41 +48,44 @@ export class MapPageComponent implements OnInit {
       ],
       target: 'ol-map'
     });
+  }
 
+  private addGeometryLayer(map: Map, geoJsonObject: any) {
+    const geojsonFormat = new GeoJSON();
     const vectorSource = new VectorSource();
-
+    const features = geojsonFormat.readFeatures(geoJsonObject, {
+      featureProjection: 'EPSG:3857',
+    });
+    vectorSource.addFeatures(features)
     const layer = new Vector({
       source: vectorSource,
       style: [
         new Style({
-          stroke: new Stroke({
-            color: 'blue',
-            width: 3
-          })
+          stroke: new Stroke({color: 'blue', width: 3}),
+          fill: new Fill({color: 'rgba(0, 0, 255, 0.1)'})
         })
       ]
     });
-
-    for(let i=0; i < 10; i++) {
-      let coord = this.turfService.randomPointInPolygon(this.turfService.geoJsonObject.features[0]).geometry.coordinates
-      const circleFeature = new Feature(new Circle(fromLonLat(coord, 'EPSG:3857'), 2000));
-      circleFeature.setStyle(this.radialGraientStylre());
-      vectorSource.addFeature(circleFeature);
-    }
-
-    const geojsonFormat = new GeoJSON();
-    const features = geojsonFormat.readFeatures(this.turfService.geoJsonObject, {
-      featureProjection: 'EPSG:3857',
-    });
-
-    vectorSource.addFeatures(features)
-
     this.map.addLayer(layer);
   }
 
-  private radialGraientStylre():Style{
+  private addCircles(map: Map, polygon: TurfFeature<(Polygon | MultiPolygon)>, num: number, radius: number) {
+    const vectorSource = new VectorSource();
+    const layer = new Vector({source: vectorSource,});
+    map.addLayer(layer);
+
+    for (let i = 0; i < num; i++) {
+      let coord = this.turfService.randomPointInPolygon(polygon).geometry.coordinates
+      const circleFeature = new Feature(new Circle(fromLonLat(coord, 'EPSG:3857'), radius));
+      circleFeature.setStyle(this.radialGraientStylre());
+      vectorSource.addFeature(circleFeature);
+    }
+  }
+
+
+  private radialGraientStylre(): Style {
     return new Style({
-      renderer(coordinates:any, state:any) {
+      renderer(coordinates: any, state: any) {
         const [[x, y], [x1, y1]] = coordinates;
         const ctx = state.context;
         const dx = x1 - x;
