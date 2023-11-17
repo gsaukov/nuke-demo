@@ -58,7 +58,7 @@ export class MapPageComponent implements OnInit {
 
   private printOnMap (overpassRes:any) {
     console.log(JSON.stringify(overpassRes))
-    let geoJsonObject = osm2geojson(overpassRes);
+    let geoJsonObject = osm2geojson(overpassRes, {completeFeature:true});
     console.log(JSON.stringify(geoJsonObject))
     this.addGeometryLayer(this.map, geoJsonObject)
     this.addCircles(this.map, geoJsonObject.features[0] as TurfFeature<(Polygon | MultiPolygon)>, 10, 2000)
