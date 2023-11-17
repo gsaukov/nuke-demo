@@ -1,9 +1,10 @@
 import {CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA} from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import {BrowserModule} from '@angular/platform-browser';
 
-import { AppComponent } from './app.component';
-import { MainPageComponent } from './main-page/main-page.component';
-import { MapPageComponent } from './main-page/map-page/map-page.component';
+import {AppComponent} from './app.component';
+import {MainPageComponent} from './main-page/main-page.component';
+import {MapPageComponent} from './main-page/map-page/map-page.component';
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -12,7 +13,8 @@ import { MapPageComponent } from './main-page/map-page/map-page.component';
     MapPageComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent],
@@ -21,4 +23,5 @@ import { MapPageComponent } from './main-page/map-page/map-page.component';
     NO_ERRORS_SCHEMA
   ]
 })
-export class AppModule { }
+export class AppModule {
+}
