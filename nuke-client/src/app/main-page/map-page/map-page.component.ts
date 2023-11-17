@@ -87,9 +87,9 @@ export class MapPageComponent implements OnInit {
 
         const gradient = ctx.createRadialGradient(x, y, innerRadius, x, y, outerRadius);
         gradient.addColorStop(0, 'rgba(255,0,0, 0.7)');
-        gradient.addColorStop(0.6, 'rgba(255,115,0, 0.7)');
-        gradient.addColorStop(0.75, 'rgba(0,157,255, 0.7)');
-        gradient.addColorStop(0.80, 'rgba(255,255,255,0.6)');
+        gradient.addColorStop(0.5, 'rgba(255,115,0, 0.7)');
+        gradient.addColorStop(0.6, 'rgba(0,157,255, 0.5)');
+        gradient.addColorStop(0.7, 'rgba(255,255,255, 0.3)');
         gradient.addColorStop(1, 'rgba(255,255,255, 0.1)');
         ctx.beginPath();
         ctx.arc(x, y, radius, 0, 2 * Math.PI, true);
