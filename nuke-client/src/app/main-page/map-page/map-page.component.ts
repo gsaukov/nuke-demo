@@ -17,13 +17,13 @@ export class MapPageComponent implements OnInit {
 
   private COUNTRY_ID_PREFIX = "36";
 
-  private map!: Map;
+  private _map!: Map;
 
   constructor(private mapService: MapService, private nominatimService: NominatimService, private overpassService: OverpassService) {
   }
 
   ngOnInit(): void {
-    this.map = this.mapService.buildMap(this.map);
+    this._map = this.mapService.buildMap(this._map);
     this.nominatimService.getCityData('Moscow')
       .subscribe(nominatimRes => this.getOverpassData(nominatimRes)
         .subscribe(overpassRes => this.printOnMap(overpassRes))
@@ -49,8 +49,11 @@ export class MapPageComponent implements OnInit {
     console.log(JSON.stringify(overpassRes))
     let geoJsonObject = osm2geojson(overpassRes, {completeFeature:true});
     console.log(JSON.stringify(geoJsonObject))
-    this.mapService.addGeometryLayer(this.map, geoJsonObject)
-    this.mapService.addCircles(this.map, geoJsonObject.features[0] as TurfFeature<(Polygon | MultiPolygon)>, 10, 2000)
+    this.mapService.addGeometryLayer(this._map, geoJsonObject)
+    this.mapService.addCircles(this._map, geoJsonObject.features[0] as TurfFeature<(Polygon | MultiPolygon)>, 10, 2000)
   }
 
+  get map(): Map {
+    return this._map;
+  }
 }
