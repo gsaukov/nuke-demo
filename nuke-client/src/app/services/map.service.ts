@@ -23,7 +23,7 @@ export class MapService {
   constructor(private turfService: TurfService) {
   }
 
-  private buildMap(map: Map) {
+  buildMap(map: Map):Map {
     map = new Map({
       view: new View({
         center: fromLonLat([69.2787079, 41.3123363], 'EPSG:3857'),
@@ -39,9 +39,10 @@ export class MapService {
       ],
       target: 'ol-map'
     });
+    return map;
   }
 
-  private addGeometryLayer(map: Map, geoJsonObject: any) {
+  addGeometryLayer(map: Map, geoJsonObject: any) {
     const geojsonFormat = new GeoJSON();
     const vectorSource = new VectorSource();
     const features = geojsonFormat.readFeatures(geoJsonObject, {
@@ -60,7 +61,7 @@ export class MapService {
     map.addLayer(layer);
   }
 
-  private addCircles(map: Map, polygon: TurfFeature<(Polygon | MultiPolygon)>, num: number, radius: number) {
+  addCircles(map: Map, polygon: TurfFeature<(Polygon | MultiPolygon)>, num: number, radius: number) {
     const vectorSource = new VectorSource();
     const layer = new Vector({source: vectorSource,});
     map.addLayer(layer);
@@ -73,7 +74,7 @@ export class MapService {
     }
   }
 
-  private radialGraientStylre(): Style {
+  radialGraientStylre(): Style {
     return new Style({
       renderer(coordinates: any, state: any) {
         const [[x, y], [x1, y1]] = coordinates;
