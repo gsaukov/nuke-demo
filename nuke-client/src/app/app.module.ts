@@ -6,6 +6,7 @@ import {MainPageComponent} from './main-page/main-page.component';
 import {MapPageComponent} from './main-page/map-page/map-page.component';
 import {HttpClientModule} from "@angular/common/http";
 import { CalculatorComponent } from './main-page/map-page/calculator/calculator.component';
+import {ReactiveFormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { CalculatorComponent } from './main-page/map-page/calculator/calculator.
   ],
   imports: [
     BrowserModule,
-    HttpClientModule
+    HttpClientModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -3,10 +3,10 @@
     <div class="calculator-form">
       <form [formGroup]="form" (ngSubmit)="onSubmit()" ngNativeValidate>
         <div class="form-group">
-          <input #startInput type="text" class="calculator-control" formControlName="start" placeholder="Start city name or coordinates" autocomplete="off" [required]="true"/>
+          <input #startInput type="text" class="calculator-control" formControlName="start" placeholder="City name or coordinates" autocomplete="off" [required]="true"/>
         </div>
         <div class="form-group">
-          <input #endInput type="text" class="calculator-control" formControlName="end" placeholder="End city name or coordinates" autocomplete="off" [required]="true"/>
+          <input #endInput type="number" class="calculator-control" formControlName="end" placeholder="Number of events" autocomplete="off" [required]="true"/>
         </div>
         <div class="form-group form-button">
           <input type="submit" name="calculate" class="calculator-button" value="Calculate"/>
