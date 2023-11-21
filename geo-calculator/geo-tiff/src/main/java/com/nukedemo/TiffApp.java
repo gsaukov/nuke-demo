@@ -1,65 +1,44 @@
 package com.nukedemo;
 
-import mil.nga.tiff.FileDirectory;
-import mil.nga.tiff.Rasters;
-import mil.nga.tiff.TIFFImage;
-import mil.nga.tiff.TiffReader;
 
 import java.awt.image.Raster;
-import java.awt.image.RenderedImage;
-import java.awt.image.renderable.ParameterBlock;
 import java.io.File;
-import java.io.IOException;
-import java.util.List;
 
-
-import com.sun.media.jai.codec.FileSeekableStream;
-import com.sun.media.jai.codec.ImageDecoder;
-import com.sun.media.jai.codec.ImageCodec;
-import com.sun.media.jai.codec.TIFFEncodeParam;
-
-import javax.media.jai.JAI;
-import javax.media.jai.RenderedOp;
-
+import org.geotools.coverage.grid.GridCoordinates2D;
+import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.grid.GridGeometry2D;
+import org.geotools.gce.geotiff.GeoTiffReader;
+import org.geotools.geometry.DirectPosition2D;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 public class TiffApp {
 
     public static void main( String[] args ) throws Exception {
 
-//         based on: http://www.smartjava.org/content/access-information-geotiff-using-java/
-        File tiffFile = new File("");
+        // based on: http://www.smartjava.org/content/access-information-geotiff-using-java/
+
         // load tiff file to memory
-        TIFFImage tiffImage = TiffReader.readTiff(tiffFile);
-        List<FileDirectory> directories = tiffImage.getFileDirectories();
-        FileDirectory directory = directories.get(0);
-        Rasters rasters = directory.readRasters();
+        File tiffFile = new File("./geo-calculator/geo-tiff/src/main/resources/GHS_POP_E2030_GLOBE_R2023A_4326_3ss_V1_0_R12_C8.tif");
+        GeoTiffReader reader = new GeoTiffReader(tiffFile);
+        GridCoverage2D cov = reader.read(null);
+        Raster tiffRaster = cov.getRenderedImage().getData();
 
+        // convert lat/lon gps coordinates to tiff x/y coordinates
+        double lat = -25;
+        double lon = -105;
+        CoordinateReferenceSystem wgs84 = DefaultGeographicCRS.WGS84;
+        GridGeometry2D gg = cov.getGridGeometry();
+        DirectPosition2D posWorld = new DirectPosition2D(wgs84, lon, lat); // longitude supplied first
+        GridCoordinates2D posGrid = gg.worldToGrid(posWorld);
 
-        doitJAI();
+        // sample tiff data with at pixel coordinate
+        double[] rasterData = new double[1];
+        tiffRaster.getPixel(posGrid.x, posGrid.y, rasterData);
+
+        System.out.println(String.format("GeoTIFF data at %s, %s: %s", lat, lon, rasterData[0]));
 
     }
 
-
-    public static void doitJAI() throws IOException {
-        FileSeekableStream ss = new FileSeekableStream("");
-        ImageDecoder dec = ImageCodec.createImageDecoder("tiff", ss, null);
-        int count = dec.getNumPages();
-        TIFFEncodeParam param = new TIFFEncodeParam();
-        param.setCompression(TIFFEncodeParam.COMPRESSION_GROUP4);
-        param.setLittleEndian(false); // Intel
-        System.out.println("This TIF has " + count + " image(s)");
-        for (int i = 0; i < count; i++) {
-            RenderedImage page = dec.decodeAsRenderedImage(i);
-            File f = new File("single_" + i + ".tif");
-            System.out.println("Saving " + f.getCanonicalPath());
-            ParameterBlock pb = new ParameterBlock();
-            pb.addSource(page);
-            pb.add(f.toString());
-            pb.add("tiff");
-            pb.add(param);
-            RenderedOp r = JAI.create("filestore",pb);
-            r.dispose();
-        }
-    }
 
 }
