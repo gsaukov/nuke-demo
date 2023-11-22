@@ -19,11 +19,10 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 public class TiffApp {
 
     public static void main( String[] args ) throws Exception {
-
         // based on: http://www.smartjava.org/content/access-information-geotiff-using-java/
 
         // load tiff file to memory
-        File tiffFile = new File("./geo-calculator/geo-tiff/src/main/resources/GHS_POP_E2030_GLOBE_R2023A_4326_3ss_V1_0_R12_C8.tif");
+        File tiffFile = new File("./geo-calculator/geo-tiff/src/main/resources/GHS_POP_E2030_GLOBE_R2023A_4326_30ss_V1_0_R4_C20.tif");
         GeoTiffReader reader = new GeoTiffReader(tiffFile);
         GridCoverage2D cov = reader.read(null);
         Raster tiffRaster = cov.getRenderedImage().getData();
@@ -37,11 +36,22 @@ public class TiffApp {
         GridCoordinates2D posGrid = gg.worldToGrid(posWorld);
 
         // sample tiff data with at pixel coordinate
-        double[] rasterData = new double[1];
-        tiffRaster.getPixel(posGrid.x, posGrid.y, rasterData);
+//        double[] rasterData = new double[1];
+//        tiffRaster.getPixel(posGrid.x, posGrid.y, rasterData);
 
-        System.out.println(String.format("GeoTIFF data at %s, %s: %s", lat, lon, rasterData[0]));
+//        System.out.println(String.format("GeoTIFF data at %s, %s: %s", lat, lon, rasterData[0]));
 
+        StringBuffer s = new StringBuffer();
+        for (int i = 0; i < 1200 * 1200; i++) {
+            s.append(tiffRaster.getDataBuffer().getElemDouble(i) + ",");
+            if (i > 0 && i % 1200 == 0) {
+                s.append(System.lineSeparator());
+            }
+            if (i > 0 && i % 120000 == 0) {
+                System.out.print(".");
+            }
+        };
+        System.out.println(s.toString());
     }
 
 
