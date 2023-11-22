@@ -10,6 +10,7 @@ import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.gce.geotiff.GeoTiffReader;
 import org.geotools.geometry.DirectPosition2D;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.opengis.geometry.DirectPosition;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 // Geotiff Mollweide and geotools 
@@ -54,5 +55,10 @@ public class TiffApp {
         System.out.println(s.toString());
     }
 
+
+    private void coordFromPixel() {
+        GridCoordinates2D coord = new GridCoordinates2D(10, 10);
+        DirectPosition p = cov.getGridGeometry().gridToWorld(coord);
+    }
 
 }
