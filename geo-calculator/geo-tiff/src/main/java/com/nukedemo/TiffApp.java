@@ -12,6 +12,10 @@ import org.geotools.geometry.DirectPosition2D;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
+// Geotiff Mollweide and geotools 
+// https://gis.stackexchange.com/questions/314421/geotiff-geotools-mollweide-customer-projection-not-recognized
+// https://gis.stackexchange.com/questions/314282/geotiff-mollweide-and-geotools
+
 public class TiffApp {
 
     public static void main( String[] args ) throws Exception {
