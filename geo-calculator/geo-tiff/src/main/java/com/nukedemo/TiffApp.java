@@ -39,18 +39,21 @@ public class TiffApp {
     private final GeoTiffReader reader;
     private final GridCoverage2D cov;
     private final Raster tiffRaster;
+    private final int  rasterWidth;
+    private final int  rasterHeight;
 
     public TiffApp(String fileToProcess) throws Exception {
-        // load tiff file to memory
         this.tiffFile = new File(fileToProcess);
         this.reader = new GeoTiffReader(tiffFile);
         this.cov = reader.read(null);
         this.tiffRaster = cov.getRenderedImage().getData();
+        this.rasterWidth = tiffRaster.getWidth();
+        this.rasterHeight = tiffRaster.getHeight();
     }
 
     private double[] pixelDataFromCoord(double lat, double lon) throws Exception {
         GridGeometry2D gg = cov.getGridGeometry();
-        DirectPosition2D posWorld = new DirectPosition2D(wgs84, lat, lon); // longitude supplied first
+        DirectPosition2D posWorld = new DirectPosition2D(wgs84, lat, lon);
         GridCoordinates2D posGrid = gg.worldToGrid(posWorld);
         double[] rasterData = new double[1];
         tiffRaster.getPixel(posGrid.x, posGrid.y, rasterData);
@@ -76,9 +79,9 @@ public class TiffApp {
 
     private String toStringIntArray() {
         StringBuffer s = new StringBuffer();
-        for (int i = 0; i < 1200 * 1200; i++) {
+        for (int i = 0; i < rasterWidth * rasterHeight; i++) {
             s.append(tiffRaster.getDataBuffer().getElem(i) + ",");
-            if (i > 0 && i % 1200 == 0) {
+            if (i > 0 && i % rasterWidth == 0) {
                 s.append(System.lineSeparator());
             }
         }
@@ -87,9 +90,9 @@ public class TiffApp {
 
     private String toStringDoubleArray() {
         StringBuffer s = new StringBuffer();
-        for (int i = 0; i < 1200 * 1200; i++) {
+        for (int i = 0; i < rasterWidth * rasterHeight; i++) {
             s.append(tiffRaster.getDataBuffer().getElemDouble(i) + ",");
-            if (i > 0 && i % 1200 == 0) {
+            if (i > 0 && i % rasterWidth == 0) {
                 s.append(System.lineSeparator());
             }
         }
