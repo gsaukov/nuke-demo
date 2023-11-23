@@ -16,49 +16,84 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 // Geotiff Mollweide and geotools 
 // https://gis.stackexchange.com/questions/314421/geotiff-geotools-mollweide-customer-projection-not-recognized
 // https://gis.stackexchange.com/questions/314282/geotiff-mollweide-and-geotools
+// based on: http://www.smartjava.org/content/access-information-geotiff-using-java/
 
 public class TiffApp {
 
     public static void main( String[] args ) throws Exception {
-        // based on: http://www.smartjava.org/content/access-information-geotiff-using-java/
-
-        // load tiff file to memory
-        File tiffFile = new File("./geo-calculator/geo-tiff/src/main/resources/GHS_POP_E2030_GLOBE_R2023A_4326_30ss_V1_0_R4_C20.tif");
-        GeoTiffReader reader = new GeoTiffReader(tiffFile);
-        GridCoverage2D cov = reader.read(null);
-        Raster tiffRaster = cov.getRenderedImage().getData();
-
+        String fileToProcess = "./geo-calculator/geo-tiff/src/main/resources/GHS_POP_E2030_GLOBE_R2023A_4326_30ss_V1_0_R4_C20.tif";
+        TiffApp tiffApp = new TiffApp(fileToProcess);
         // convert lat/lon gps coordinates to tiff x/y coordinates
-        double lat = -25;
-        double lon = -105;
-        CoordinateReferenceSystem wgs84 = DefaultGeographicCRS.WGS84;
+        double lat = 12.546250343322754;
+        double lon = 55.67041778564453;
+        System.out.println(tiffApp.pixelDataFromCoord(lat, lon)[0]);
+        System.out.println(tiffApp.pixelDataFromXY(306, 411)[0]);
+        System.out.println(tiffApp.coordFromXY(lat, lon));
+        System.out.println(tiffApp.xyFromCoord(306, 411));
+        System.out.println(tiffApp.toStringIntArray());
+    }
+
+    public static CoordinateReferenceSystem wgs84 = DefaultGeographicCRS.WGS84;
+
+    private final File tiffFile;
+    private final GeoTiffReader reader;
+    private final GridCoverage2D cov;
+    private final Raster tiffRaster;
+
+    public TiffApp(String fileToProcess) throws Exception {
+        // load tiff file to memory
+        this.tiffFile = new File(fileToProcess);
+        this.reader = new GeoTiffReader(tiffFile);
+        this.cov = reader.read(null);
+        this.tiffRaster = cov.getRenderedImage().getData();
+    }
+
+    private double[] pixelDataFromCoord(double lat, double lon) throws Exception {
         GridGeometry2D gg = cov.getGridGeometry();
-        DirectPosition2D posWorld = new DirectPosition2D(wgs84, lon, lat); // longitude supplied first
+        DirectPosition2D posWorld = new DirectPosition2D(wgs84, lat, lon); // longitude supplied first
         GridCoordinates2D posGrid = gg.worldToGrid(posWorld);
+        double[] rasterData = new double[1];
+        tiffRaster.getPixel(posGrid.x, posGrid.y, rasterData);
+        return rasterData;
+    }
 
-        // sample tiff data with at pixel coordinate
-//        double[] rasterData = new double[1];
-//        tiffRaster.getPixel(posGrid.x, posGrid.y, rasterData);
+    private double[] pixelDataFromXY(int x, int y) throws Exception {
+        double[] rasterData = new double[1];
+        tiffRaster.getPixel(x, y, rasterData);
+        return rasterData;
+    }
 
-//        System.out.println(String.format("GeoTIFF data at %s, %s: %s", lat, lon, rasterData[0]));
+    private GridCoordinates2D coordFromXY(double lat, double lon) throws Exception {
+        GridGeometry2D gg = cov.getGridGeometry();
+        DirectPosition2D posWorld = new DirectPosition2D(wgs84, lat, lon); // longitude supplied first
+        return gg.worldToGrid(posWorld);
+    }
 
+    private DirectPosition xyFromCoord(int x, int y) throws Exception {
+        GridCoordinates2D coord = new GridCoordinates2D(x, y);
+        return cov.getGridGeometry().gridToWorld(coord);
+    }
+
+    private String toStringIntArray() {
+        StringBuffer s = new StringBuffer();
+        for (int i = 0; i < 1200 * 1200; i++) {
+            s.append(tiffRaster.getDataBuffer().getElem(i) + ",");
+            if (i > 0 && i % 1200 == 0) {
+                s.append(System.lineSeparator());
+            }
+        }
+        return s.toString();
+    }
+
+    private String toStringDoubleArray() {
         StringBuffer s = new StringBuffer();
         for (int i = 0; i < 1200 * 1200; i++) {
             s.append(tiffRaster.getDataBuffer().getElemDouble(i) + ",");
             if (i > 0 && i % 1200 == 0) {
                 s.append(System.lineSeparator());
             }
-            if (i > 0 && i % 120000 == 0) {
-                System.out.print(".");
-            }
-        };
-        System.out.println(s.toString());
-    }
-
-
-    private void coordFromPixel() {
-        GridCoordinates2D coord = new GridCoordinates2D(10, 10);
-        DirectPosition p = cov.getGridGeometry().gridToWorld(coord);
+        }
+        return s.toString();
     }
 
 }
