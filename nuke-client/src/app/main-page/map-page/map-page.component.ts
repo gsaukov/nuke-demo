@@ -24,7 +24,7 @@ export class MapPageComponent implements OnInit {
 
   ngOnInit(): void {
     this._map = this.mapService.buildMap(this._map);
-    this.nominatimService.getCityData('Moscow')
+    this.nominatimService.getCityData('Hamburg')
       .subscribe(nominatimRes => this.getOverpassData(nominatimRes)
         .subscribe(overpassRes => this.printOnMap(overpassRes))
       );
@@ -50,7 +50,7 @@ export class MapPageComponent implements OnInit {
     let geoJsonObject = osm2geojson(overpassRes, {completeFeature:true});
     console.log(JSON.stringify(geoJsonObject))
     this.mapService.addGeometryLayer(this._map, geoJsonObject)
-    this.mapService.addCircles(this._map, geoJsonObject.features[0] as TurfFeature<(Polygon | MultiPolygon)>, 10, 2000)
+    this.mapService.addCircles(this._map, geoJsonObject.features[0] as TurfFeature<(Polygon | MultiPolygon)>, 3000, 200)
   }
 
   get map(): Map {

@@ -1,0 +1,6 @@
+.calculator-container {
+  position: absolute;
+  right: 1em;
+  width: 10em;
+  margin: 0 auto;
+}
