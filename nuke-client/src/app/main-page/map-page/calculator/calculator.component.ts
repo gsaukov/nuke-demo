@@ -32,15 +32,13 @@ export class CalculatorComponent {
     this.form.disable()
     const cityName = this.form.controls['cityName'].value
     const radius = this.form.controls['radius'].value
-    const number = this.form.controls['number'].value
-    console.log(cityName + ' ' + radius + ' ' + number)
-
-    this.nominatimService.getCityData('Hamburg')
-      .subscribe(nominatimRes => this.getOverpassData(nominatimRes)
-        .subscribe(overpassRes => this.printOnMap(overpassRes))
-      );
-
-    this.form.enable()
+    const num = this.form.controls['number'].value
+    this.nominatimService.getCityData(cityName)
+      .subscribe((nominatimRes) => {
+          this.getOverpassData(nominatimRes).subscribe((overpassRes) => {
+            this.printOnMap(overpassRes, num, radius)
+          }, (e) => {this.form.enable()})
+        }, (e) => {this.form.enable()});
   }
 
   private getOverpassData (data:any):Observable<any> {
@@ -54,12 +52,16 @@ export class CalculatorComponent {
     return this.COUNTRY_ID_PREFIX + formatted;
   }
 
-  private printOnMap (overpassRes:any) {
-    console.log(JSON.stringify(overpassRes))
-    let geoJsonObject = osm2geojson(overpassRes, {completeFeature:true});
-    console.log(JSON.stringify(geoJsonObject))
-    this.mapService.addGeometryLayer(this.map, geoJsonObject)
-    this.mapService.addCircles(this.map, geoJsonObject.features[0] as TurfFeature<(Polygon | MultiPolygon)>, 3000, 200)
+  private printOnMap (overpassRes:any, num: number, radius: number) {
+    try{
+      console.log(JSON.stringify(overpassRes))
+      let geoJsonObject = osm2geojson(overpassRes, {completeFeature:true});
+      console.log(JSON.stringify(geoJsonObject))
+      this.mapService.addGeometryLayer(this.map, geoJsonObject)
+      this.mapService.addCircles(this.map, geoJsonObject.features[0] as TurfFeature<(Polygon | MultiPolygon)>, num, radius)
+    } finally {
+      this.form.enable()
+    }
   }
 
 }
