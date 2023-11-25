@@ -41,24 +41,26 @@ export class CalculatorComponent {
         }, (e) => {this.form.enable()});
   }
 
-  private getOverpassData (data:any):Observable<any> {
+  private getOverpassData(data: any): Observable<any> {
     console.log(data)
     const countryId = this.getOverpassCountryId(data[0].osm_id)
     return this.overpassService.getGeometryData(countryId);
   }
 
-  private getOverpassCountryId(osmId:number) {
+  private getOverpassCountryId(osmId: number) {
     const formatted = String(osmId).padStart(8, '0');
     return this.COUNTRY_ID_PREFIX + formatted;
   }
 
-  private printOnMap (overpassRes:any, num: number, radius: number) {
-    try{
+  private printOnMap(overpassRes: any, num: number, radius: number) {
+    try {
       console.log(JSON.stringify(overpassRes))
-      let geoJsonObject = osm2geojson(overpassRes, {completeFeature:true});
+      let geoJsonObject = osm2geojson(overpassRes, {completeFeature: true});
       console.log(JSON.stringify(geoJsonObject))
-      this.mapService.addGeometryLayer(this.map, geoJsonObject)
-      this.mapService.addCircles(this.map, geoJsonObject.features[0] as TurfFeature<(Polygon | MultiPolygon)>, num, radius)
+      this.mapService.addGeometryLayer(this.map, geoJsonObject).subscribe()
+      this.mapService.addCircles(this.map, geoJsonObject.features[0] as TurfFeature<(Polygon | MultiPolygon)>, num, radius).subscribe()
+    } catch (e) {
+      console.error(e)
     } finally {
       this.form.enable()
     }
