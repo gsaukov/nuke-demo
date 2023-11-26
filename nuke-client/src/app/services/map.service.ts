@@ -75,10 +75,12 @@ export class MapService {
       map.addLayer(layer);
 
       for (let i = 0; i < num; i++) {
-        let coord = this.turfService.randomPointInPolygon(polygon).geometry.coordinates
-        const circleFeature = new Feature(new Circle(fromLonLat(coord, 'EPSG:3857'), radius));
-        this.radialGraientStylre().subscribe(style => circleFeature.setStyle(style));
-        vectorSource.addFeature(circleFeature);
+        this.turfService.randomPointInPolygon(polygon).subscribe(p => {
+          let coord = p.geometry.coordinates;
+          const circleFeature = new Feature(new Circle(fromLonLat(coord, 'EPSG:3857'), radius));
+          this.radialGraientStylre().subscribe(style => circleFeature.setStyle(style));
+          vectorSource.addFeature(circleFeature);
+        })
       }
 
       observer.next();
