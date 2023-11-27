@@ -59,6 +59,7 @@ export class CalculatorComponent {
       console.log(JSON.stringify(geoJsonObject))
       this.mapService.addGeometryLayer(this.map, geoJsonObject).subscribe()
       this.mapService.addCircles(this.map, geoJsonObject.features[0] as TurfFeature<(Polygon | MultiPolygon)>, num, radius).subscribe()
+      this.mapService.setViewOnGeoJson(this.map, geoJsonObject)
     } catch (e) {
       console.error(e)
     } finally {
