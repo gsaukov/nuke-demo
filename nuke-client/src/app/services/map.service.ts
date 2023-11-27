@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import Map from "ol/Map";
 import View from "ol/View";
-import {fromLonLat} from "ol/proj";
+import {fromLonLat, transformExtent} from "ol/proj";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import {GeoJSON} from "ol/format";
@@ -86,6 +86,13 @@ export class MapService {
       observer.next();
       observer.complete();
     });
+  }
+
+  setViewOnGeoJson(map: Map, geoJsonObject: any) {
+    this.turfService.bbox(geoJsonObject).subscribe(bbox => {
+        map.getView().fit(transformExtent(bbox, 'EPSG:4326', map.getView().getProjection()), {size: map.getSize()});
+      }
+    )
   }
 
   radialGraientStylre(): Observable<Style> {
