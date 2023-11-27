@@ -20,13 +20,6 @@ export class TurfService {
     });
   }
 
-  public bbox(polygon: Feature<(Polygon | MultiPolygon)>): Observable<BBox> {
-    return new Observable((observer) => {
-      observer.next(turf.bbox(polygon));
-      observer.complete();
-    });
-  }
-
   private recursiveRandomPointInPolygon(polygon: Feature<(Polygon | MultiPolygon)>): Feature<Point> {
     //bbox extent in minX, minY, maxX, maxY order
     const bounds = turf.bbox(polygon)
@@ -46,12 +39,18 @@ export class TurfService {
       console.log(point)
       throw e
     }
-
     if (inside) {
       return point
     } else {
       return this.recursiveRandomPointInPolygon(polygon)
     }
+  }
+
+  public bbox(geojson: any): Observable<BBox> {
+    return new Observable((observer) => {
+      observer.next(turf.bbox(geojson));
+      observer.complete();
+    });
   }
 
 }
