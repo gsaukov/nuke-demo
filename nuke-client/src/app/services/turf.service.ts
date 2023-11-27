@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import * as turf from '@turf/turf';
+import { BBox } from "@turf/helpers";
 import {Feature, MultiPolygon, Polygon, Point} from "@turf/turf";
 import {Observable} from "rxjs";
 
@@ -15,6 +16,13 @@ export class TurfService {
     return new Observable((observer) => {
       const point: Feature<Point> = this.recursiveRandomPointInPolygon(polygon);
       observer.next(point);
+      observer.complete();
+    });
+  }
+
+  public bbox(polygon: Feature<(Polygon | MultiPolygon)>): Observable<BBox> {
+    return new Observable((observer) => {
+      observer.next(turf.bbox(polygon));
       observer.complete();
     });
   }
