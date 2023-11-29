@@ -6,7 +6,8 @@ https://overpass-turbo.eu/
 ## TAGS:
 
 #### WIKI
-https://taginfo.openstreetmap.org/keys/military#values
+https://taginfo.openstreetmap.org/keys/military#values  
+https://taginfo.openstreetmap.org/keys/highway#values
 
 > aeroway=aerodrome
 > highway=residential|service|unclassified|path|crossing|tertiary|secondary|primary|turning_circle|living_street|cycleway|trunk|motorway|motorway_link|trunk_link|primary_link|construction|secondary_link|tertiary_link|motorway_junction|turning_loop|mini_roundabout|road
