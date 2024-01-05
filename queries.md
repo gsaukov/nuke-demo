@@ -81,3 +81,12 @@ https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_API_by_Example
        out body;
        >;
        out skel qt;
+
+#### Query by id relation/way/node
+https://www.overpass-api.de/api/interpreter?data=%5Bout%3Ajson%5D%3Barea(id%3A3602216724)%3Brel(pivot)%3Bout%20body%20geom%3B //uses 36 prefix  
+https://www.overpass-api.de/api/interpreter?data=%5Bout%3Ajson%5D%3Barea(id%3A33612675)%3Bway(pivot)%3Bout%20geom%3B  
+https://www.overpass-api.de/api/interpreter?data=%5Bout%3Ajson%5D%3Bnode(id%3A8674649717)%3Bout%20geom%3B
+
+    area(3602216724);rel(pivot);out geom; //uses 36 prefix
+    area(33612675);way(pivot);out geom;
+    node(5921499312);out;
