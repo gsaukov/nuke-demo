@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.nukedemo'
+version = '0.0.1-SNAPSHOT'
+
+[rootProject, this].each {
+    println "Configuring repositories for project: ${it.name}"
+    it.repositories {
+        mavenCentral().content {
+            excludeModule("javax.media", "jai_core")
+        }
+        maven { url 'https://repository.jboss.org/nexus/content/repositories/thirdparty-releases' }
+        maven {
+            url 'https://repo.osgeo.org/repository/release/'
+            name 'Open Source Geospatial Foundation Repository'
+        }
+        maven {
+            url 'https://jitpack.io'
+            name 'jitpack.io'
+        }
+        maven {
+            url 'https://maven.geotoolkit.org'
+            name 'geotoolkit'
+        }
+    }
+    //it.repositories.each { repo -> { println "Repo url: ${repo.url}"}}
+}
+
+dependencies {
+    implementation 'com.sun.media:jai-codec:1.1.3'
+    implementation 'org.json:json:20220924'
+
+    // GeoTools
+    implementation 'org.geotools:gt-main:22.2'
+    implementation 'org.geotools:gt-geometry:22.2'
+    implementation 'org.geotools:gt-geotiff:22.2'
+    implementation 'org.geotools:gt-epsg-hsql:22.2'
+    implementation 'javax.media:jai_core:1.1.3'
+
+
+}
+
+test {
+    useJUnitPlatform()
+}

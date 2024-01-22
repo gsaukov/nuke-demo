@@ -1,0 +1,1008 @@
+{
+  "type": "FeatureCollection",
+  "generator": "overpass-ide",
+  "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.",
+  "timestamp": "2023-02-24T17:50:42Z",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/329908426",
+        "iata": "YOO",
+        "icao": "CYOO",
+        "military": "airfield",
+        "name": "Oshawa Airport",
+        "wikidata": "Q3913517",
+        "wikipedia": "en:Oshawa Airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.8950068,
+          43.9227762
+        ]
+      },
+      "id": "node/329908426"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/404798834",
+        "landuse": "military",
+        "military": "office",
+        "name": "RDDC Valcartier, Centre d'Essais et d'Expérimentation en Munitions (CEEM)",
+        "name:en": "DRDC Valcartier, Munitions Experimental Test Centre (METC)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.4781731,
+          46.8758564
+        ]
+      },
+      "id": "node/404798834"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1042024322",
+        "abandoned": "yes",
+        "aeroway": "aerodrome",
+        "alt_name": "Mount Pleasant Airport",
+        "landuse": "military",
+        "military": "airfield",
+        "name": "Former RCAF Mount Pleasant Airport",
+        "note": "Abandoned in 1947.",
+        "operator": "Dept of National Defence",
+        "operator:type": "government",
+        "source": "ourairports.com",
+        "tc": "CCE2",
+        "wikidata": "Q7276026",
+        "wikipedia": "en:RCAF Station Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -64.0065463,
+          46.5982825
+        ]
+      },
+      "id": "node/1042024322"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1207889868",
+        "landuse": "military",
+        "military": "danger_area"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.6187653,
+          47.1825384
+        ]
+      },
+      "id": "node/1207889868"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1716408936",
+        "landuse": "military",
+        "military": "danger_area",
+        "name": "ELECTRIC FENCE"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.440166,
+          46.2217671
+        ]
+      },
+      "id": "node/1716408936"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2130326417",
+        "abandoned": "yes",
+        "aeroway": "aerodrome",
+        "landuse": "military",
+        "military": "airfield",
+        "name": "Former RCAF Station Pennfield Ridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.6918217,
+          45.1223237
+        ]
+      },
+      "id": "node/2130326417"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2771143896",
+        "military": "barracks"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -115.633095,
+          49.6175178
+        ]
+      },
+      "id": "node/2771143896"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3843675646",
+        "military": "office",
+        "name": "Centre des Forces Cannadiennes ( Marine )"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.0559343,
+          48.4302033
+        ]
+      },
+      "id": "node/3843675646"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3961863252",
+        "aeroway": "aerodrome",
+        "ele": "89",
+        "military": "airfield",
+        "name": "Victor Mine Aerodrome",
+        "operator": "De Beers Canada Inc.",
+        "wikidata": "Q7926160",
+        "wikipedia": "en:Victor Mine Aerodrome"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.9330675,
+          52.8321082
+        ]
+      },
+      "id": "node/3961863252"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4922135758",
+        "landuse": "military",
+        "military": "training_area",
+        "name": "TK Sports Performance Training"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -79.3557655,
+          43.8573539
+        ]
+      },
+      "id": "node/4922135758"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4925593031",
+        "landuse": "military",
+        "military": "danger_area",
+        "name": "open pit mine"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -101.0335146,
+          56.8203252
+        ]
+      },
+      "id": "node/4925593031"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4955772187",
+        "landuse": "military",
+        "military": "danger_area",
+        "name": "mine ramp"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -98.6581116,
+          54.8794799
+        ]
+      },
+      "id": "node/4955772187"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4955772194",
+        "landuse": "military",
+        "military": "danger_area",
+        "name": "mine shaft"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -98.6560463,
+          54.8780695
+        ]
+      },
+      "id": "node/4955772194"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5421397521",
+        "description": "Warning: Submerged at High Tide",
+        "landuse": "military",
+        "military": "danger_area"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.2911854,
+          49.3709796
+        ]
+      },
+      "id": "node/5421397521"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5680527002",
+        "barrier": "cattle_grid",
+        "military": "danger_area",
+        "name": "Texas Gate"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -111.9699159,
+          50.317287
+        ]
+      },
+      "id": "node/5680527002"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5680725357",
+        "military": "danger_area",
+        "name": "Fog Area",
+        "tourism": "information"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -111.7864056,
+          51.4091694
+        ]
+      },
+      "id": "node/5680725357"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5907470291",
+        "barrier": "gate",
+        "military": "naval_base",
+        "name": "CFAD Bedford Magazine"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -63.6189391,
+          44.7060653
+        ]
+      },
+      "id": "node/5907470291"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6182279588",
+        "landuse": "military",
+        "military": "naval_base",
+        "name": "CFAD Bedford Magazine"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -63.630141,
+          44.7124107
+        ]
+      },
+      "id": "node/6182279588"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6231554607",
+        "landuse": "military",
+        "military": "office",
+        "name": "Garde côtière du Canada"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.2029966,
+          46.8103091
+        ]
+      },
+      "id": "node/6231554607"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6807066533",
+        "military": "office",
+        "name": "SW8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.2890225,
+          45.843517
+        ]
+      },
+      "id": "node/6807066533"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/7036787249",
+        "landuse": "military",
+        "military": "danger_area"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.69011,
+          49.4456334
+        ]
+      },
+      "id": "node/7036787249"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/7874819755",
+        "description": "This is a marker for the local Firing range which is in use from April 15th to November 5th each year",
+        "landuse": "military",
+        "military": "danger_area",
+        "name": "Path closed From April 15 to November 5th each yaer"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.9212854,
+          52.9661268
+        ]
+      },
+      "id": "node/7874819755"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8259091388",
+        "aeroway": "aerodrome",
+        "icao": "CZUE",
+        "landuse": "military",
+        "military": "airfield",
+        "name": "Cape Parry Airport",
+        "source": "ourairports.com;skyvector.com"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -124.6924264,
+          70.1673825
+        ]
+      },
+      "id": "node/8259091388"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8259106030",
+        "abandoned": "yes",
+        "aeroway": "aerodrome",
+        "icao": "CYUK",
+        "landuse": "military",
+        "military": "airfield",
+        "name": "Byron Bay Airport (abandoned)",
+        "source": "ourairports.com"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -109.1016393,
+          68.7528373
+        ]
+      },
+      "id": "node/8259106030"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8259106050",
+        "aeroway": "aerodrome",
+        "icao": "CYUJ",
+        "landuse": "military",
+        "military": "airfield",
+        "name": "Lady Franklin Point Airport",
+        "source": "ourairports.com;skyvector.com",
+        "wikidata": "Q22537302"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -113.2399738,
+          68.474828
+        ]
+      },
+      "id": "node/8259106050"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8259106051",
+        "aeroway": "aerodrome",
+        "icao": "CYUS",
+        "landuse": "military",
+        "military": "airfield",
+        "name": "Shepherd Bay Airport",
+        "source": "ourairports.com;skyvector.com"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -93.4221855,
+          68.793214
+        ]
+      },
+      "id": "node/8259106051"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8259106058",
+        "abandoned": "yes",
+        "aeroway": "aerodrome",
+        "icao": "CYUV",
+        "landuse": "military",
+        "military": "airfield",
+        "name": "Longstaff Bluff Airport (abandoned)",
+        "note": "Abandoned? Also, abandoned seaplane base with same name (CSV8) just off coast.",
+        "source": "ourairports.com;skyvector.com"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.2750698,
+          68.9278802
+        ]
+      },
+      "id": "node/8259106058"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8259106063",
+        "abandoned": "yes",
+        "aeroway": "aerodrome",
+        "icao": "CYUF",
+        "landuse": "military",
+        "military": "airfield",
+        "name": "Pelly Bay (DEW Site) Airport (abandoned)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -89.6033858,
+          68.4387081
+        ]
+      },
+      "id": "node/8259106063"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8384068298",
+        "addr:housenumber": "8940",
+        "addr:postcode": "J4X 1B6",
+        "addr:street": "Rue Racicot",
+        "military": "office",
+        "name": "Royal Canadian Legion Branch 215"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.4791493,
+          45.439365
+        ]
+      },
+      "id": "node/8384068298"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8711932961",
+        "landuse": "military",
+        "military": "danger_area",
+        "name": "IOC Mine Area Boarder"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.926571,
+          52.9869032
+        ]
+      },
+      "id": "node/8711932961"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8711932962",
+        "landuse": "military",
+        "military": "danger_area",
+        "name": "IOC Mine Area Board"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.9276974,
+          52.9910506
+        ]
+      },
+      "id": "node/8711932962"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8711932963",
+        "landuse": "military",
+        "military": "danger_area",
+        "name": "IOC Mine Area Boarder"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.927453,
+          52.9918287
+        ]
+      },
+      "id": "node/8711932963"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8711932976",
+        "landuse": "military",
+        "military": "danger_area",
+        "name": "IOC Mine Property"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.9067896,
+          52.9895036
+        ]
+      },
+      "id": "node/8711932976"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8711932977",
+        "landuse": "military",
+        "military": "danger_area",
+        "name": "IOC Mine Property"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.9193781,
+          52.996524
+        ]
+      },
+      "id": "node/8711932977"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8711932978",
+        "landuse": "military",
+        "military": "danger_area",
+        "name": "IOC Mine Property"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.9050067,
+          52.9874604
+        ]
+      },
+      "id": "node/8711932978"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8815953537",
+        "landuse": "military",
+        "military": "danger_area",
+        "name": "Trail Cloase from the 5th April to November 5 th Range Open"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.9128009,
+          52.9710905
+        ]
+      },
+      "id": "node/8815953537"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9023467027",
+        "landuse": "military",
+        "military": "danger_area"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -57.8781787,
+          48.9586064
+        ]
+      },
+      "id": "node/9023467027"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9389031570",
+        "addr:city": "Hudson",
+        "addr:housenumber": "56",
+        "addr:province": "QC",
+        "addr:street": "Rue Beach",
+        "military": "office",
+        "name": "Légion royale canadienne d'Hudson"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.1373301,
+          45.4571112
+        ]
+      },
+      "id": "node/9389031570"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9592393822",
+        "landuse": "military",
+        "military": "danger_area",
+        "name": "Flooding in the winter time"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.3385693,
+          53.5310408
+        ]
+      },
+      "id": "node/9592393822"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9592393823",
+        "landuse": "military",
+        "military": "danger_area",
+        "name": "Flooding in the winter time"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.3393844,
+          53.5314649
+        ]
+      },
+      "id": "node/9592393823"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9654167750",
+        "landuse": "military",
+        "military": "danger_area"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -55.4398954,
+          51.6309481
+        ]
+      },
+      "id": "node/9654167750"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9671131854",
+        "landuse": "military",
+        "military": "danger_area",
+        "name": "Only when ice is good"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.8835018,
+          52.9014919
+        ]
+      },
+      "id": "node/9671131854"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9697570179",
+        "landuse": "military",
+        "military": "danger_area",
+        "name": "Dirt path overgrown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.6749937,
+          53.2952227
+        ]
+      },
+      "id": "node/9697570179"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9988796975",
+        "addr:housenumber": "1",
+        "addr:street": "Atlantic Avenue",
+        "military": "base",
+        "name": "Gloucester Building",
+        "ref": "MB69"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.4541945,
+          44.2451541
+        ]
+      },
+      "id": "node/9988796975"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10141214354",
+        "military": "office",
+        "name": "Army Cadets"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.9326129,
+          42.9121687
+        ]
+      },
+      "id": "node/10141214354"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10151998146",
+        "landuse": "military",
+        "military": "danger_area",
+        "name": "Biathlon Range"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -104.8531965,
+          50.6490526
+        ]
+      },
+      "id": "node/10151998146"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10607792083",
+        "landuse": "military",
+        "military": "danger_area",
+        "name": "edge of cliff"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.9686094,
+          52.9887252
+        ]
+      },
+      "id": "node/10607792083"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10607792084",
+        "landuse": "military",
+        "military": "danger_area"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.9678514,
+          52.9886176
+        ]
+      },
+      "id": "node/10607792084"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10607792085",
+        "landuse": "military",
+        "military": "danger_area"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.9674324,
+          52.9883505
+        ]
+      },
+      "id": "node/10607792085"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10607792086",
+        "landuse": "military",
+        "military": "danger_area"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.9689175,
+          52.9882244
+        ]
+      },
+      "id": "node/10607792086"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10607792087",
+        "landuse": "military",
+        "military": "danger_area"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.9686402,
+          52.987961
+        ]
+      },
+      "id": "node/10607792087"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10647460721",
+        "military": "office",
+        "name": "Armed Forces Recruitment Centre"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.9117773,
+          49.2049643
+        ]
+      },
+      "id": "node/10647460721"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10649677072",
+        "landuse": "military",
+        "military": "danger_area"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.9672863,
+          52.9876299
+        ]
+      },
+      "id": "node/10649677072"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10649677073",
+        "landuse": "military",
+        "military": "danger_area"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.9678764,
+          52.9873909
+        ]
+      },
+      "id": "node/10649677073"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10688619942",
+        "landuse": "military",
+        "military": "danger_area",
+        "name": "steep decline"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -68.209478,
+          51.5807647
+        ]
+      },
+      "id": "node/10688619942"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6326222885",
+        "@relations": [
+          {
+            "role": "label",
+            "rel": "9381846",
+            "reltags": {
+              "aeroway": "aerodrome",
+              "icao": "CYAW",
+              "landuse": "military",
+              "level": "2",
+              "military": "airfield",
+              "name": "CFB Shearwater",
+              "source": "Bing",
+              "type": "multipolygon",
+              "wikipedia": "en:CFB Shearwater"
+            }
+          }
+        ]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -63.504839,
+          44.6403228
+        ]
+      },
+      "id": "node/6326222885"
+    }
+  ]
+}

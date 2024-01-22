@@ -7,4 +7,6 @@ pluginManagement {
 rootProject.name = 'core'
 
 include 'geo-calculator'
-project(':geo-calculator').projectDir = new File(settingsDir, '../geo-calculator')
+include 'geo-tiff'
+project(':geo-calculator').projectDir = new File(settingsDir, '../calculators/geo-calculator')
+project(':geo-tiff').projectDir = new File(settingsDir, '../calculators/geo-tiff')

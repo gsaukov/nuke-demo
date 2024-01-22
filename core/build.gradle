@@ -15,12 +15,15 @@ configurations {
 }
 
 repositories {
-    mavenCentral()
+    mavenCentral().content {
+        excludeModule("javax.media", "jai_core")
+    }
     maven { url 'https://repo.spring.io/milestone' }
 }
 
 dependencies {
     implementation project(':geo-calculator')
+    implementation project(':geo-tiff')
     //ONLY FOR OSM TO GEOJSON CONVERSION VIA resources/scripts/osmtogeojson.js
     implementation 'org.graalvm.js:js:22.3.1'
     implementation 'org.graalvm.js:js-scriptengine:22.3.1'
