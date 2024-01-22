@@ -29,26 +29,26 @@ dependencies {
     implementation 'org.graalvm.js:js-scriptengine:22.3.1'
     //ONLY FOR OSM TO GEOJSON CONVERSION VIA resources/scripts/osmtogeojson.js
 
+    //LOMBOK
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    //LOMBOK
+
+    implementation "com.h2database:h2:1.4.200"
     implementation 'org.apache.commons:commons-collections4:4.1'
     implementation 'org.springframework.boot:spring-boot-starter-batch'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.0.1'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     implementation 'de.grundid.opendatalab:geojson-jackson:1.14'
     implementation 'com.mapbox.mapboxsdk:mapbox-sdk-turf:5.8.0'
 
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-
-    testCompileOnly 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.batch:spring-batch-test'
-
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
-    implementation "com.h2database:h2:1.4.200"
 }
 
 
