@@ -99,4 +99,18 @@ public class TiffApp {
         return s.toString();
     }
 
+
+    private void printMaxes() {
+        StringBuffer s = new StringBuffer();
+        int max = 0;
+        for (int i = 0; i < rasterWidth * rasterHeight; i++) {
+            int el = tiffRaster.getDataBuffer().getElem(i);
+            if (el > 1000) {
+                System.out.println(i + " " +i/rasterWidth + " " + i%rasterWidth + " " + el);
+                max = Math.max(max, el);
+            }
+        }
+        System.out.println(max);
+    }
+
 }

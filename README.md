@@ -41,6 +41,6 @@ mapbox-sdk-turf might be handy, has turf functions and other GeoJSON specific th
     implementation 'com.mapbox.mapboxsdk:mapbox-sdk-turf:5.8.0'
 
 ## Pop maps:
-Data: https://jeodpp.jrc.ec.europa.eu/ftp/jrc-opendata/GHSL/GHS_POP_GLOBE_R2023A/GHS_POP_E2025_GLOBE_R2023A_54009_100/V1-0/
+Data: https://jeodpp.jrc.ec.europa.eu/ftp/jrc-opendata/GHSL/GHS_POP_GLOBE_R2023A/GHS_POP_E2025_GLOBE_R2023A_54009_100/V1-0/  
 Parsing: https://taylor.callsen.me/parsing-geotiff-files-in-java/
 
