@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+<div id="map"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.5.0/turf.min.js"></script>
+<script>
+    const n = 100
+    let points = turf.randomPoint(n, {bbox: [-180, -90, 180, 90]})
+    console.log('[' + new Date().toUTCString() + '] start with ' + n)
+    let res = JSON.stringify(turf.clustersDbscan(points, 100))
+    console.log('[' + new Date().toUTCString() + '] end')
+    console.log(res)
+    let n = 0;
+    console.log("start" + n + " " + Number(new Date()));
+    for (let i = 0; i < 1000000; i++) {
+        n=i;
+    }
+    console.log("end" + n + " " + Number(new Date()));
+
+    // fetch('https://sap.com').then(r => {return r;})
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        var contents = e.target.result;
+        displayContents(contents);
+    };
+
+    const file = new File(["foo"], "foo.txt", {  type: "text/plain",});
+    const e = new Error()
+    console.log(e.stack)
+    if(!e.stack){
+        throw e
+    }
+
+    // new FileSystem();
+    // new FileSystemEntry();
+    // new FileSystemDirectoryReader();
+    // new FileSystemDirecqwetoryReader();
+</script>
+</body>
+</html>
