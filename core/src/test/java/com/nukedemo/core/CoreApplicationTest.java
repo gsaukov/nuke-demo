@@ -66,7 +66,7 @@ class CoreApplicationTest {
 
     @Test
     public void testNominatimUnmarshalling() {
-        FeatureCollection featureCollection = deserializeFileToGeoJson("file:../data/country/canada.geojson");
+        FeatureCollection featureCollection = deserializeFileToGeoJson("file:../data/mil/canada_point.geojson");
         featureCollection.getFeatures().get(0).<Map>getProperty("geocoding").get("osm_id");
     }
 

@@ -42,5 +42,14 @@ mapbox-sdk-turf might be handy, has turf functions and other GeoJSON specific th
 
 ## Pop maps:
 Data: https://jeodpp.jrc.ec.europa.eu/ftp/jrc-opendata/GHSL/GHS_POP_GLOBE_R2023A/GHS_POP_E2025_GLOBE_R2023A_54009_100/V1-0/  
-Parsing: https://taylor.callsen.me/parsing-geotiff-files-in-java/
+Parsing: https://taylor.callsen.me/parsing-geotiff-files-in-java/  
 
+## Queries
+
+[Check available queries!](./queries.md)
+
+# UI Client
+
+[Client](https://nuke-calculator.netlify.app/)
+
+[GitHub Repo](https://github.com/gsaukov/nuke-client)

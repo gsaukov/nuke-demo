@@ -69,7 +69,7 @@ public class GeoDataReader implements ItemReader<GeoDataItem> {
     private String queryDummyFileOverpass(String countryName) {
         String res = "";
         try {
-            res = Files.readString(Paths.get("./res/osm/" + countryName + "_osm.json"));
+            res = Files.readString(Paths.get("./data/res/osm/" + countryName + "_osm.json"));
         } catch (Exception e) {
         }
         return res;

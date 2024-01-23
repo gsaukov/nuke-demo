@@ -18,8 +18,8 @@ import java.util.UUID;
 @StepScope
 public class GeoDataWriter implements ItemWriter<GeoDataItem> {
 
-    private static final String OSM_FOLDER = "./res/osm/";
-    private static final String GEOJSON_FOLDER = "./res/geojson/";
+    private static final String OSM_FOLDER = "./data/res/osm/";
+    private static final String GEOJSON_FOLDER = "./data/res/geojson/";
     private static final String OSM_EXTENSION = "_osm.json";
     private static final String GEOJSON_EXTENSION = ".geojson";
 
