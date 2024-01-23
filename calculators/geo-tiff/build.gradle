@@ -2,9 +2,6 @@ plugins {
     id 'java'
 }
 
-group = 'com.nukedemo'
-version = '0.0.1-SNAPSHOT'
-
 //Project extra dependency configuration setup, because default repositories {...} does not work.
 [rootProject, this].each {
     println "Configuring repositories for project: ${it.name}"
@@ -43,4 +40,8 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+jar {
+    enabled = true
 }

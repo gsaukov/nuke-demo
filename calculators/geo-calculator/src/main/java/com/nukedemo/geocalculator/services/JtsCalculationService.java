@@ -1,7 +1,6 @@
 package com.nukedemo.geocalculator.services;
 
 import org.locationtech.jts.geom.*;
-import org.locationtech.jts.geom.util.GeometryFixer;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
