@@ -2,8 +2,9 @@ plugins {
     id 'java'
 }
 
-//Project extra dependency configuration setup, because default repositories {...} does not work.
-[rootProject, this].each {
+//Project extra dependency configuration setup, due to default repositories {...} does not work.
+//Add projects to array bellow if needed.
+[rootProject, project(':core'), this].each {
     println "Configuring repositories for project: ${it.name}"
     it.repositories {
         mavenCentral().content {

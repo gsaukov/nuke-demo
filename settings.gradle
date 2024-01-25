@@ -1,0 +1,14 @@
+pluginManagement {
+    repositories {
+        maven { url 'https://repo.spring.io/milestone' }
+        gradlePluginPortal()
+    }
+}
+
+rootProject.name = 'nuke-demo'
+
+include 'geo-calculator'
+include 'geo-tiff'
+include 'core'
+project(':geo-calculator').projectDir = new File(settingsDir, './calculators/geo-calculator')
+project(':geo-tiff').projectDir = new File(settingsDir, './calculators/geo-tiff')
