@@ -18,8 +18,8 @@ repositories {
 }
 
 dependencies {
-    implementation project(':geo-calculator')
-    implementation project(':geo-tiff')
+    implementation project(':calculators:geo-calculator')
+    implementation project(':calculators:geo-tiff')
     //ONLY FOR OSM TO GEOJSON CONVERSION VIA resources/scripts/osmtogeojson.js
     implementation 'org.graalvm.js:js:22.3.1'
     implementation 'org.graalvm.js:js-scriptengine:22.3.1'

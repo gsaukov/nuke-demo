@@ -7,8 +7,13 @@ pluginManagement {
 
 rootProject.name = 'nuke-demo'
 
-include 'geo-calculator'
-include 'geo-tiff'
-include 'core'
-project(':geo-calculator').projectDir = new File(settingsDir, './calculators/geo-calculator')
-project(':geo-tiff').projectDir = new File(settingsDir, './calculators/geo-tiff')
+def path = [] as LinkedList
+
+rootDir.traverse(
+        type: groovy.io.FileType.FILES,
+        nameFilter: ~/^build.gradle$/,
+        maxDepth: 3,
+        preDir: { path << it.name },
+        postDir: { path.removeLast() }) {
+    if (path) { include path.join(':') }
+}
