@@ -18,10 +18,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 // https://gis.stackexchange.com/questions/314282/geotiff-mollweide-and-geotools
 // based on: http://www.smartjava.org/content/access-information-geotiff-using-java/
 
-public class TiffApp {
-
-    public static void main( String[] args ) throws Exception {
-    }
+public class TiffPopulationDataContainer {
 
     public static CoordinateReferenceSystem wgs84 = DefaultGeographicCRS.WGS84;
 
@@ -32,8 +29,12 @@ public class TiffApp {
     private final int  rasterWidth;
     private final int  rasterHeight;
 
-    public TiffApp(String fileToProcess) throws Exception {
-        this.tiffFile = new File(fileToProcess);
+    public TiffPopulationDataContainer(String fileToProcess) throws Exception {
+        this(new File(fileToProcess));
+    }
+
+    public TiffPopulationDataContainer(File tiffFile) throws Exception {
+        this.tiffFile = tiffFile;
         this.reader = new GeoTiffReader(tiffFile);
         this.cov = reader.read(null);
         this.tiffRaster = cov.getRenderedImage().getData();
