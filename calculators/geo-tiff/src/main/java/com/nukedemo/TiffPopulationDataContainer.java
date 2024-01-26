@@ -35,7 +35,7 @@ public class TiffPopulationDataContainer {
 
     public TiffPopulationDataContainer(File tiffFile) throws Exception {
         this.tiffFile = tiffFile;
-        this.reader = new GeoTiffReader(tiffFile);
+        this.reader = new GeoTiffReader(this.tiffFile);
         this.cov = reader.read(null);
         this.tiffRaster = cov.getRenderedImage().getData();
         this.rasterWidth = tiffRaster.getWidth();
