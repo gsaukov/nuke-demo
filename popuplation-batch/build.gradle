@@ -5,10 +5,13 @@ plugins {
 }
 
 repositories {
-    mavenCentral()
+    mavenCentral().content {
+        excludeModule("javax.media", "jai_core")
+    }
 }
 
 dependencies {
+    implementation project(':calculators:geo-tiff')
     //LOMBOK
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'

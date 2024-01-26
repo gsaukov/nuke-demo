@@ -4,7 +4,7 @@ plugins {
 
 //Project extra dependency configuration setup, due to default repositories {...} does not work.
 //Add projects to array bellow if needed.
-[rootProject, project(':core'), this].each {
+[rootProject, project(':popuplation-batch'), this].each {
     println "Configuring repositories for project: ${it.name}"
     it.repositories {
         mavenCentral().content {
