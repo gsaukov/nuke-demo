@@ -43,9 +43,9 @@ public class BatchConfig {
         return jobLauncher;
     }
 
-    @Bean("geo-data-processing-job")
+    @Bean("population-processing-job")
     public Job processJob() {
-        return new JobBuilder("geo-data-processing-job", jobRepository)
+        return new JobBuilder("population-processing-job", jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .listener(listener())
                 .flow(partitionStep())
