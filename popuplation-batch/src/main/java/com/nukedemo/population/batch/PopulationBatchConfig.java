@@ -18,7 +18,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
 @EnableBatchProcessing
-public class BatchConfig {
+public class PopulationBatchConfig {
 
     @Autowired
     private JobRepository jobRepository;
