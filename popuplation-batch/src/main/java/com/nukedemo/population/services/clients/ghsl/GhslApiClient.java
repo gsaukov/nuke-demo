@@ -18,7 +18,6 @@ public interface GhslApiClient {
     @RequestMapping(method = GET, value = URL_PATH)
     byte[] downloadZipFile(@PathVariable("row") int row, @PathVariable("column") int column);
 
-
     @RequestMapping(method = HEAD, value = URL_PATH)
     Response checkFileExists(@PathVariable("row") int row, @PathVariable("column") int column);
 
