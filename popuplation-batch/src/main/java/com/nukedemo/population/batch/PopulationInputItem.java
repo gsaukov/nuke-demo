@@ -6,5 +6,9 @@ import java.io.Serializable;
 
 @Data
 public class PopulationInputItem implements Serializable {
-	private String areaCode;
+
+	private final int row;
+
+	private final int column;
+
 }

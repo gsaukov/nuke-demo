@@ -35,6 +35,9 @@ public class PopulationBatchConfig {
     @Autowired
     PopulationDataWriter populationDataWriter;
 
+    @Autowired
+    PopulationDataPartitioner populationDataPartitioner;
+
     @Bean
     public JobLauncher  jobLauncher() throws Exception {
         TaskExecutorJobLauncher jobLauncher = new TaskExecutorJobLauncher();
@@ -56,7 +59,7 @@ public class PopulationBatchConfig {
     @Bean
     public Step partitionStep() {
         return new StepBuilder("data-processing-partitioning", jobRepository)
-                .partitioner("partition-step", new PopulationDataPartitioner())
+                .partitioner("partition-step", populationDataPartitioner)
                 .step(step())
                 .gridSize(4)
                 .taskExecutor(taskExecutor())

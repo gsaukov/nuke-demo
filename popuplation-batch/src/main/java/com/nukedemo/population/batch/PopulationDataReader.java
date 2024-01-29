@@ -30,7 +30,7 @@ public class PopulationDataReader implements ItemReader<PopulationDataItem> {
         if(area == null){
             return null; //Stop batch job
         }
-        return new PopulationDataItem(area.getAreaCode());
+        return new PopulationDataItem("DUMMY");
     }
 
 }
