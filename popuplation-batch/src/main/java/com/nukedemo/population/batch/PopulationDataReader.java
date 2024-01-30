@@ -30,7 +30,9 @@ public class PopulationDataReader implements ItemReader<PopulationDataItem> {
         if(area == null){
             return null; //Stop batch job
         }
-        return new PopulationDataItem("DUMMY");
+        String areaCode = "Row: " + area.getRow() + " Column: " + area.getColumn();
+        log.info(areaCode);
+        return new PopulationDataItem(areaCode);
     }
 
 }

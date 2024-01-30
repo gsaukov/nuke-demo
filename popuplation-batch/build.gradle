@@ -20,6 +20,7 @@ dependencies {
     //LOMBOK
 
     implementation "com.h2database:h2:1.4.200"
+    implementation 'org.apache.commons:commons-collections4:4.1'
     implementation 'org.springframework.boot:spring-boot-starter-batch'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.0.4'
 

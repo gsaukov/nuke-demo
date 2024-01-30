@@ -16,6 +16,7 @@ public class PopulationDataProcessor implements ItemProcessor<PopulationDataItem
 
     @Override
     public PopulationDataItem process(PopulationDataItem item) {
+        item.setPopulationData("DUMMY");
         return item;
     }
 }
