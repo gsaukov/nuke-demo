@@ -27,6 +27,12 @@ public class PopulationBatchConfig {
     private PlatformTransactionManager transactionManager;
 
     @Autowired
+    GhslFileDataReader ghslFileDataReader;
+
+    @Autowired
+    GhslFileDataWriter ghslFileDataWriter;
+
+    @Autowired
     PopulationDataReader populationDataReader;
 
     @Autowired
@@ -51,23 +57,43 @@ public class PopulationBatchConfig {
         return new JobBuilder("population-processing-job", jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .listener(listener())
-                .flow(partitionStep())
+                .flow(downloadingPartition())
+                .next(processingPartition())
                 .end()
                 .build();
     }
 
     @Bean
-    public Step partitionStep() {
-        return new StepBuilder("data-processing-partitioning", jobRepository)
-                .partitioner("partition-step", populationDataPartitioner)
-                .step(step())
+    public Step downloadingPartition() {
+        return new StepBuilder("data-downloading-partition", jobRepository)
+                .partitioner("downloading-partition-step", populationDataPartitioner)
+                .step(processingStep())
                 .gridSize(4)
                 .taskExecutor(taskExecutor())
                 .build();
     }
 
     @Bean
-    public Step step() {
+    public Step downloadingStep() {
+        return new StepBuilder("data-downloading-step", jobRepository)
+                .<PopulationDataItem, PopulationDataItem> chunk(1, transactionManager)
+                .reader(ghslFileDataReader)
+                .writer(ghslFileDataWriter)
+                .build();
+    }
+
+    @Bean
+    public Step processingPartition() {
+        return new StepBuilder("data-processing-partition", jobRepository)
+                .partitioner("processing-partition-step", populationDataPartitioner)
+                .step(processingStep())
+                .gridSize(4)
+                .taskExecutor(taskExecutor())
+                .build();
+    }
+
+    @Bean
+    public Step processingStep() {
         return new StepBuilder("data-processing-step", jobRepository)
                 .<PopulationDataItem, PopulationDataItem> chunk(1, transactionManager)
                 .reader(populationDataReader)
