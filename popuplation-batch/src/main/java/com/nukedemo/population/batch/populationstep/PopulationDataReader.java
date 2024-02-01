@@ -1,4 +1,4 @@
-package com.nukedemo.population.batch;
+package com.nukedemo.population.batch.populationstep;
 
 import com.nukedemo.population.services.clients.ghsl.GhslApiClient;
 import lombok.extern.slf4j.Slf4j;

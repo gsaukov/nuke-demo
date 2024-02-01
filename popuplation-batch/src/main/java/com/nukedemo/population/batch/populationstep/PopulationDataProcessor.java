@@ -1,4 +1,4 @@
-package com.nukedemo.population.batch;
+package com.nukedemo.population.batch.populationstep;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.StepScope;

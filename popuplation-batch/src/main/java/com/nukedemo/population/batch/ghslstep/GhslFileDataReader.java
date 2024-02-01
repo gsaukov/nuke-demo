@@ -1,5 +1,7 @@
-package com.nukedemo.population.batch;
+package com.nukedemo.population.batch.ghslstep;
 
+import com.nukedemo.population.batch.populationstep.PopulationDataItem;
+import com.nukedemo.population.batch.populationstep.PopulationInputItem;
 import com.nukedemo.population.services.clients.ghsl.GhslApiClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.StepScope;

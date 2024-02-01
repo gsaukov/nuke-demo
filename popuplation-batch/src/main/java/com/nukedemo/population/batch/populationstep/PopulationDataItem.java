@@ -1,4 +1,4 @@
-package com.nukedemo.population.batch;
+package com.nukedemo.population.batch.populationstep;
 
 import com.nukedemo.TiffPopulationDataContainer;
 import lombok.Data;

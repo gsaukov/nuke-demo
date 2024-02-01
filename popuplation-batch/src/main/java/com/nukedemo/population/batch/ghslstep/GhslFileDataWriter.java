@@ -1,5 +1,6 @@
-package com.nukedemo.population.batch;
+package com.nukedemo.population.batch.ghslstep;
 
+import com.nukedemo.population.batch.populationstep.PopulationDataItem;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.Chunk;
@@ -14,11 +15,11 @@ import java.nio.file.Paths;
 @Slf4j
 @Service
 @StepScope
-public class PopulationDataWriter implements ItemWriter<PopulationDataItem> {
+public class GhslFileDataWriter implements ItemWriter<PopulationDataItem> {
 
     private static final String POPULATION_FOLDER = "./data/res/population/";
 
-    public PopulationDataWriter() throws IOException {
+    public GhslFileDataWriter() throws IOException {
         Files.createDirectories(Paths.get(POPULATION_FOLDER));
     }
 
