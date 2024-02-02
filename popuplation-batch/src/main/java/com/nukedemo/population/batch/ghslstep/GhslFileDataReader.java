@@ -1,7 +1,5 @@
 package com.nukedemo.population.batch.ghslstep;
 
-import com.nukedemo.population.batch.populationstep.PopulationDataItem;
-import com.nukedemo.population.batch.populationstep.PopulationInputItem;
 import com.nukedemo.population.services.clients.ghsl.GhslApiClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -10,31 +8,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
 @Slf4j
 @Service
 @StepScope
-public class GhslFileDataReader implements ItemReader<PopulationDataItem> {
+public class GhslFileDataReader implements ItemReader<GhslFileDataItem> {
 
     @Autowired
     GhslApiClient ghslApiClient;
-    private LinkedList<PopulationInputItem> areas;
+    private LinkedList<GhslFileInputItem> areas;
 
-    public GhslFileDataReader(@Value("#{stepExecutionContext['area']}") List<PopulationInputItem> areas) {
+    public GhslFileDataReader(@Value("#{stepExecutionContext['area']}") List<GhslFileInputItem> areas) {
         this.areas = new LinkedList<>(areas);
     }
 
     @Override
-    public PopulationDataItem read() {
-        PopulationInputItem area = areas.poll();
+    public GhslFileDataItem read() {
+        GhslFileInputItem area = areas.poll();
         if(area == null){
             return null; //Stop batch job
         }
-        String areaCode = "Row: " + area.getRow() + " Column: " + area.getColumn();
+        String areaCode = "row_" + area.getRow() + "_column_" + area.getColumn();
         log.info(areaCode);
-        return new PopulationDataItem(areaCode);
+        return new GhslFileDataItem(new File(areaCode + ".zip"));
     }
 
 }

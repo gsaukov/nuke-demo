@@ -1,4 +1,6 @@
 package com.nukedemo.population.batch;
+import com.nukedemo.population.batch.ghslstep.GhslFileDataItem;
+import com.nukedemo.population.batch.ghslstep.GhslFileDataPartitioner;
 import com.nukedemo.population.batch.ghslstep.GhslFileDataReader;
 import com.nukedemo.population.batch.ghslstep.GhslFileDataWriter;
 import com.nukedemo.population.batch.populationstep.*;
@@ -36,6 +38,9 @@ public class PopulationBatchConfig {
     GhslFileDataWriter ghslFileDataWriter;
 
     @Autowired
+    GhslFileDataPartitioner ghslFileDataPartitioner;
+
+    @Autowired
     PopulationDataReader populationDataReader;
 
     @Autowired
@@ -69,8 +74,8 @@ public class PopulationBatchConfig {
     @Bean
     public Step downloadingPartition() {
         return new StepBuilder("data-downloading-partition", jobRepository)
-                .partitioner("downloading-partition-step", populationDataPartitioner)
-                .step(processingStep())
+                .partitioner("downloading-partition-step", ghslFileDataPartitioner)
+                .step(downloadingStep())
                 .gridSize(4)
                 .taskExecutor(taskExecutor())
                 .build();
@@ -79,7 +84,7 @@ public class PopulationBatchConfig {
     @Bean
     public Step downloadingStep() {
         return new StepBuilder("data-downloading-step", jobRepository)
-                .<PopulationDataItem, PopulationDataItem> chunk(1, transactionManager)
+                .<GhslFileDataItem, GhslFileDataItem> chunk(1, transactionManager)
                 .reader(ghslFileDataReader)
                 .writer(ghslFileDataWriter)
                 .build();
