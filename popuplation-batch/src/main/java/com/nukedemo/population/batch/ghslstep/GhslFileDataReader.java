@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,9 +30,13 @@ public class GhslFileDataReader implements ItemReader<GhslFileDataItem> {
         if(area == null){
             return null; //Stop batch job
         }
-        String areaCode = "row_" + area.getRow() + "_column_" + area.getColumn();
-        log.info(areaCode);
-        return new GhslFileDataItem(new File(areaCode + ".zip"));
+        log.info("Downloading: row_" + area.getRow() + "_column_" + area.getColumn());
+        byte[] ghslData = ghslApiClientFileDownload(area.getRow(), area.getColumn());
+        return new GhslFileDataItem(area, ghslData);
+    }
+
+    public byte[] ghslApiClientFileDownload(int row, int column) {
+        return ghslApiClient.downloadZipFile(row, column);
     }
 
 }

@@ -7,6 +7,7 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,7 +18,7 @@ import java.nio.file.Paths;
 @StepScope
 public class GhslFileDataWriter implements ItemWriter<GhslFileDataItem> {
 
-    private static final String POPULATION_FOLDER = "./data/res/population/ghsl";
+    private static final String POPULATION_FOLDER = "./data/res/population/ghsl/";
 
     public GhslFileDataWriter() throws IOException {
         Files.createDirectories(Paths.get(POPULATION_FOLDER));
@@ -26,16 +27,17 @@ public class GhslFileDataWriter implements ItemWriter<GhslFileDataItem> {
     @Override
     public void write(Chunk<? extends GhslFileDataItem> chunk) {
         for(GhslFileDataItem item : chunk.getItems()){
-            writeFile(POPULATION_FOLDER, item.getGhslFile());
+            writeFile(item);
         }
     }
 
-    private void writeFile(String folderPath, File file) {
-        try (FileWriter writer = new FileWriter(folderPath);) {
-
-        }
-        catch (Exception e) {
-            log.error("Failed to create file for: " + folderPath + '/' + file.getName(), e);
+    private void writeFile(GhslFileDataItem item) {
+        String path = POPULATION_FOLDER + "R" + item.getInputItem().getRow() + "_C" + item.getInputItem().getColumn() + ".zip";
+        File outputFile = new File(path);
+        try (FileOutputStream fos = new FileOutputStream(outputFile)) {
+            fos.write(item.getGhslData());
+        } catch (Exception e) {
+            log.error("Failed to create file for: " + path, e);
         }
     }
 

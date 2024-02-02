@@ -8,10 +8,8 @@ import java.io.File;
 @Data
 public class GhslFileDataItem {
 
-    File ghslFile;
+    private final GhslFileInputItem inputItem;
 
-    public GhslFileDataItem(File file) {
-        this.ghslFile = file;
-    }
+    private final byte[] ghslData;
 
 }
