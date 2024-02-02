@@ -36,6 +36,7 @@ public class GhslFileDataWriter implements ItemWriter<GhslFileDataItem> {
         File outputFile = new File(path);
         try (FileOutputStream fos = new FileOutputStream(outputFile)) {
             fos.write(item.getGhslData());
+            log.info("Written: " + path);
         } catch (Exception e) {
             log.error("Failed to create file for: " + path, e);
         }
