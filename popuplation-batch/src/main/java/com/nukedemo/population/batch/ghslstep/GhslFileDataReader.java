@@ -30,13 +30,18 @@ public class GhslFileDataReader implements ItemReader<GhslFileDataItem> {
         if(area == null){
             return null; //Stop batch job
         }
-        log.info("Downloading: row_" + area.getRow() + "_column_" + area.getColumn());
         byte[] ghslData = ghslApiClientFileDownload(area.getRow(), area.getColumn());
+        log.info("Downloaded: R" + area.getRow() + "_C" + area.getColumn());
         return new GhslFileDataItem(area, ghslData);
     }
 
     public byte[] ghslApiClientFileDownload(int row, int column) {
-        return ghslApiClient.downloadZipFile(row, column);
+        try {
+            return ghslApiClient.downloadZipFile(row, column);
+        } catch (Exception e) {
+            log.error("Error downloading: R" + row + "_C" + column);
+            return new byte [0];
+        }
     }
 
 }
