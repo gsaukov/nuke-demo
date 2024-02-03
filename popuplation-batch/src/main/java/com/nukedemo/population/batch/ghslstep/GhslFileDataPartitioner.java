@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,9 @@ import java.util.Map;
 @StepScope
 @Service
 public class GhslFileDataPartitioner implements Partitioner {
+
+    @Value("${populationBatch.ghsl.overwriteFiles}")
+    private boolean overwriteFiles;
 
     @Value("${populationBatch.ghsl.maxRow}")
     private int maxRow;
@@ -40,7 +44,7 @@ public class GhslFileDataPartitioner implements Partitioner {
         List<GhslFileInputItem> items = new ArrayList<>();
         for (int row = 1; row <= maxRow; row++) {
             for (int column = 1; column <= maxColumn; column++) {
-                if (checkFileExists(row, column)) {
+                if (checkFileExists(row, column) && shouldDownload(row, column)) {
                     items.add(new GhslFileInputItem(row, column));
                 }
             }
@@ -62,8 +66,22 @@ public class GhslFileDataPartitioner implements Partitioner {
     }
 
     private boolean checkFileExists(int row, int column) {
-        Response fileExists = ghslApiClient.checkFileExists(row, column);
-        return fileExists.status() == 200;
+        try {
+            Response fileExists = ghslApiClient.checkFileExists(row, column);
+            return fileExists.status() == 200;
+        } catch (Exception e) {
+            log.error("Error checking: R" + row + "_C" + column);
+            return false;
+        }
+
+    }
+
+    private boolean shouldDownload(int row, int column) {
+        if(overwriteFiles) {
+            return overwriteFiles;
+        } else {
+            return !(new File(GhslFileDataWriter.POPULATION_FOLDER,  "R" + row+ "_C" + column + ".zip").exists());
+        }
     }
 
 }
