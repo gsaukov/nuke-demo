@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 @StepScope
 public class GhslFileDataWriter implements ItemWriter<GhslFileDataItem> {
 
-    private static final String POPULATION_FOLDER = "./data/res/population/ghsl/";
+    public static final String POPULATION_FOLDER = "./data/res/population/ghsl/";
 
     public GhslFileDataWriter() throws IOException {
         Files.createDirectories(Paths.get(POPULATION_FOLDER));
@@ -26,7 +26,9 @@ public class GhslFileDataWriter implements ItemWriter<GhslFileDataItem> {
     @Override
     public void write(Chunk<? extends GhslFileDataItem> chunk) {
         for(GhslFileDataItem item : chunk.getItems()){
-            writeFile(item);
+            if(item.getGhslData().length > 0) { //Error download fix manually
+                writeFile(item);
+            }
         }
     }
 
@@ -37,7 +39,7 @@ public class GhslFileDataWriter implements ItemWriter<GhslFileDataItem> {
             fos.write(item.getGhslData());
             log.info("Written: " + path);
         } catch (Exception e) {
-            log.error("Failed to create file for: " + path, e);
+            log.error("Failed to write: " + path, e);
         }
     }
 
