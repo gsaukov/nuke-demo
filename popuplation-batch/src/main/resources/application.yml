@@ -20,5 +20,6 @@ spring:
 populationBatch:
   h2Enabled: true
   ghsl:
+    overwriteFiles: false
     maxRow: 18
     maxColumn: 36
