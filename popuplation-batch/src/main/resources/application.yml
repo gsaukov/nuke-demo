@@ -20,6 +20,12 @@ spring:
 populationBatch:
   h2Enabled: true
   ghsl:
+    # possible resolutions are:
+    # 4326_30ss  - WGS84 30arcsec
+    # 4326_3ss   - WGS84 3arcsec
+    # 54009_100  - Mollweide 100m
+    # 54009_1000 - Mollweide 1000m
+    resolution: 4326_30ss
     overwriteFiles: false
     maxRow: 18
     maxColumn: 36
