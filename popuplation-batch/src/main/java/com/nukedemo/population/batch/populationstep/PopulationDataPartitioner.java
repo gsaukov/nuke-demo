@@ -21,6 +21,9 @@ import java.util.Map;
 @Service
 public class PopulationDataPartitioner implements Partitioner {
 
+    @Value("${populationBatch.ghsl.resolution}")
+    private String resolution;
+
     @Value("${populationBatch.ghsl.maxRow}")
     private int maxRow;
 
@@ -62,7 +65,7 @@ public class PopulationDataPartitioner implements Partitioner {
     }
 
     private boolean checkFileExists(int row, int column) {
-        Response fileExists = ghslApiClient.checkFileExists(row, column);
+        Response fileExists = ghslApiClient.checkFileExists(resolution, row, column);
         return fileExists.status() == 200;
     }
 

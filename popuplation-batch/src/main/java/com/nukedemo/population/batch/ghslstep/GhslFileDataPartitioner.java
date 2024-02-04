@@ -25,6 +25,9 @@ public class GhslFileDataPartitioner implements Partitioner {
     @Value("${populationBatch.ghsl.overwriteFiles}")
     private boolean overwriteFiles;
 
+    @Value("${populationBatch.ghsl.resolution}")
+    private String resolution;
+
     @Value("${populationBatch.ghsl.maxRow}")
     private int maxRow;
 
@@ -45,7 +48,7 @@ public class GhslFileDataPartitioner implements Partitioner {
         for (int row = 1; row <= maxRow; row++) {
             for (int column = 1; column <= maxColumn; column++) {
                 if (checkFileExists(row, column) && shouldDownload(row, column)) {
-                    items.add(new GhslFileInputItem(row, column));
+                    items.add(new GhslFileInputItem(resolution, row, column));
                 }
             }
         }
@@ -67,7 +70,7 @@ public class GhslFileDataPartitioner implements Partitioner {
 
     private boolean checkFileExists(int row, int column) {
         try {
-            Response fileExists = ghslApiClient.checkFileExists(row, column);
+            Response fileExists = ghslApiClient.checkFileExists(resolution, row, column);
             return fileExists.status() == 200;
         } catch (Exception e) {
             log.error("Error checking: R" + row + "_C" + column);
