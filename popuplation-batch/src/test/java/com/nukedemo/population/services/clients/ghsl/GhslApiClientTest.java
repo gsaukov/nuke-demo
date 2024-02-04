@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -26,9 +27,11 @@ class GhslApiClientTest {
     @Autowired
     GhslApiClient ghslApiClient;
 
+    private final String resolution = "4326_30ss";
+
     @Test
     public void testGhslApiClientFileDownload() throws IOException {
-        byte[] res = ghslApiClient.downloadZipFile(2, 24);
+        byte[] res = ghslApiClient.downloadZipFile(resolution, 2, 24);
         File outputFile = new File("my.zip");
         try (FileOutputStream fos = new FileOutputStream(outputFile)) {
             fos.write(res);
@@ -38,14 +41,14 @@ class GhslApiClientTest {
 
     @Test
     public void testGhslApiClientFileDoNotExistsCheck() {
-        Response fileExists = ghslApiClient.checkFileExists(6, 7);
-        assertEquals(fileExists.status(), 404);
+        Response fileExists = ghslApiClient.checkFileExists(resolution, 6, 5);
+        assertEquals(404, fileExists.status());
     }
 
     @Test
     public void testGhslApiClientFileExistsCheck() {
-        Response fileExists = ghslApiClient.checkFileExists(2, 24);
-        assertEquals(fileExists.status(), 200);
+        Response fileExists = ghslApiClient.checkFileExists(resolution, 2, 24);
+        assertEquals(200, fileExists.status());
     }
 
 }
