@@ -24,14 +24,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ContextConfiguration(classes = {PopulationBatchApplication.class})
 class GhslApiClientTest {
 
+    private static final String WSG84_RESOLUTION = "4326_30ss";
+    private static final String MOLLWIDE_RESOLUTION = "54009_1000";
+
     @Autowired
     GhslApiClient ghslApiClient;
 
-    private final String resolution = "4326_30ss";
-
     @Test
     public void testGhslApiClientFileDownload() throws IOException {
-        byte[] res = ghslApiClient.downloadZipFile(resolution, 2, 24);
+        byte[] res = ghslApiClient.downloadZipFile(WSG84_RESOLUTION, 2, 24);
         File outputFile = new File("my.zip");
         try (FileOutputStream fos = new FileOutputStream(outputFile)) {
             fos.write(res);
@@ -40,14 +41,26 @@ class GhslApiClientTest {
     }
 
     @Test
-    public void testGhslApiClientFileDoNotExistsCheck() {
-        Response fileExists = ghslApiClient.checkFileExists(resolution, 6, 5);
+    public void testGhslApiClientWSG84FileDoNotExistsCheck() {
+        Response fileExists = ghslApiClient.checkFileExists(WSG84_RESOLUTION, 6, 5);
         assertEquals(404, fileExists.status());
     }
 
     @Test
-    public void testGhslApiClientFileExistsCheck() {
-        Response fileExists = ghslApiClient.checkFileExists(resolution, 2, 24);
+    public void testGhslApiClientWSG84FileExistsCheck() {
+        Response fileExists = ghslApiClient.checkFileExists(WSG84_RESOLUTION, 2, 24);
+        assertEquals(200, fileExists.status());
+    }
+
+    @Test
+    public void testGhslApiClientMollwideFileDoNotExistsCheck() {
+        Response fileExists = ghslApiClient.checkFileExists(MOLLWIDE_RESOLUTION, 6, 7);
+        assertEquals(404, fileExists.status());
+    }
+
+    @Test
+    public void testGhslApiClientMollwideFileExistsCheck() {
+        Response fileExists = ghslApiClient.checkFileExists(MOLLWIDE_RESOLUTION, 2, 24);
         assertEquals(200, fileExists.status());
     }
 
