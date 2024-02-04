@@ -16,6 +16,9 @@ import java.util.List;
 @StepScope
 public class GhslFileDataReader implements ItemReader<GhslFileDataItem> {
 
+    @Value("${populationBatch.ghsl.resolution}")
+    private String resolution;
+
     @Autowired
     GhslApiClient ghslApiClient;
     private LinkedList<GhslFileInputItem> areas;
@@ -37,7 +40,7 @@ public class GhslFileDataReader implements ItemReader<GhslFileDataItem> {
 
     public byte[] ghslApiClientFileDownload(int row, int column) {
         try {
-            return ghslApiClient.downloadZipFile(row, column);
+            return ghslApiClient.downloadZipFile(resolution, row, column);
         } catch (Exception e) {
             log.error("Error downloading: R" + row + "_C" + column);
             return new byte [0];

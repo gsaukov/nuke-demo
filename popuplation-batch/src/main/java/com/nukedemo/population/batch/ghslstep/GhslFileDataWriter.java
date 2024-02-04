@@ -33,7 +33,8 @@ public class GhslFileDataWriter implements ItemWriter<GhslFileDataItem> {
     }
 
     private void writeFile(GhslFileDataItem item) {
-        String path = POPULATION_FOLDER + "R" + item.getInputItem().getRow() + "_C" + item.getInputItem().getColumn() + ".zip";
+        GhslFileInputItem inputItem = item.getInputItem();
+        String path = POPULATION_FOLDER + inputItem.getResolution() + "/R" + inputItem.getRow() + "_C" + inputItem.getColumn() + ".zip";
         File outputFile = new File(path);
         try (FileOutputStream fos = new FileOutputStream(outputFile)) {
             fos.write(item.getGhslData());
