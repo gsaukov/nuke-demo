@@ -2,8 +2,10 @@ package com.nukedemo;
 
 
 import java.awt.image.Raster;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 
+import org.apache.commons.io.FileUtils;
 import org.geotools.coverage.grid.GridCoordinates2D;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
@@ -21,8 +23,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 public class TiffPopulationDataContainer {
 
     public static CoordinateReferenceSystem wgs84 = DefaultGeographicCRS.WGS84;
-
-    private final File tiffFile;
+    private final byte[] source;
     private final GeoTiffReader reader;
     private final GridCoverage2D cov;
     private final Raster tiffRaster;
@@ -33,9 +34,13 @@ public class TiffPopulationDataContainer {
         this(new File(fileToProcess));
     }
 
-    public TiffPopulationDataContainer(File tiffFile) throws Exception {
-        this.tiffFile = tiffFile;
-        this.reader = new GeoTiffReader(this.tiffFile);
+    public TiffPopulationDataContainer(File fileToProcess) throws Exception {
+        this(FileUtils.readFileToByteArray(fileToProcess) );
+    }
+
+    public TiffPopulationDataContainer(byte[] bytes) throws Exception {
+        this.source = bytes;
+        this.reader = new GeoTiffReader(new ByteArrayInputStream(this.source));
         this.cov = reader.read(null);
         this.tiffRaster = cov.getRenderedImage().getData();
         this.rasterWidth = tiffRaster.getWidth();
