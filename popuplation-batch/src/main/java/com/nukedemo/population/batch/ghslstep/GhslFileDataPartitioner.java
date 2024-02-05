@@ -28,6 +28,9 @@ public class GhslFileDataPartitioner implements Partitioner {
     @Value("${populationBatch.ghsl.resolution}")
     private String resolution;
 
+    @Value("${populationBatch.ghsl.resultFolder}")
+    String resultFolder;
+
     @Value("${populationBatch.ghsl.maxRow}")
     private int maxRow;
 
@@ -83,7 +86,7 @@ public class GhslFileDataPartitioner implements Partitioner {
         if(overwriteFiles) {
             return overwriteFiles;
         } else {
-            return !(new File(GhslFileDataWriter.POPULATION_FOLDER,  "R" + row+ "_C" + column + ".zip").exists());
+            return !(new File(resultFolder,  "R" + row+ "_C" + column + ".zip").exists());
         }
     }
 

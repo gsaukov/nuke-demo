@@ -18,10 +18,14 @@ import java.nio.file.Paths;
 @StepScope
 public class GhslFileDataWriter implements ItemWriter<GhslFileDataItem> {
 
-    public static final String POPULATION_FOLDER = "./data/res/population/ghsl/";
+    @Value("${populationBatch.ghsl.resolution}")
+    String resolution;
 
-    public GhslFileDataWriter(@Value("${populationBatch.ghsl.resolution}") String resolution) throws IOException {
-        Files.createDirectories(Paths.get(POPULATION_FOLDER + resolution));
+    @Value("${populationBatch.ghsl.resultFolder}")
+    String resultFolder;
+
+    public GhslFileDataWriter() throws IOException {
+        Files.createDirectories(Paths.get(resultFolder));
     }
 
     @Override
@@ -35,7 +39,7 @@ public class GhslFileDataWriter implements ItemWriter<GhslFileDataItem> {
 
     private void writeFile(GhslFileDataItem item) {
         GhslFileInputItem inputItem = item.getInputItem();
-        String path = POPULATION_FOLDER + inputItem.getResolution() + "/R" + inputItem.getRow() + "_C" + inputItem.getColumn() + ".zip";
+        String path = resultFolder + "R" + inputItem.getRow() + "_C" + inputItem.getColumn() + ".zip";
         File outputFile = new File(path);
         try (FileOutputStream fos = new FileOutputStream(outputFile)) {
             fos.write(item.getGhslData());
