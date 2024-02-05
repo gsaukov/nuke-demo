@@ -111,13 +111,11 @@ public class PopulationBatchConfig {
     }
 
     @Bean
-    public TaskExecutor taskExecutor() {
-        return new SimpleAsyncTaskExecutor("spring_batch");
-    }
-
-    @Bean
     public JobExecutionListener listener() {
         return new JobCompletionListener();
     }
 
+    public TaskExecutor taskExecutor() {
+        return new SimpleAsyncTaskExecutor("spring_batch");
+    }
 }

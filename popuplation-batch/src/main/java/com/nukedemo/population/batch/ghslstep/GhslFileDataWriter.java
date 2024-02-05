@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -19,8 +20,8 @@ public class GhslFileDataWriter implements ItemWriter<GhslFileDataItem> {
 
     public static final String POPULATION_FOLDER = "./data/res/population/ghsl/";
 
-    public GhslFileDataWriter() throws IOException {
-        Files.createDirectories(Paths.get(POPULATION_FOLDER));
+    public GhslFileDataWriter(@Value("${populationBatch.ghsl.resolution}") String resolution) throws IOException {
+        Files.createDirectories(Paths.get(POPULATION_FOLDER + resolution));
     }
 
     @Override
