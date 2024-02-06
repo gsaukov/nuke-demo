@@ -1,13 +1,14 @@
 package com.nukedemo.population.batch.populationstep;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -16,26 +17,35 @@ import java.nio.file.Paths;
 @StepScope
 public class PopulationDataWriter implements ItemWriter<PopulationDataItem> {
 
-    private static final String POPULATION_FOLDER = "./data/res/population/";
+
+    @Value("${populationBatch.ghsl.resultFolder}")
+    String resultFolder;
 
     public PopulationDataWriter() throws IOException {
-        Files.createDirectories(Paths.get(POPULATION_FOLDER));
+        Files.createDirectories(Paths.get(resultFolder + "/temp"));
     }
 
     @Override
     public void write(Chunk<? extends PopulationDataItem> chunk) {
         for(PopulationDataItem item : chunk.getItems()){
-            writeToFile(POPULATION_FOLDER + item.getAreaCode(), item.getPopulationData());
+            try {
+                writeToTifFile(item);
+                writeToPopulationDataFile(item);
+            } catch (IOException e) {
+                throw new RuntimeException("Writing item failed: " + item.getDataName(), e);
+            }
         }
     }
 
-    private void writeToFile(String fileName, String data) {
-        try (FileWriter writer = new FileWriter(fileName);) {
-            writer.write(data);
-        }
-        catch (Exception e) {
-            log.error("Failed to create file for: " + fileName, e);
-        }
+    private void writeToTifFile(PopulationDataItem item) throws IOException {
+        File outputFolder = new File(resultFolder + "/temp/");
+        FileUtils.writeByteArrayToFile(new File(outputFolder, item.getDataName()), item.getTifSource());
+    }
+
+    private void writeToPopulationDataFile(PopulationDataItem item) throws IOException {
+        File outputFolder = new File(resultFolder + "/temp/");
+        String itemName = item.getDataName().replace(".tif", ".json");
+        FileUtils.writeStringToFile(new File(outputFolder, itemName), item.getPopulationData());
     }
 
 }
