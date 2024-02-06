@@ -6,14 +6,12 @@ import lombok.Data;
 @Data
 public class PopulationDataItem {
 
-    private String areaCode;
+    private final String dataName;
+
+    private final byte[] tifSource;
 
     private TiffPopulationDataContainer populationImage;
 
     private String populationData;
-
-    public PopulationDataItem(String areaCode) {
-        this.areaCode = areaCode;
-    }
 
 }

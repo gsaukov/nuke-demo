@@ -1,16 +1,18 @@
 package com.nukedemo.population.batch.populationstep;
 
-import com.nukedemo.population.services.clients.ghsl.GhslApiClient;
-import feign.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.ListUtils;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.partition.support.Partitioner;
 import org.springframework.batch.item.ExecutionContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,34 +23,39 @@ import java.util.Map;
 @Service
 public class PopulationDataPartitioner implements Partitioner {
 
-    @Value("${populationBatch.ghsl.resolution}")
-    private String resolution;
-
-    @Value("${populationBatch.ghsl.maxRow}")
-    private int maxRow;
-
-    @Value("${populationBatch.ghsl.maxColumn}")
-    private int maxColumn;
-
-    @Autowired
-    GhslApiClient ghslApiClient;
+    @Value("${populationBatch.ghsl.resultFolder}")
+    String resultFolder;
 
     @Override
-    public Map<String, ExecutionContext> partition(int gridSize) {
+    public Map<String, ExecutionContext> partition(int gridSize)  {
         List<PopulationInputItem> items = getItems();
         return executions(gridSize, items);
     }
 
-    private List<PopulationInputItem> getItems() {
-        List<PopulationInputItem> items = new ArrayList<>();
-        for (int row = 1; row <= maxRow; row++) {
-            for (int column = 1; column <= maxColumn; column++) {
-                if (checkFileExists(row, column)) {
-                    items.add(new PopulationInputItem(row, column));
-                }
-            }
+    private List<PopulationInputItem> getItems(){
+        List<PopulationInputItem> items = null;
+        try {
+            items = getInputItems();
+        } catch (IOException e) {
+            throw new RuntimeException("Partitioning failed", e);
         }
         return items;
+    }
+
+    private List<PopulationInputItem> getInputItems() throws IOException {
+        String folderPath = resultFolder;
+        String filePattern = folderPath + "/*.zip";
+
+        ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        Resource[] resources = resolver.getResources("file:" + filePattern);
+        List<PopulationInputItem> populationInputItems = new ArrayList<>();
+        for (Resource resource : resources) {
+            File file = resource.getFile();
+            if (file.exists() && file.isFile()) {
+                populationInputItems.add(new PopulationInputItem(file));
+            }
+        }
+        return populationInputItems;
     }
 
     private Map<String, ExecutionContext> executions(int gridSize, List<PopulationInputItem> items) {
@@ -64,9 +71,5 @@ public class PopulationDataPartitioner implements Partitioner {
         return result;
     }
 
-    private boolean checkFileExists(int row, int column) {
-        Response fileExists = ghslApiClient.checkFileExists(resolution, row, column);
-        return fileExists.status() == 200;
-    }
 
 }
