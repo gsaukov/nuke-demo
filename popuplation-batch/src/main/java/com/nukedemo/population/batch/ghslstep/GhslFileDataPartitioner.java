@@ -22,6 +22,9 @@ import java.util.Map;
 @Service
 public class GhslFileDataPartitioner implements Partitioner {
 
+    @Value("${populationBatch.ghsl.skipDownload}")
+    private boolean skipDownload;
+
     @Value("${populationBatch.ghsl.overwriteFiles}")
     private boolean overwriteFiles;
 
@@ -42,8 +45,11 @@ public class GhslFileDataPartitioner implements Partitioner {
 
     @Override
     public Map<String, ExecutionContext> partition(int gridSize) {
-        List<GhslFileInputItem> items = getItems();
-        return executions(gridSize, items);
+        if(skipDownload) {
+            return executions(1, new ArrayList<>());
+        } else {
+            return executions(gridSize, getItems());
+        }
     }
 
     private List<GhslFileInputItem> getItems() {

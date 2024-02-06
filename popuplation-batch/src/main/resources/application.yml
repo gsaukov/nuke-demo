@@ -25,7 +25,9 @@ populationBatch:
     # 4326_3ss   - WGS84 3arcsec
     # 54009_100  - Mollweide 100m
     # 54009_1000 - Mollweide 1000m
+    skipDownload: true
     resolution: 4326_30ss
     overwriteFiles: false
     maxRow: 18
     maxColumn: 36
+    resultFolder: "./data/res/population/ghsl/${populationBatch.ghsl.resolution}/"
