@@ -1,6 +1,6 @@
 package com.nukedemo.core;
 
-import com.nukedemo.core.services.utils.NdJsonUtils;
+import com.nukedemo.shared.utils.NdJsonUtils;
 import com.nukedemo.geocalculator.services.TurfGeospatialService;
 import lombok.extern.slf4j.Slf4j;
 import org.geojson.FeatureCollection;
@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
 

@@ -16,6 +16,7 @@ repositories {
 }
 
 dependencies {
+    implementation project(':calculators:shared')
     implementation project(':calculators:geo-calculator')
     //ONLY FOR OSM TO GEOJSON CONVERSION VIA resources/scripts/osmtogeojson.js
     implementation 'org.graalvm.js:js:22.3.1'

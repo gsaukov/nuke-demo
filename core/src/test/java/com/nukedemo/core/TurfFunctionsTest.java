@@ -1,6 +1,6 @@
 package com.nukedemo.core;
 
-import com.nukedemo.core.services.utils.NdJsonUtils;
+import com.nukedemo.shared.utils.NdJsonUtils;
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 import lombok.extern.slf4j.Slf4j;
 import org.geojson.FeatureCollection;
