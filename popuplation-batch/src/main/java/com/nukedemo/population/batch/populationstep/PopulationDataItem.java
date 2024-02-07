@@ -12,7 +12,20 @@ public class PopulationDataItem {
 
     private TiffPopulationDataContainer populationImage;
 
-    private String populationDataInt;
+    private PopulationDataInt populationDataInt;
 
-    private String populationDataDouble;
+    private PopulationDataDouble populationDataDouble;
+
+    @Data
+    public static class PopulationDataInt {
+        private final int[] res;
+    }
+
+    @Data
+    public static class PopulationDataDouble {
+        private final double[] res;
+    }
+
 }
+
+

@@ -12,6 +12,7 @@ repositories {
 
 dependencies {
     implementation project(':calculators:geo-tiff')
+    implementation project(':calculators:shared')
     //LOMBOK
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'

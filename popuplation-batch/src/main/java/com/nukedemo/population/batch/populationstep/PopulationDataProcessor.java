@@ -17,8 +17,8 @@ public class PopulationDataProcessor implements ItemProcessor<PopulationDataItem
     @Override
     public PopulationDataItem process(PopulationDataItem item) throws Exception {
         TiffPopulationDataContainer container = new TiffPopulationDataContainer(item.getTifSource());
-        item.setPopulationDataInt("{\"res\":[\n" + container.toStringIntArray() + "\n}");
-        item.setPopulationDataDouble("{\"res\":[\n" + container.toStringDoubleArray() + "\n}");
+        item.setPopulationDataInt(new PopulationDataItem.PopulationDataInt(container.toIntArray()));
+        item.setPopulationDataDouble(new PopulationDataItem.PopulationDataDouble(container.toDoubleArray()));
         return item;
     }
 }

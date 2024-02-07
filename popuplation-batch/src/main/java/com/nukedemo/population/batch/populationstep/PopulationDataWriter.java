@@ -1,5 +1,6 @@
 package com.nukedemo.population.batch.populationstep;
 
+import com.nukedemo.shared.utils.NdJsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -33,7 +34,7 @@ public class PopulationDataWriter implements ItemWriter<PopulationDataItem> {
                 writeToTifFile(item);
                 writeToPopulationDataIntFile(item);
                 writeToPopulationDataDoubleFile(item);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new RuntimeException("Writing item failed: " + item.getDataName(), e);
             }
         }
@@ -44,14 +45,14 @@ public class PopulationDataWriter implements ItemWriter<PopulationDataItem> {
         FileUtils.writeByteArrayToFile(new File(outputFolder, item.getDataName()), item.getTifSource());
     }
 
-    private void writeToPopulationDataIntFile(PopulationDataItem item) throws IOException {
+    private void writeToPopulationDataIntFile(PopulationDataItem item) throws Exception {
         String itemName = item.getDataName().replace(".tif", "_int.json");
-        FileUtils.writeStringToFile(new File(outputFolder, itemName), item.getPopulationDataInt());
+        FileUtils.writeStringToFile(new File(outputFolder, itemName), NdJsonUtils.toJson(item.getPopulationDataInt()));
     }
 
-    private void writeToPopulationDataDoubleFile(PopulationDataItem item) throws IOException {
+    private void writeToPopulationDataDoubleFile(PopulationDataItem item) throws Exception {
         String itemName = item.getDataName().replace(".tif", "_double.json");
-        FileUtils.writeStringToFile(new File(outputFolder, itemName), item.getPopulationDataInt());
+        FileUtils.writeStringToFile(new File(outputFolder, itemName), NdJsonUtils.toJson(item.getPopulationDataDouble()));
     }
 
 }

@@ -73,7 +73,7 @@ public class TiffPopulationDataContainer {
         return cov.getGridGeometry().gridToWorld(coord);
     }
 
-    public String toStringIntArray() {
+    public String toStringIntArrayPretty() {
         StringBuffer s = new StringBuffer();
         for (int i = 0; i < rasterWidth * rasterHeight; i++) {
             s.append(tiffRaster.getDataBuffer().getElem(i) + ",");
@@ -84,7 +84,7 @@ public class TiffPopulationDataContainer {
         return s.toString();
     }
 
-    public String toStringDoubleArray() {
+    public String toStringDoubleArrayPretty() {
         StringBuffer s = new StringBuffer();
         for (int i = 0; i < rasterWidth * rasterHeight; i++) {
             s.append(tiffRaster.getDataBuffer().getElemDouble(i) + ",");
@@ -93,6 +93,14 @@ public class TiffPopulationDataContainer {
             }
         }
         return s.toString();
+    }
+
+    public int[] toIntArray() {
+        return tiffRaster.getPixels(0, 0, rasterWidth, rasterHeight, new int[rasterHeight * rasterWidth]);
+    }
+
+    public double[] toDoubleArray() {
+        return tiffRaster.getPixels(0, 0, rasterWidth, rasterHeight, new double[rasterHeight * rasterWidth]);
     }
 
 
