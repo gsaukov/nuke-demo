@@ -9,6 +9,7 @@
 * [GeoJSON validation](https://geojsonlint.com/)
 * [GeoJSON visualization](https://geojson.io/)
 * [Population density matrixes data](https://ghsl.jrc.ec.europa.eu/download.php)
+* [GeoTiff JS Lib](https://geotiffjs.github.io/)
 
 
 ## Samples
