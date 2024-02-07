@@ -17,12 +17,13 @@ import java.nio.file.Paths;
 @StepScope
 public class PopulationDataWriter implements ItemWriter<PopulationDataItem> {
 
+    private final String resultFolder;
+    private final File outputFolder;
 
-    @Value("${populationBatch.ghsl.resultFolder}")
-    String resultFolder;
-
-    public PopulationDataWriter() throws IOException {
+    public PopulationDataWriter(@Value("${populationBatch.ghsl.resultFolder}") String resultFolder) throws IOException {
         Files.createDirectories(Paths.get(resultFolder + "/temp"));
+        this.resultFolder = resultFolder;
+        this.outputFolder = new File(resultFolder + "/temp/");
     }
 
     @Override
@@ -30,7 +31,8 @@ public class PopulationDataWriter implements ItemWriter<PopulationDataItem> {
         for(PopulationDataItem item : chunk.getItems()){
             try {
                 writeToTifFile(item);
-                writeToPopulationDataFile(item);
+                writeToPopulationDataIntFile(item);
+                writeToPopulationDataDoubleFile(item);
             } catch (IOException e) {
                 throw new RuntimeException("Writing item failed: " + item.getDataName(), e);
             }
@@ -42,10 +44,14 @@ public class PopulationDataWriter implements ItemWriter<PopulationDataItem> {
         FileUtils.writeByteArrayToFile(new File(outputFolder, item.getDataName()), item.getTifSource());
     }
 
-    private void writeToPopulationDataFile(PopulationDataItem item) throws IOException {
-        File outputFolder = new File(resultFolder + "/temp/");
-        String itemName = item.getDataName().replace(".tif", ".json");
-        FileUtils.writeStringToFile(new File(outputFolder, itemName), item.getPopulationData());
+    private void writeToPopulationDataIntFile(PopulationDataItem item) throws IOException {
+        String itemName = item.getDataName().replace(".tif", "_int.json");
+        FileUtils.writeStringToFile(new File(outputFolder, itemName), item.getPopulationDataInt());
+    }
+
+    private void writeToPopulationDataDoubleFile(PopulationDataItem item) throws IOException {
+        String itemName = item.getDataName().replace(".tif", "_double.json");
+        FileUtils.writeStringToFile(new File(outputFolder, itemName), item.getPopulationDataInt());
     }
 
 }

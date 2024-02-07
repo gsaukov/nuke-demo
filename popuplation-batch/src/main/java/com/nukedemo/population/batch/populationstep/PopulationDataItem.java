@@ -12,6 +12,7 @@ public class PopulationDataItem {
 
     private TiffPopulationDataContainer populationImage;
 
-    private String populationData;
+    private String populationDataInt;
 
+    private String populationDataDouble;
 }
