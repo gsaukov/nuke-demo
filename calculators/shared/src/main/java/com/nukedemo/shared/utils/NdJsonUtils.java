@@ -1,8 +1,9 @@
-package com.nukedemo.core.services.utils;
+package com.nukedemo.shared.utils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nukedemo.core.services.exceptions.NdException;
+import com.nukedemo.shared.exception.NdException;
+
 
 import java.io.IOException;
 
