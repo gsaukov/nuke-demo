@@ -26,6 +26,17 @@ public class PopulationDataItem {
         private final double[] res;
     }
 
+    @Data
+    public static class PopulationMetaData {
+        private final int width;
+        private final int height;
+        private final double topY;
+        private final double topX;
+        private final double bottomY;
+        private final double bottomX;
+        private final double grain;
+    }
+
 }
 
 
