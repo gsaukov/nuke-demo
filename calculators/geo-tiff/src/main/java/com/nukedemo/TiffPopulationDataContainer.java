@@ -88,14 +88,19 @@ public class TiffPopulationDataContainer {
 
     public Map<String, Object> getMetaData() {
         Map<String, Object> meta = new HashMap<>();
+        //GHS_POP_E2030_GLOBE_R2023A_4326_30ss_V1_0_R4_C20
+        //top left 59.0495, 10.0348
+        //bottom left 49.0981, 10.0123
+        //top right 58.998, 19.921
+        //bottom right 49.215, 19.921
         //[lon,lat]
-        double[] upRightCorner = cov.getGridGeometry().getEnvelope().getUpperCorner().getCoordinate();
+        double[] topRightCorner = cov.getGridGeometry().getEnvelope().getUpperCorner().getCoordinate();
         double[] bottomLeftCorner = cov.getGridGeometry().getEnvelope().getLowerCorner().getCoordinate();
-        double[] upLeftCorner =  new double[]{bottomLeftCorner[0], upRightCorner[1]};
-        double[] bottomRightCorner = new double[]{upRightCorner[0], bottomLeftCorner[1]};
-        meta.put("upRightCorner", upRightCorner);
+        double[] topLeftCorner =  new double[]{bottomLeftCorner[0], topRightCorner[1]};
+        double[] bottomRightCorner = new double[]{topRightCorner[0], bottomLeftCorner[1]};
+        meta.put("topRightCorner", topRightCorner);
         meta.put("bottomLeftCorner", bottomLeftCorner);
-        meta.put("upLeftCorner", upLeftCorner);
+        meta.put("topLeftCorner", topLeftCorner);
         meta.put("bottomRightCorner", bottomRightCorner);
         return meta;
     }
