@@ -89,19 +89,23 @@ public class TiffPopulationDataContainer {
     public Map<String, Object> getMetaData() {
         Map<String, Object> meta = new HashMap<>();
         //GHS_POP_E2030_GLOBE_R2023A_4326_30ss_V1_0_R4_C20
-        //top left 59.0495, 10.0348
-        //bottom left 49.0981, 10.0123
-        //top right 58.998, 19.921
-        //bottom right 49.215, 19.921
         //[lon,lat]
+        //top left 10.0348, 59.0495
+        //bottom left 10.0123, 49.0981
+        //top right 19.921, 58.998
+        //bottom right 19.921, 49.215
         double[] topRightCorner = cov.getGridGeometry().getEnvelope().getUpperCorner().getCoordinate();
         double[] bottomLeftCorner = cov.getGridGeometry().getEnvelope().getLowerCorner().getCoordinate();
         double[] topLeftCorner =  new double[]{bottomLeftCorner[0], topRightCorner[1]};
         double[] bottomRightCorner = new double[]{topRightCorner[0], bottomLeftCorner[1]};
+        //Measurement units degrees
+        double pixelHeight = Math.abs(topRightCorner[1] - bottomRightCorner[1]) / rasterHeight;
+        double pixelWidth = Math.abs(bottomLeftCorner[0] - bottomRightCorner[0]) / rasterWidth;
         meta.put("topRightCorner", topRightCorner);
         meta.put("bottomLeftCorner", bottomLeftCorner);
         meta.put("topLeftCorner", topLeftCorner);
         meta.put("bottomRightCorner", bottomRightCorner);
+        meta.put("pixelSizeDegrees", new double[]{pixelHeight, pixelWidth});
         return meta;
     }
 
