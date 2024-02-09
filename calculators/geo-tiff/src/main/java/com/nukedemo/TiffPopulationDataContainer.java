@@ -4,6 +4,8 @@ package com.nukedemo;
 import java.awt.image.Raster;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.geotools.coverage.grid.GridCoordinates2D;
@@ -84,6 +86,20 @@ public class TiffPopulationDataContainer {
         return s.toString();
     }
 
+    public Map<String, Object> getMetaData() {
+        Map<String, Object> meta = new HashMap<>();
+        //[lon,lat]
+        double[] upRightCorner = cov.getGridGeometry().getEnvelope().getUpperCorner().getCoordinate();
+        double[] bottomLeftCorner = cov.getGridGeometry().getEnvelope().getLowerCorner().getCoordinate();
+        double[] upLeftCorner =  new double[]{bottomLeftCorner[0], upRightCorner[1]};
+        double[] bottomRightCorner = new double[]{upRightCorner[0], bottomLeftCorner[1]};
+        meta.put("upRightCorner", upRightCorner);
+        meta.put("bottomLeftCorner", bottomLeftCorner);
+        meta.put("upLeftCorner", upLeftCorner);
+        meta.put("bottomRightCorner", bottomRightCorner);
+        return meta;
+    }
+
     public String toStringDoubleArrayPretty() {
         StringBuffer s = new StringBuffer();
         for (int i = 0; i < rasterWidth * rasterHeight; i++) {
@@ -102,7 +118,6 @@ public class TiffPopulationDataContainer {
     public double[] toDoubleArray() {
         return tiffRaster.getPixels(0, 0, rasterWidth, rasterHeight, new double[rasterHeight * rasterWidth]);
     }
-
 
     public void printMaxes() {
         StringBuffer s = new StringBuffer();
