@@ -18,20 +18,20 @@
 <script>
     // Define the dimensions of the square in degrees
     //THIS IS WRONG:
-    const height = 10833.3333299795036;
-    const width =  10833.3333300326923;
+    const height = 0.008333333299795036;
+    const width = 0.008333333300326923;
 
     // Define the center of the square
-    const center = ol.proj.fromLonLat([14.99208329634968, 54.09958331850644]);
+    const center = [14.99208329634968, 54.09958331850644];
+    const olCenter = ol.proj.fromLonLat(center);
 
     // Create a square feature
     const squareFeature = new ol.Feature({
         geometry: new ol.geom.Polygon([[
-            [center[0] - width / 2, center[1] - height / 2],
-            [center[0] + width / 2, center[1] - height / 2],
-            [center[0] + width / 2, center[1] + height / 2],
-            [center[0] - width / 2, center[1] + height / 2],
-            [center[0] - width / 2, center[1] - height / 2],
+            ol.proj.fromLonLat([center[0] - (width / 2), center[1] - (height / 2)]),
+            ol.proj.fromLonLat([center[0] + (width / 2), center[1] - (height / 2)]),
+            ol.proj.fromLonLat([center[0] + (width / 2), center[1] + (height / 2)]),
+            ol.proj.fromLonLat([center[0] - (width / 2), center[1] + (height / 2)]),
         ]])
     });
 
@@ -65,7 +65,7 @@
             units: 'metric',
         })]),
         view: new ol.View({
-            center: center,
+            center: olCenter,
             zoom: 11
         })
     });
