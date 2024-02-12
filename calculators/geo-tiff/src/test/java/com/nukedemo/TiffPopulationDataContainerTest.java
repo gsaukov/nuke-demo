@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TiffPopulationDataContainerTest {
 
-    String filepath = "./src/main/resources/GHS_POP_E2030_GLOBE_R2023A_54009_100_V1_0_R7_C18.tif";
+    String filepath = "./src/main/resources/GHS_POP_E2030_GLOBE_R2023A_4326_30ss_V1_0_R4_C20.tif";
     double lat = 12.546250343322754;
     double lon = 55.67041778564453;
     int x = 306, y = 411;
