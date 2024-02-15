@@ -13,6 +13,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.nio.channels.FileChannel;
 
+
+/*
+* This class is still in development...
+* */
 public class TiffPopulationMollweideDataContainer {
     public CoordinateReferenceSystem mollweide;
     private final GeoTiffReader reader;
@@ -58,7 +62,7 @@ public class TiffPopulationMollweideDataContainer {
     }
 
     static CoordinateReferenceSystem getCrs() throws Exception {
-        FileInputStream instream= null;
+        FileInputStream instream = null;
         instream = new FileInputStream(new File("./src/main/resources/GHS_POP_E2030_GLOBE_R2023A_54009_100_V1_0_R7_C18.prj"));
         final FileChannel channel = instream.getChannel();
         PrjFileReader projReader  = new PrjFileReader(channel);

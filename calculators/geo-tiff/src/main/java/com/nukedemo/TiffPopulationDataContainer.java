@@ -37,7 +37,7 @@ public class TiffPopulationDataContainer {
     }
 
     public TiffPopulationDataContainer(File fileToProcess) throws Exception {
-        this(FileUtils.readFileToByteArray(fileToProcess) );
+        this(FileUtils.readFileToByteArray(fileToProcess));
     }
 
     public TiffPopulationDataContainer(byte[] bytes) throws Exception {
@@ -86,8 +86,7 @@ public class TiffPopulationDataContainer {
         return s.toString();
     }
 
-    public Map<String, Object> getMetaData() {
-        Map<String, Object> meta = new HashMap<>();
+    public GhslMetaData getMetaData() {
         //GHS_POP_E2030_GLOBE_R2023A_4326_30ss_V1_0_R4_C20
         //[lon,lat]
         //top left 10.0348, 59.0495
@@ -101,12 +100,19 @@ public class TiffPopulationDataContainer {
         //Measurement units degrees
         double pixelHeight = Math.abs(topRightCorner[1] - bottomRightCorner[1]) / rasterHeight;
         double pixelWidth = Math.abs(bottomLeftCorner[0] - bottomRightCorner[0]) / rasterWidth;
-        meta.put("topRightCorner", topRightCorner);
-        meta.put("bottomLeftCorner", bottomLeftCorner);
-        meta.put("topLeftCorner", topLeftCorner);
-        meta.put("bottomRightCorner", bottomRightCorner);
-        meta.put("pixelSizeDegrees", new double[]{pixelHeight, pixelWidth});
-        return meta;
+        int [] totals = getPixelTotals();
+        return GhslMetaData.builder()
+                .withAreaWidth(rasterWidth)
+                .withAreaHeight(rasterHeight)
+                .withTopRightCorner(topRightCorner)
+                .withBottomLeftCorner(bottomLeftCorner)
+                .withTopLeftCorner(topLeftCorner)
+                .withBottomRightCorner(bottomRightCorner)
+                .withPixelHeightDegrees(pixelHeight)
+                .withPixelWidthDegrees(pixelWidth)
+                .withTotalPixelCount(totals[0])
+                .withTotalPixelValue(totals[1])
+                .build();
     }
 
     public String toStringDoubleArrayPretty() {
@@ -118,6 +124,20 @@ public class TiffPopulationDataContainer {
             }
         }
         return s.toString();
+    }
+
+    public int[] getPixelTotals() {
+        int totalCount =  0;
+        int totalValue =  0;
+        double [] arr = toDoubleArray();
+        for (int i = 0; i < arr.length; i++) {
+            double pixel = arr[i];
+            if (pixel > 0) {
+                totalCount++;
+                totalValue = totalValue + (int)Math.round(pixel);
+            }
+        }
+        return new int[]{totalCount, totalValue} ;
     }
 
     public int[] toIntArray() {
