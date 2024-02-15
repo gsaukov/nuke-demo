@@ -5,7 +5,6 @@ import com.nukedemo.population.batch.ghslstep.GhslFileDataReader;
 import com.nukedemo.population.batch.ghslstep.GhslFileDataWriter;
 import com.nukedemo.population.batch.populationstep.*;
 import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -111,7 +110,7 @@ public class PopulationBatchConfig {
     }
 
     @Bean
-    public JobExecutionListener listener() {
+    public JobCompletionListener listener() {
         return new JobCompletionListener();
     }
 

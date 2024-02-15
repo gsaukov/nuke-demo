@@ -1,5 +1,6 @@
 package com.nukedemo.population.batch.populationstep;
 
+import com.nukedemo.GhslMetaData;
 import com.nukedemo.shared.utils.NdJsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -47,12 +50,19 @@ public class PopulationDataWriter implements ItemWriter<PopulationDataItem> {
 
     private void writeToPopulationDataIntFile(PopulationDataItem item) throws Exception {
         String itemName = item.getDataName().replace(".tif", "_int.json");
-        FileUtils.writeStringToFile(new File(outputFolder, itemName), NdJsonUtils.toJson(item.getPopulationDataInt()));
+        FileUtils.writeStringToFile(new File(outputFolder, itemName), toJson(item.getMetaData(), item.getPopulationDataInt()));
     }
 
     private void writeToPopulationDataDoubleFile(PopulationDataItem item) throws Exception {
         String itemName = item.getDataName().replace(".tif", "_double.json");
-        FileUtils.writeStringToFile(new File(outputFolder, itemName), NdJsonUtils.toJson(item.getPopulationDataDouble()));
+        FileUtils.writeStringToFile(new File(outputFolder, itemName), toJson(item.getMetaData(), item.getPopulationDataDouble()));
+    }
+
+    private String toJson (GhslMetaData metaData, Object data) throws Exception {
+        Map<String, Object> objectMap = new HashMap<>();
+        objectMap.put("metaData",  metaData);
+        objectMap.put("data",  data);
+        return NdJsonUtils.toJson(objectMap);
     }
 
 }

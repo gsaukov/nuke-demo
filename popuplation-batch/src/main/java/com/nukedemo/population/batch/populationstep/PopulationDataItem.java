@@ -1,5 +1,6 @@
 package com.nukedemo.population.batch.populationstep;
 
+import com.nukedemo.GhslMetaData;
 import com.nukedemo.TiffPopulationDataContainer;
 import lombok.Data;
 
@@ -10,7 +11,9 @@ public class PopulationDataItem {
 
     private final byte[] tifSource;
 
-    private TiffPopulationDataContainer populationImage;
+    private TiffPopulationDataContainer populationDataContainer;
+
+    private GhslMetaData metaData;
 
     private PopulationDataInt populationDataInt;
 
@@ -24,17 +27,6 @@ public class PopulationDataItem {
     @Data
     public static class PopulationDataDouble {
         private final double[] res;
-    }
-
-    @Data
-    public static class PopulationMetaData {
-        private final int width;
-        private final int height;
-        private final double topY;
-        private final double topX;
-        private final double bottomY;
-        private final double bottomX;
-        private final double grain;
     }
 
 }
