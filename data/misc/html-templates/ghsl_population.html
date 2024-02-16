@@ -62,7 +62,7 @@
             console.log('row done: ' + i)
             for(let j = 0; j < cols; j++) {
                 const pixel = data[i + j]
-                if(pixel < 0) {
+                if(pixel > 0) {
                     let verticalPos = top + (i * height);
                     let hotizontalPos = left + (j * width);
                     const center = [verticalPos, hotizontalPos];
