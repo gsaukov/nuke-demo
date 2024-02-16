@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenLayers Square</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v8.2.0/ol.css" type="text/css">
+    <style>
+        #map {
+            width: 100%;
+            height: 800px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/ol@v8.2.0/dist/ol.js"></script>
+</head>
+<body>
+<div id="map" class="map"></div>
+<script>
+    // Function to load JSON file
+    console.log('start')
+    function loadJSON(callback) {
+        var xobj = new XMLHttpRequest();
+        console.log('reading file')
+        xobj.overrideMimeType("application/json");
+        xobj.open('GET', 'GHS_POP_E2025_GLOBE_R2023A_4326_30ss_V1_0_R5_C20_int.json', true); // Replace 'data.json' with your JSON file name
+        xobj.onreadystatechange = function () {
+            console.log('finish reading')
+            if (xobj.readyState == 4 && xobj.status == 200) {
+                callback(xobj.responseText);
+            }
+        };
+        xobj.send(null);
+    }
+
+    // Usage:
+    loadJSON(function(response) {
+        console.log('start parsing')
+        // Parse JSON string into object
+        var jsonObject = JSON.parse(response);
+
+        const top = jsonObject.metaData.topLeftCorner[0];
+        const left = jsonObject.metaData.topLeftCorner[1];
+        const height = jsonObject.metaData.pixelHeightDegrees;
+        const width = jsonObject.metaData.pixelWidthDegrees;
+        const rows = jsonObject.metaData.areaWidth
+        const cols = jsonObject.metaData.areaHeight
+        const data = jsonObject.data.res
+        const squares = []
+        let olCenter
+        // Style for the rectangle
+        var style = new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: 'rgba(0, 0, 255, 0.1)'
+            }),
+            stroke: new ol.style.Stroke({
+                color: 'blue',
+                width: 2
+            })
+        });
+
+        for(let i = 0; i < rows; i++) {
+            console.log('row done: ' + i)
+            for(let j = 0; j < cols; j++) {
+                const pixel = data[i + j]
+                if(pixel < 0) {
+                    let verticalPos = top + (i * height);
+                    let hotizontalPos = left + (j * width);
+                    const center = [verticalPos, hotizontalPos];
+                    olCenter = ol.proj.fromLonLat(center);
+
+                    // Create a square feature
+                    const squareFeature = new ol.Feature({
+                        geometry: new ol.geom.Polygon([[
+                            ol.proj.fromLonLat([center[0] - (width / 2), center[1] - (height / 2)]),
+                            ol.proj.fromLonLat([center[0] + (width / 2), center[1] - (height / 2)]),
+                            ol.proj.fromLonLat([center[0] + (width / 2), center[1] + (height / 2)]),
+                            ol.proj.fromLonLat([center[0] - (width / 2), center[1] + (height / 2)]),
+                        ]])
+                    });
+                    squareFeature.setStyle(style);
+                    squares.push(squareFeature)
+                }
+            }
+        }
+
+        // Create a vector layer to display the square
+        const vectorLayer = new ol.layer.Vector({
+            source: new ol.source.Vector({
+                features: squares
+            }),
+            style: new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: 'blue',
+                    width: 2
+                }),
+                fill: new ol.style.Fill({
+                    color: 'rgba(0, 0, 255, 0.1)'
+                })
+            })
+        });
+
+        // Create the map
+        const map = new ol.Map({
+            target: 'map',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM()
+                }),
+                vectorLayer
+            ],
+            controls: ol.control.defaults.defaults().extend([new ol.control.ScaleLine({
+                units: 'metric',
+            })]),
+            view: new ol.View({
+                center: olCenter,
+                zoom: 8
+            })
+        });
+    });
+</script>
+</body>
+</html>
