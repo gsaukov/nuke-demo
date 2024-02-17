@@ -128,16 +128,16 @@ public class TiffPopulationDataContainer {
 
     public int[] getPixelTotals() {
         int totalCount =  0;
-        int totalValue =  0;
+        double totalValue =  0;
         double [] arr = toDoubleArray();
         for (int i = 0; i < arr.length; i++) {
             double pixel = arr[i];
             if (pixel > 0) {
                 totalCount++;
-                totalValue = totalValue + (int)Math.round(pixel);
+                totalValue = totalValue + pixel;
             }
         }
-        return new int[]{totalCount, totalValue} ;
+        return new int[]{totalCount, (int)Math.round(totalValue)} ;
     }
 
     public int[] toIntArray() {
