@@ -54,14 +54,14 @@
             }),
             stroke: new ol.style.Stroke({
                 color: 'blue',
-                width: 2
+                width: 0
             })
         });
 
-        for(let i = 0; i < rows; i++) {
+        for(let i = 0; i < 1200; i++) {
             console.log('row done: ' + i)
-            for(let j = 0; j < cols; j++) {
-                const pixel = data[i + j]
+            for(let j = 0; j < 1200; j++) {
+                const pixel = data[(i*cols) + j]
                 if(pixel > 0) {
                     let verticalPos = top + (i * height);
                     let hotizontalPos = left + (j * width);
@@ -89,10 +89,6 @@
                 features: squares
             }),
             style: new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                    color: 'blue',
-                    width: 2
-                }),
                 fill: new ol.style.Fill({
                     color: 'rgba(0, 0, 255, 0.1)'
                 })
