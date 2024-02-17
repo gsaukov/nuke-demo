@@ -5,18 +5,18 @@ import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Slf4j
 public class JobCompletionListener extends JobExecutionListenerSupport {
 
-    private final AtomicInteger pixelWithValueCount;
+    private final AtomicLong pixelWithValueCount;
 
-    private final AtomicInteger pixelTotalValue;
+    private final AtomicLong pixelTotalValue;
 
     public JobCompletionListener() {
-        pixelWithValueCount = new AtomicInteger();
-        pixelTotalValue = new AtomicInteger();
+        pixelWithValueCount = new AtomicLong();
+        pixelTotalValue = new AtomicLong();
     }
 
     @Override
