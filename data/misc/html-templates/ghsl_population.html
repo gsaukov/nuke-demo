@@ -38,8 +38,10 @@
         // Parse JSON string into object
         var jsonObject = JSON.parse(response);
 
-        const top = jsonObject.metaData.topLeftCorner[0];
-        const left = jsonObject.metaData.topLeftCorner[1];
+        const top = jsonObject.metaData.topLeftCorner[0]; // lon
+        const left = jsonObject.metaData.topLeftCorner[1]; // lat
+        const bottom = jsonObject.metaData.bottomRightCorner[0]; // lon
+        const right = jsonObject.metaData.bottomRightCorner[1]; // lat
         const height = jsonObject.metaData.pixelHeightDegrees;
         const width = jsonObject.metaData.pixelWidthDegrees;
         const rows = jsonObject.metaData.areaWidth
@@ -56,14 +58,40 @@
                 color: 'rgba(0, 0, 0, 0)'
             })
         });
+        const center = [top, left];
+        olCenter = ol.proj.fromLonLat(center);
+        //
+        // console.log(      [top, left])
+        // console.log(      [top, right])
+        // console.log(      [bottom, right])
+        // console.log(      [bottom, left])
+        // console.log(      [top, left])
+        // console.log(      "==============================================")
+        // console.log(      [top, left])
+        // console.log(      [top, left - (1200 * height)])
+        // console.log(      [top + (1200 * width), left - (1200 * height)])
+        // console.log(      [top + (1200 * width), left])
+        // console.log(      [top, left])
+        //
+        // var rectangle = new ol.Feature({
+        //     geometry: new ol.geom.Polygon([[
+        //         ol.proj.fromLonLat([top, left]),
+        //         ol.proj.fromLonLat([top, right]),
+        //         ol.proj.fromLonLat([bottom, right]),
+        //         ol.proj.fromLonLat([bottom, left]),
+        //         ol.proj.fromLonLat([top, left])
+        //     ]])
+        // });
+        // rectangle.setStyle(style);
 
-        for(let i = 600; i < 1200; i++) {
+
+        for(let i = 0; i < 1200; i++) {
             console.log('row done: ' + i)
             for(let j = 0; j < 1200; j++) {
                 const pixel = data[(i*cols) + j]
                 if(pixel > 0) {
-                    let verticalPos = top + (i * height);
-                    let hotizontalPos = left - (j * width);
+                    let verticalPos = top + (j * height);
+                    let hotizontalPos = left - (i * width);
                     const center = [verticalPos, hotizontalPos];
                     olCenter = ol.proj.fromLonLat(center);
 
@@ -81,6 +109,7 @@
                 }
             }
         }
+
 
         // Create a vector layer to display the square
         const vectorLayer = new ol.layer.Vector({
@@ -115,3 +144,29 @@
 </script>
 </body>
 </html>
+
+<!--[9.992083316153526, 49.09958333862941]-->
+<!--[9.992083316153526, 39.099583378875366]-->
+<!--[19.992083276545834, 39.099583378875366]-->
+<!--[19.992083276545834, 49.09958333862941]-->
+<!--[9.992083316153526, 49.09958333862941]-->
+<!--==========================================-->
+<!--[9.992083316153526, 49.09958333862941]-->
+<!--[9.992083316153526, 39.0995833782371]-->
+<!--[19.992083275907568, 39.0995833782371]-->
+<!--[19.992083275907568, 49.09958333862941]-->
+<!--[9.992083316153526, 49.09958333862941]-->
+
+
+
+<!--[9.992083316153526, 49.09958333862941]-->
+<!--[9.992083316153526, 39.099583378875366]-->
+<!--[19.992083276545834, 39.099583378875366]-->
+<!--[19.992083276545834, 49.09958333862941]-->
+<!--[9.992083316153526, 49.09958333862941]-->
+<!--==========================================-->
+<!--[9.992083316153526, 49.09958333862941]-->
+<!--[9.992083316153526, 39.099583378875366]-->
+<!--[19.992083276545834, 39.099583378875366]-->
+<!--[19.992083276545834, 49.09958333862941]-->
+<!--[9.992083316153526, 49.09958333862941]-->
