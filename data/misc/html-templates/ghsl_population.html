@@ -92,16 +92,16 @@
                 if(pixel > 0) {
                     let verticalPos = top + (j * height);
                     let hotizontalPos = left - (i * width);
-                    const center = [verticalPos, hotizontalPos];
-                    olCenter = ol.proj.fromLonLat(center);
+                    const leftTop = [verticalPos, hotizontalPos];
 
                     // Create a square feature
                     const squareFeature = new ol.Feature({
                         geometry: new ol.geom.Polygon([[
-                            ol.proj.fromLonLat([center[0] - (width / 2), center[1] - (height / 2)]),
-                            ol.proj.fromLonLat([center[0] + (width / 2), center[1] - (height / 2)]),
-                            ol.proj.fromLonLat([center[0] + (width / 2), center[1] + (height / 2)]),
-                            ol.proj.fromLonLat([center[0] - (width / 2), center[1] + (height / 2)]),
+                            ol.proj.fromLonLat([leftTop[0], leftTop[1]]),
+                            ol.proj.fromLonLat([leftTop[0], leftTop[1] - height]),
+                            ol.proj.fromLonLat([leftTop[0] + width, leftTop[1] - height]),
+                            ol.proj.fromLonLat([leftTop[0] + width, leftTop[1]]),
+                            ol.proj.fromLonLat([leftTop[0], leftTop[1]]),
                         ]])
                     });
                     squareFeature.setStyle(style);
