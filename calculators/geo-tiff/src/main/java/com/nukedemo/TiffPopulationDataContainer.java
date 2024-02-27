@@ -4,8 +4,6 @@ package com.nukedemo;
 import java.awt.image.Raster;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.geotools.coverage.grid.GridCoordinates2D;
@@ -25,6 +23,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 public class TiffPopulationDataContainer {
 
     public static CoordinateReferenceSystem wgs84 = DefaultGeographicCRS.WGS84;
+    public static String LICENSE = "(CC BY 4.0) Data Source: EC-GHSL https://ghsl.jrc.ec.europa.eu/";
     private final byte[] source;
     private final GeoTiffReader reader;
     private final GridCoverage2D cov;
@@ -112,6 +111,7 @@ public class TiffPopulationDataContainer {
                 .withPixelWidthDegrees(pixelWidth)
                 .withTotalPixelCount(totals[0])
                 .withTotalPixelValue(totals[1])
+                .withLicense(LICENSE)
                 .build();
     }
 

@@ -12,6 +12,7 @@ public class GhslMetaData {
     private double pixelWidthDegrees;
     private int totalPixelCount;
     private int totalPixelValue;
+    private String license;
 
     private GhslMetaData() {}
 
@@ -59,6 +60,10 @@ public class GhslMetaData {
         return totalPixelValue;
     }
 
+    public String getLicense() {
+        return license;
+    }
+
     public static final class Builder {
         private int areaWidth;
         private int areaHeight;
@@ -70,6 +75,7 @@ public class GhslMetaData {
         private double pixelWidthDegrees;
         private int totalPixelCount;
         private int totalPixelValue;
+        private String license;
 
         private Builder() {
         }
@@ -124,6 +130,11 @@ public class GhslMetaData {
             return this;
         }
 
+        public Builder withLicense(String license) {
+            this.license = license;
+            return this;
+        }
+
         public GhslMetaData build() {
             GhslMetaData ghslMetaData = new GhslMetaData();
             ghslMetaData.areaWidth = this.areaWidth;
@@ -136,6 +147,7 @@ public class GhslMetaData {
             ghslMetaData.topRightCorner = this.topRightCorner;
             ghslMetaData.totalPixelValue = this.totalPixelValue;
             ghslMetaData.pixelWidthDegrees = this.pixelWidthDegrees;
+            ghslMetaData.license = this.license;
             return ghslMetaData;
         }
     }
