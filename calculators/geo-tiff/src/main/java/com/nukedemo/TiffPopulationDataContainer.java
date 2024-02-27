@@ -4,6 +4,7 @@ package com.nukedemo;
 import java.awt.image.Raster;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.util.ArrayList;
 
 import org.apache.commons.io.FileUtils;
 import org.geotools.coverage.grid.GridCoordinates2D;
@@ -28,8 +29,8 @@ public class TiffPopulationDataContainer {
     private final GeoTiffReader reader;
     private final GridCoverage2D cov;
     private final Raster tiffRaster;
-    private final int  rasterWidth;
-    private final int  rasterHeight;
+    private final int rasterWidth;
+    private final int rasterHeight;
 
     public TiffPopulationDataContainer(String fileToProcess) throws Exception {
         this(new File(fileToProcess));
@@ -91,12 +92,12 @@ public class TiffPopulationDataContainer {
         //bottom right 19.921, 49.215
         double[] topRightCorner = cov.getGridGeometry().getEnvelope().getUpperCorner().getCoordinate();
         double[] bottomLeftCorner = cov.getGridGeometry().getEnvelope().getLowerCorner().getCoordinate();
-        double[] topLeftCorner =  new double[]{bottomLeftCorner[0], topRightCorner[1]};
+        double[] topLeftCorner = new double[]{bottomLeftCorner[0], topRightCorner[1]};
         double[] bottomRightCorner = new double[]{topRightCorner[0], bottomLeftCorner[1]};
         //Measurement units degrees
         double pixelHeight = Math.abs(topRightCorner[1] - bottomRightCorner[1]) / rasterHeight;
         double pixelWidth = Math.abs(bottomLeftCorner[0] - bottomRightCorner[0]) / rasterWidth;
-        int [] totals = getPixelTotals();
+        int[] totals = getPixelTotals();
         return GhslMetaData.builder()
                 .withAreaWidth(rasterWidth)
                 .withAreaHeight(rasterHeight)
@@ -112,6 +113,69 @@ public class TiffPopulationDataContainer {
                 .build();
     }
 
+    public int[] getPixelTotals() {
+        int totalCount = 0;
+        double totalValue = 0;
+        double[] arr = toDoubleArray();
+        for (int i = 0; i < arr.length; i++) {
+            double pixel = arr[i];
+            if (pixel > 0) {
+                totalCount++;
+                totalValue = totalValue + pixel;
+            }
+        }
+        return new int[]{totalCount, (int) Math.round(totalValue)};
+    }
+
+    public int[] compressIntArray(int factor) {
+        if (rasterHeight % factor != 0 || rasterWidth % factor != 0)
+            throw new IllegalArgumentException("invalid factor " + factor + " must be round to round to width:" + rasterWidth + " and height: " + rasterHeight);
+        int[] original = toIntArray();
+        int finalSize = (rasterHeight * rasterWidth) / factor;
+        int twoD[][] = toTwoDInt();
+
+        int[][] compressedArray = new int[rasterHeight/factor][rasterWidth/factor]; // New dimensions: 120x120
+        for (int i = 0; i < 1200; i += factor) {
+            for (int j = 0; j < 1200; j += factor) {
+                int sum = 0;
+                for (int x = i; x < i + factor; x++) {
+                    for (int y = j; y < j + factor; y++) {
+                        sum += twoD[x][y];
+                    }
+                }
+                compressedArray[i / factor][j / factor] = sum;
+            }
+        }
+
+        return toOneDInt(compressedArray, (rasterHeight*rasterHeight)/factor);
+    }
+
+    public int[][] toTwoDInt() {
+        int arrayIndex = 0;
+        int[] original = toIntArray();
+        int twoD[][] = new int[rasterHeight][rasterWidth];
+        for (int i = 0; i < rasterHeight; i++) {
+            for (int j = 0; j < rasterWidth; j++){
+                twoD[i][j] = original[arrayIndex];
+                arrayIndex++;
+            }
+        }
+        return twoD;
+    }
+
+    public int[] toOneDInt(int[][] data, int size) {
+        int arrayIndex = 0;
+        int [] oneD = new int [size];
+        for(int i = 0; i < data.length; i++) {
+            for(int j = 0; j < data[i].length; j++){
+                oneD[arrayIndex] = data[i][j];
+                arrayIndex++;
+            }
+        }
+
+        return oneD;
+    }
+
     public String toStringIntArrayPretty() {
         StringBuffer s = new StringBuffer();
         for (int i = 0; i < rasterWidth * rasterHeight; i++) {
@@ -121,20 +185,6 @@ public class TiffPopulationDataContainer {
             }
         }
         return s.toString();
-    }
-
-    public int[] getPixelTotals() {
-        int totalCount =  0;
-        double totalValue =  0;
-        double [] arr = toDoubleArray();
-        for (int i = 0; i < arr.length; i++) {
-            double pixel = arr[i];
-            if (pixel > 0) {
-                totalCount++;
-                totalValue = totalValue + pixel;
-            }
-        }
-        return new int[]{totalCount, (int)Math.round(totalValue)} ;
     }
 
     public String toStringDoubleArrayPretty() {
@@ -154,7 +204,7 @@ public class TiffPopulationDataContainer {
         for (int i = 0; i < rasterWidth * rasterHeight; i++) {
             int el = tiffRaster.getDataBuffer().getElem(i);
             if (el > 1000) {
-                System.out.println(i + " " +i/rasterWidth + " " + i%rasterWidth + " " + el);
+                System.out.println(i + " " + i / rasterWidth + " " + i % rasterWidth + " " + el);
                 max = Math.max(max, el);
             }
         }

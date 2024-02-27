@@ -74,6 +74,13 @@ class TiffPopulationDataContainerTest {
     }
 
     @Test
+    public void testCompression() throws Exception {
+        TiffPopulationDataContainer container = new TiffPopulationDataContainer(filepath);
+        int[] compressed = container.compressIntArray(10);
+        assertNotNull(compressed);
+    }
+
+    @Test
     public void testCompatibility() throws Exception {
         TiffPopulationDataContainer container = new TiffPopulationDataContainer(filepath);
         String pretty = container.toStringIntArrayPretty().replace(System.lineSeparator(), "");
