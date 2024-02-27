@@ -74,15 +74,12 @@ public class TiffPopulationDataContainer {
         return cov.getGridGeometry().gridToWorld(coord);
     }
 
-    public String toStringIntArrayPretty() {
-        StringBuffer s = new StringBuffer();
-        for (int i = 0; i < rasterWidth * rasterHeight; i++) {
-            s.append(tiffRaster.getDataBuffer().getElem(i) + ",");
-            if (i > 0 && i % rasterWidth == 0) {
-                s.append(System.lineSeparator());
-            }
-        }
-        return s.toString();
+    public int[] toIntArray() {
+        return tiffRaster.getPixels(0, 0, rasterWidth, rasterHeight, new int[rasterHeight * rasterWidth]);
+    }
+
+    public double[] toDoubleArray() {
+        return tiffRaster.getPixels(0, 0, rasterWidth, rasterHeight, new double[rasterHeight * rasterWidth]);
     }
 
     public GhslMetaData getMetaData() {
@@ -115,10 +112,10 @@ public class TiffPopulationDataContainer {
                 .build();
     }
 
-    public String toStringDoubleArrayPretty() {
+    public String toStringIntArrayPretty() {
         StringBuffer s = new StringBuffer();
         for (int i = 0; i < rasterWidth * rasterHeight; i++) {
-            s.append(tiffRaster.getDataBuffer().getElemDouble(i) + ",");
+            s.append(tiffRaster.getDataBuffer().getElem(i) + ",");
             if (i > 0 && i % rasterWidth == 0) {
                 s.append(System.lineSeparator());
             }
@@ -140,12 +137,15 @@ public class TiffPopulationDataContainer {
         return new int[]{totalCount, (int)Math.round(totalValue)} ;
     }
 
-    public int[] toIntArray() {
-        return tiffRaster.getPixels(0, 0, rasterWidth, rasterHeight, new int[rasterHeight * rasterWidth]);
-    }
-
-    public double[] toDoubleArray() {
-        return tiffRaster.getPixels(0, 0, rasterWidth, rasterHeight, new double[rasterHeight * rasterWidth]);
+    public String toStringDoubleArrayPretty() {
+        StringBuffer s = new StringBuffer();
+        for (int i = 0; i < rasterWidth * rasterHeight; i++) {
+            s.append(tiffRaster.getDataBuffer().getElemDouble(i) + ",");
+            if (i > 0 && i % rasterWidth == 0) {
+                s.append(System.lineSeparator());
+            }
+        }
+        return s.toString();
     }
 
     public void printMaxes() {
