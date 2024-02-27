@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.geotools.coverage.grid.GridCoordinates2D;
 import org.geotools.geometry.DirectPosition2D;
 import java.io.File;
+import java.math.BigInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -79,6 +80,23 @@ class TiffPopulationDataContainerTest {
         int[] compressed = container.compressIntArray(10);
         assertNotNull(compressed);
     }
+
+    @Test
+    public void testCompressionCompatibility() throws Exception {
+        TiffPopulationDataContainer container = new TiffPopulationDataContainer(filepath);
+        int[] array = container.toIntArray();
+        int[] compressedArray = container.compressIntArray(10);
+        long justTotal = 0l;
+        long compressedTotal = 0l;
+        for(int i = 0; i<array.length;  i++ ) {
+            justTotal = justTotal + array[i];
+        }
+        for(int i = 0; i<compressedArray.length;  i++ ) {
+            compressedTotal = compressedTotal + compressedArray[i];
+        }
+        assertEquals(justTotal, compressedTotal);
+    }
+
 
     @Test
     public void testCompatibility() throws Exception {
