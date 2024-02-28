@@ -3,8 +3,8 @@ package com.nukedemo;
 import org.junit.jupiter.api.Test;
 import org.geotools.coverage.grid.GridCoordinates2D;
 import org.geotools.geometry.DirectPosition2D;
+
 import java.io.File;
-import java.math.BigInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,7 +35,7 @@ class TiffPopulationDataContainerTest {
     }
 
     @Test
-    public void testTiffPopulationDataContainerFile() throws Exception  {
+    public void testTiffPopulationDataContainerFile() throws Exception {
         File file = new File(filepath);
         TiffPopulationDataContainer container = new TiffPopulationDataContainer(file);
         assertNotNull(container);
@@ -86,15 +86,16 @@ class TiffPopulationDataContainerTest {
         TiffPopulationDataContainer container = new TiffPopulationDataContainer(filepath);
         int[] array = container.toIntArray();
         int[] compressedArray = container.compressIntArray(10);
-        long justTotal = 0l;
+        long originalTotal = 0l;
         long compressedTotal = 0l;
-        for(int i = 0; i<array.length;  i++ ) {
-            justTotal = justTotal + array[i];
+        for (int i = 0; i < array.length; i++) {
+            originalTotal = originalTotal + array[i];
         }
-        for(int i = 0; i<compressedArray.length;  i++ ) {
+        for (int i = 0; i < compressedArray.length; i++) {
             compressedTotal = compressedTotal + compressedArray[i];
         }
-        assertEquals(justTotal, compressedTotal);
+        assertEquals(originalTotal, compressedTotal);
+        assertEquals(23554, compressedArray[0]); //23554 manually calculated.
     }
 
 
