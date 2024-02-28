@@ -128,26 +128,34 @@ public class TiffPopulationDataContainer {
     }
 
     public int[] compressIntArray(int factor) {
+        // Error handling in case the data is not compatible with the intended compression
         if (rasterHeight % factor != 0 || rasterWidth % factor != 0)
-            throw new IllegalArgumentException("invalid factor " + factor + " must be round to round to width:" + rasterWidth + " and height: " + rasterHeight);
-        int[] original = toIntArray();
-        int finalSize = (rasterHeight * rasterWidth) / factor;
-        int twoD[][] = toTwoDInt();
+            throw new IllegalArgumentException("Invalid factor " + factor + " must be round to round to width:" + rasterWidth + " and height: " + rasterHeight);
 
-        int[][] compressedArray = new int[rasterHeight/factor][rasterWidth/factor]; // New dimensions: 120x120
-        for (int i = 0; i < 1200; i += factor) {
-            for (int j = 0; j < 1200; j += factor) {
+        // Calculate the dimensions of the compressed array
+        int compressedRows = rasterHeight / factor;
+        int compressedCols = rasterWidth / factor;
+        int[] original = toIntArray();
+
+        // Initialize the compressed result array
+        int[] compressedArray = new int[compressedRows * compressedCols];
+
+        // Iterate over the compressed array elements
+        for (int row = 0; row < compressedRows; row++) {
+            for (int col = 0; col < compressedCols; col++) {
+
+                // Accumulate the sum from the corresponding block in the original array
                 int sum = 0;
-                for (int x = i; x < i + factor; x++) {
-                    for (int y = j; y < j + factor; y++) {
-                        sum += twoD[x][y];
+                for (int i = 0; i < factor; i++) {
+                    for (int j = 0; j < factor; j++) {
+                        int originalIndex = (row * factor + i) * rasterWidth + (col * factor + j);
+                        sum += original[originalIndex];
                     }
                 }
-                compressedArray[i / factor][j / factor] = sum;
+                compressedArray[row * compressedCols + col] = sum;
             }
         }
-
-        return toOneDInt(compressedArray, (rasterHeight*rasterHeight)/factor);
+        return compressedArray;
     }
 
     public int[][] toTwoDInt() {
@@ -180,7 +188,7 @@ public class TiffPopulationDataContainer {
         StringBuffer s = new StringBuffer();
         for (int i = 0; i < rasterWidth * rasterHeight; i++) {
             s.append(tiffRaster.getDataBuffer().getElem(i) + ",");
-            if (i > 0 && i % rasterWidth == 0) {
+            if (i > 0 && (i + 1) % rasterWidth == 0) {
                 s.append(System.lineSeparator());
             }
         }
@@ -191,7 +199,7 @@ public class TiffPopulationDataContainer {
         StringBuffer s = new StringBuffer();
         for (int i = 0; i < rasterWidth * rasterHeight; i++) {
             s.append(tiffRaster.getDataBuffer().getElemDouble(i) + ",");
-            if (i > 0 && i % rasterWidth == 0) {
+            if (i > 0 && (i + 1) % rasterWidth == 0) {
                 s.append(System.lineSeparator());
             }
         }
