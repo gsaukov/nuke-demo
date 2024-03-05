@@ -18,20 +18,20 @@ import java.nio.file.Paths;
 @StepScope
 public class GhslFileDataWriter implements ItemWriter<GhslFileDataItem> {
 
-    @Value("${populationBatch.ghsl.resolution}")
     String resolution;
-
-    @Value("${populationBatch.ghsl.resultFolder}")
     String resultFolder;
 
-    public GhslFileDataWriter() throws IOException {
+    public GhslFileDataWriter(@Value("${populationBatch.ghsl.resultFolder}") String resultFolder,
+                              @Value("${populationBatch.ghsl.resolution}") String resolution) throws IOException {
+        this.resultFolder = resultFolder;
+        this.resolution = resolution;
         Files.createDirectories(Paths.get(resultFolder));
     }
 
     @Override
     public void write(Chunk<? extends GhslFileDataItem> chunk) {
-        for(GhslFileDataItem item : chunk.getItems()){
-            if(item.getGhslData().length > 0) { //Error download fix manually
+        for (GhslFileDataItem item : chunk.getItems()) {
+            if (item.getGhslData().length > 0) { //Error download fix manually
                 writeFile(item);
             }
         }
