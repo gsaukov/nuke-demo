@@ -1,7 +1,7 @@
 package com.nukedemo.population.batch.populationstep;
 
+import com.nukedemo.population.batch.shared.BatchUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.ListUtils;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.partition.support.Partitioner;
 import org.springframework.batch.item.ExecutionContext;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +28,7 @@ public class PopulationDataPartitioner implements Partitioner {
     @Override
     public Map<String, ExecutionContext> partition(int gridSize)  {
         List<PopulationInputItem> items = getItems();
-        return executions(gridSize, items);
+        return BatchUtils.executions(gridSize, items);
     }
 
     private List<PopulationInputItem> getItems(){
@@ -57,19 +56,5 @@ public class PopulationDataPartitioner implements Partitioner {
         }
         return populationInputItems;
     }
-
-    private Map<String, ExecutionContext> executions(int gridSize, List<PopulationInputItem> items) {
-        int itemsPerPartition = items.size() / gridSize + 1;
-        List<List<PopulationInputItem>> partitions = ListUtils.partition(items, itemsPerPartition);
-        Map<String, ExecutionContext> result = new HashMap<>();
-        for (int i = 0; i < partitions.size(); i++) {
-            ExecutionContext context = new ExecutionContext();
-            List<PopulationInputItem> partition = partitions.get(i);
-            context.put("area", new ArrayList<>(partition));
-            result.put("partition_" + i, context);
-        }
-        return result;
-    }
-
 
 }

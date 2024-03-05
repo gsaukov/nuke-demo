@@ -1,9 +1,9 @@
 package com.nukedemo.population.batch.ghslstep;
 
+import com.nukedemo.population.batch.shared.BatchUtils;
 import com.nukedemo.population.services.clients.ghsl.GhslApiClient;
 import feign.Response;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.ListUtils;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.partition.support.Partitioner;
 import org.springframework.batch.item.ExecutionContext;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,9 +45,9 @@ public class GhslFileDataPartitioner implements Partitioner {
     @Override
     public Map<String, ExecutionContext> partition(int gridSize) {
         if(skipDownload) {
-            return executions(1, new ArrayList<>());
+            return BatchUtils.executions(1, new ArrayList<>());
         } else {
-            return executions(gridSize, getItems());
+            return BatchUtils.executions(gridSize, getItems());
         }
     }
 
@@ -62,19 +61,6 @@ public class GhslFileDataPartitioner implements Partitioner {
             }
         }
         return items;
-    }
-
-    private Map<String, ExecutionContext> executions(int gridSize, List<GhslFileInputItem> items) {
-        int itemsPerPartition = items.size() / gridSize + 1;
-        List<List<GhslFileInputItem>> partitions = ListUtils.partition(items, itemsPerPartition);
-        Map<String, ExecutionContext> result = new HashMap<>();
-        for (int i = 0; i < partitions.size(); i++) {
-            ExecutionContext context = new ExecutionContext();
-            List<GhslFileInputItem> partition = partitions.get(i);
-            context.put("area", new ArrayList<>(partition));
-            result.put("partition_" + i, context);
-        }
-        return result;
     }
 
     private boolean checkFileExists(int row, int column) {
