@@ -6,6 +6,10 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.mapbox.geojson.Polygon;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -21,6 +25,10 @@ public class TransformerDataProcessor implements ItemProcessor<TransformerDataIt
     @Override
     public TransformerDataItem process(TransformerDataItem item) {
         return item;
+    }
+
+    private List<Polygon> createPolygons () {
+        return new ArrayList<>();
     }
 
 
