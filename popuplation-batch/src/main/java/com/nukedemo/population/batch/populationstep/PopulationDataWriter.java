@@ -21,15 +21,15 @@ import java.util.Map;
 @StepScope
 public class PopulationDataWriter implements ItemWriter<PopulationDataItem> {
 
-    public static String POPULATION_JSON_FOLDER = "populationJson";
+    public static String POPULATION_JSON_FOLDER = "/populationJson";
 
     private final String resultFolder;
     private final File outputFolder;
 
     public PopulationDataWriter(@Value("${populationBatch.ghsl.resultFolder}") String resultFolder) throws IOException {
-        Files.createDirectories(Paths.get(resultFolder + "/" + POPULATION_JSON_FOLDER));
+        Files.createDirectories(Paths.get(resultFolder + POPULATION_JSON_FOLDER));
         this.resultFolder = resultFolder;
-        this.outputFolder = new File(resultFolder + "/" + POPULATION_JSON_FOLDER + "/");
+        this.outputFolder = new File(resultFolder + POPULATION_JSON_FOLDER + "/");
     }
 
     @Override
