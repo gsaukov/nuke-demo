@@ -7,4 +7,6 @@ public class TransformerDataItem {
 
     private final TransformerInputItem inputItem;
 
+    private final int[] intData;
+
 }
