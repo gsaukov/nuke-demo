@@ -1,6 +1,7 @@
 package com.nukedemo.population.batch.transformerstep;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.nukedemo.GhslMetaData;
 import com.nukedemo.shared.utils.NdJsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -8,7 +9,6 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,13 +30,20 @@ public class TransformerDataReader implements ItemReader<TransformerDataItem> {
         if(area == null){
             return null; //Stop batch job
         }
-        int[] intData = readIntegerArray(area.getFile());
-        return new TransformerDataItem(area, intData);
+        JsonNode root = NdJsonUtils.MAPPER.readTree(area.getFile());
+        int[] intData = readIntegerArray(root);
+        GhslMetaData metaData = readMetaData(root);
+        return new TransformerDataItem(metaData, intData);
     }
 
-    private int[] readIntegerArray(File file) throws IOException {
-        JsonNode node = NdJsonUtils.MAPPER.readTree(file).get("data").get("res");
+    private int[] readIntegerArray(JsonNode root) throws IOException {
+        JsonNode node = root.get("data").get("res");
         return NdJsonUtils.MAPPER.treeToValue(node, int[].class);
+    }
+
+    private GhslMetaData readMetaData(JsonNode root) throws IOException {
+        JsonNode node = root.get("metadata");
+        return NdJsonUtils.MAPPER.treeToValue(node, GhslMetaData.class);
     }
 
 }
