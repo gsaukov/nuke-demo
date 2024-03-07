@@ -126,7 +126,7 @@ public class PopulationBatchConfig {
     @Bean
     public Step transformerPartition() {
         return new StepBuilder("data-transforming-partition", jobRepository)
-                .partitioner("transforming-partition-step", populationDataPartitioner)
+                .partitioner("transforming-partition-step", transformerDataPartitioner)
                 .step(transformerStep())
                 .gridSize(4)
                 .taskExecutor(taskExecutor())

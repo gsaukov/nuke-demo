@@ -22,13 +22,20 @@ import java.util.Map;
 @Service
 public class PopulationDataPartitioner implements Partitioner {
 
+    @Value("${populationBatch.ghsl.skipProcessing}")
+    private boolean skipProcessing;
+
+
     @Value("${populationBatch.ghsl.resultFolder}")
     String resultFolder;
 
     @Override
     public Map<String, ExecutionContext> partition(int gridSize)  {
-        List<PopulationInputItem> items = getItems();
-        return BatchUtils.executions(gridSize, items);
+        if(skipProcessing) {
+            return BatchUtils.executions(1, new ArrayList<>());
+        } else {
+            return BatchUtils.executions(gridSize, getItems());
+        }
     }
 
     private List<PopulationInputItem> getItems(){

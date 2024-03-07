@@ -42,7 +42,7 @@ public class TransformerDataReader implements ItemReader<TransformerDataItem> {
     }
 
     private GhslMetaData readMetaData(JsonNode root) throws IOException {
-        JsonNode node = root.get("metadata");
+        JsonNode node = root.get("metaData");
         return NdJsonUtils.MAPPER.treeToValue(node, GhslMetaData.class);
     }
 

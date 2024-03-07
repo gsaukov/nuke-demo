@@ -24,8 +24,8 @@ public class GhslFileDataPartitioner implements Partitioner {
     @Value("${populationBatch.ghsl.skipDownload}")
     private boolean skipDownload;
 
-    @Value("${populationBatch.ghsl.overwriteFiles}")
-    private boolean overwriteFiles;
+    @Value("${populationBatch.ghsl.overwriteSourceZipFiles}")
+    private boolean overwriteSourceZipFiles;
 
     @Value("${populationBatch.ghsl.resolution}")
     private String resolution;
@@ -75,8 +75,8 @@ public class GhslFileDataPartitioner implements Partitioner {
     }
 
     private boolean shouldDownload(int row, int column) {
-        if(overwriteFiles) {
-            return overwriteFiles;
+        if(overwriteSourceZipFiles) {
+            return overwriteSourceZipFiles;
         } else {
             return !(new File(resultFolder,  "R" + row+ "_C" + column + ".zip").exists());
         }
