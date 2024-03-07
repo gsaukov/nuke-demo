@@ -2,6 +2,7 @@ package com.nukedemo.population.batch.transformerstep;
 
 import com.mapbox.geojson.Geometry;
 import com.mapbox.geojson.Point;
+import com.nukedemo.GhslMetaData;
 import com.nukedemo.population.batch.JobCompletionListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -27,27 +28,28 @@ public class TransformerDataProcessor implements ItemProcessor<TransformerDataIt
 
     @Override
     public TransformerDataItem process(TransformerDataItem item) {
+        createPolygons(item);
         return item;
     }
 
-    private List<Geometry> createPolygons (int[] data) {
-        double top = 0; // lon
-        double left = 0; // lat
-        double height = 0;
-        double width = 0;
-        int rows = 100;
-        int cols = 100;
+    private List<Geometry> createPolygons(TransformerDataItem item) {
+        int[] data = item.getIntData();
+        GhslMetaData metaData = item.getMetaData();
+        double top = metaData.getTopLeftCorner()[0]; // lon
+        double left = metaData.getTopLeftCorner()[1]; // lat
+        double height = metaData.getPixelHeightDegrees();
+        double width = metaData.getPixelWidthDegrees();
+        int rows = metaData.getAreaHeight();
+        int cols = metaData.getAreaWidth();
         List<Geometry> squares = new ArrayList<>();
 
-        for (int i = 0; i < 1200; i++) {
-            for (int j = 0; j < 1200; j++) {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
                 double pixel = data[(i * cols) + j];
                 if (pixel > 0) {
                     double verticalPos = top + (j * height);
                     double hotizontalPos = left - (i * width);
                     Point leftTop = Point.fromLngLat(verticalPos, hotizontalPos);
-
-                    // Create a square feature
                     List<Point> points = new ArrayList<>();
                     points.add(leftTop);
                     points.add(Point.fromLngLat(verticalPos, hotizontalPos - height));
