@@ -4,6 +4,7 @@ import com.nukedemo.population.batch.ghslstep.GhslFileDataPartitioner;
 import com.nukedemo.population.batch.ghslstep.GhslFileDataReader;
 import com.nukedemo.population.batch.ghslstep.GhslFileDataWriter;
 import com.nukedemo.population.batch.populationstep.*;
+import com.nukedemo.population.batch.transformerstep.*;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -51,6 +52,18 @@ public class PopulationBatchConfig {
     @Autowired
     PopulationDataPartitioner populationDataPartitioner;
 
+    @Autowired
+    TransformerDataReader transformerDataReader;
+
+    @Autowired
+    TransformerDataProcessor transformerDataProcessor;
+
+    @Autowired
+    TransformerDataWriter transformerDataWriter;
+
+    @Autowired
+    TransformerDataPartitioner transformerDataPartitioner;
+
     @Bean
     public JobLauncher  jobLauncher() throws Exception {
         TaskExecutorJobLauncher jobLauncher = new TaskExecutorJobLauncher();
@@ -66,6 +79,7 @@ public class PopulationBatchConfig {
                 .listener(listener())
                 .flow(downloadingPartition())
                 .next(processingPartition())
+                .next(transformerPartition())
                 .end()
                 .build();
     }
@@ -106,6 +120,26 @@ public class PopulationBatchConfig {
                 .reader(populationDataReader)
                 .processor(populationDataProcessor)
                 .writer(populationDataWriter)
+                .build();
+    }
+
+    @Bean
+    public Step transformerPartition() {
+        return new StepBuilder("data-transforming-partition", jobRepository)
+                .partitioner("transforming-partition-step", populationDataPartitioner)
+                .step(transformerStep())
+                .gridSize(4)
+                .taskExecutor(taskExecutor())
+                .build();
+    }
+
+    @Bean
+    public Step transformerStep() {
+        return new StepBuilder("data-transforming-step", jobRepository)
+                .<TransformerDataItem, TransformerDataItem> chunk(1, transactionManager)
+                .reader(transformerDataReader)
+                .processor(transformerDataProcessor)
+                .writer(transformerDataWriter)
                 .build();
     }
 
