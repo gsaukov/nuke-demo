@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Service
 public class TurfGeospatialService {
 
-    private static final String TURF_LIBRARY = "classpath:scripts/turf.js";
+    private static final String TURF_LIBRARY = "scripts/turf.js";
 
     private GraalVMJSScriptingEngineService engine;
 
