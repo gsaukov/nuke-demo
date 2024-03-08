@@ -1,4 +1,4 @@
-package com.nukedemo.core;
+package com.nukedemo.geocalculator.services;
 
 import com.nukedemo.shared.exception.NdException;
 import com.nukedemo.shared.utils.NdJsonUtils;
@@ -28,7 +28,7 @@ public class GraalEngineTest {
         System.setProperty("polyglot.engine.WarnInterpreterOnly", "false");
     }
 
-    private static final String TURF_LIBRARY = "classpath:scripts/turf.js";
+    private static final String TURF_LIBRARY = "scripts/turf.js";
 
     @Test
     public void testTurfOnRandomCoordinatesReuseEngine() throws Exception {

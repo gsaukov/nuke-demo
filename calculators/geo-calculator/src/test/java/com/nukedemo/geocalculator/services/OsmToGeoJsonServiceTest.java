@@ -1,4 +1,4 @@
-package com.nukedemo.core;
+package com.nukedemo.geocalculator.services;
 
 import com.nukedemo.shared.utils.NdJsonUtils;
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
@@ -18,7 +18,7 @@ public class OsmToGeoJsonServiceTest {
     @Test
     public void testOverpassClient() throws Exception {
         ScriptEngine engine = graalJSScriptEngine();
-        Path path = new PathMatchingResourcePatternResolver().getResource("classpath:scripts/osmtogeojson.js").getFile().toPath();
+        Path path = new PathMatchingResourcePatternResolver().getResource("scripts/osmtogeojson.js").getFile().toPath();
         engine.eval(Files.newBufferedReader(path, StandardCharsets.UTF_8));
         engine.put("data", param);
         String res = engine.eval("JSON.stringify(osmtogeojson(JSON.parse(data)))").toString();

@@ -1,4 +1,4 @@
-package com.nukedemo.core;
+package com.nukedemo.geocalculator.services;
 
 import com.nukedemo.shared.utils.NdJsonUtils;
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
@@ -25,7 +25,7 @@ public class TurfFunctionsTest {
         System.setProperty("polyglot.engine.WarnInterpreterOnly", "false");
     }
 
-    private static final String TURF_LIBRARY = "classpath:scripts/turf.js";
+    private static final String TURF_LIBRARY = "scripts/turf.js";
 
     private ScriptEngine engine;
 

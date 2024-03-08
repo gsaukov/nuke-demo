@@ -1,14 +1,9 @@
-package com.nukedemo.core;
+package com.nukedemo.geocalculator.services;
 
-import com.nukedemo.geocalculator.services.GraalVMJSScriptingEngineService;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.test.context.SpringBatchTest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.script.Bindings;
 import javax.script.ScriptContext;
@@ -22,18 +17,19 @@ import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
-@SpringBootTest(classes = CoreApplication.class)
 @Slf4j
-@StepScope
-@SpringBatchTest
 public class ScriptingEngineTest {
 
-    private static final String OSMTOGEOJSON_LIBRARY = "classpath:scripts/osmtogeojson.js";
+    private static final String OSMTOGEOJSON_LIBRARY = "scripts/osmtogeojson.js";
 
-    private static final String TURF_LIBRARY = "classpath:scripts/turf.js";
+    private static final String TURF_LIBRARY = "scripts/turf.js";
 
-    @Autowired
     private GraalVMJSScriptingEngineService service;
+
+    @BeforeEach
+    void setUp () {
+        this.service = new GraalVMJSScriptingEngineService();
+    }
 
     @Test
     public void testOverpassClient() throws ScriptException, IOException {
