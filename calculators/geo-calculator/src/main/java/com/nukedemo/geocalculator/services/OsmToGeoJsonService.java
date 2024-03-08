@@ -12,7 +12,7 @@ import java.io.IOException;
 @Service
 public class OsmToGeoJsonService {
 
-    private static final String OSMTOGEOJSON_LIBRARY = "classpath:scripts/osmtogeojson.js";
+    private static final String OSMTOGEOJSON_LIBRARY = "scripts/osmtogeojson.js";
     private GraalVMJSScriptingEngineService engine;
 
     public OsmToGeoJsonService(GraalVMJSScriptingEngineService graalJSScriptingEngine) throws ScriptException, IOException {
