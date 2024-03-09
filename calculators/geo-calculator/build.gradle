@@ -42,17 +42,14 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
 
-task downloadJsDependencies(dependsOn: 'build', type: Copy) {
-    println "The file"
-    def osmtogeojsonFile = file("src/main/resources/scripts/osmtogeojson.js")
+task downloadJsDependencies(dependsOn: 'build') {
+    def osmtogeojsonFile = file('src/main/resources/scripts/osmtogeojson.js')
     if (!osmtogeojsonFile.exists()) {
-        from 'https://unpkg.com/osmtogeojson@3.0.0-beta.5/osmtogeojson.js'
-        into 'src/main/resources/scripts'
+        new URL('https://unpkg.com/osmtogeojson@3.0.0-beta.5/osmtogeojson.js').withInputStream{ i -> osmtogeojsonFile.withOutputStream{ it << i }}
     }
-    def turfFile = file("src/main/resources/scripts/turf.js")
+    def turfFile = file('src/main/resources/scripts/turf.js')
     if (!turfFile.exists()) {
-        from 'https://unpkg.com/browse/@turf/turf@3.8.0/turf.js'
-        into 'src/main/resources/scripts'
+        new URL('https://unpkg.com/browse/@turf/turf@3.8.0/turf.js').withInputStream{ i -> turfFile.withOutputStream{ it << i }}
     }
 }
 
