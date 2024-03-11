@@ -1,8 +1,10 @@
 package com.nukedemo.population.batch.transformerstep;
 
+import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.Geometry;
 import com.mapbox.geojson.Point;
 import com.nukedemo.GhslMetaData;
+import com.nukedemo.geocalculator.services.JtsCalculationService;
 import com.nukedemo.population.batch.JobCompletionListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -20,19 +22,26 @@ import java.util.List;
 @StepScope
 public class TransformerDataProcessor implements ItemProcessor<TransformerDataItem, TransformerDataItem> {
 
+    public static final double ENL = 1.0001;
+
     @Autowired
     JobCompletionListener jobCompletionListener;
+
+    @Autowired
+    private JtsCalculationService jtsCalculationService;
 
     public TransformerDataProcessor() {
     }
 
     @Override
-    public TransformerDataItem process(TransformerDataItem item) {
-        createPolygons(item);
+    public TransformerDataItem process(TransformerDataItem item) throws Exception {
+        Geometry squares = createSquares(item);
+        Feature feature = Feature.fromGeometry(squares);
+        Geometry geometry = jtsCalculationService.union(Arrays.asList(feature));
         return item;
     }
 
-    private List<Geometry> createPolygons(TransformerDataItem item) {
+    private Geometry createSquares(TransformerDataItem item) {
         int[] data = item.getIntData();
         GhslMetaData metaData = item.getMetaData();
         double top = metaData.getTopLeftCorner()[0]; // lon
@@ -41,7 +50,7 @@ public class TransformerDataProcessor implements ItemProcessor<TransformerDataIt
         double width = metaData.getPixelWidthDegrees();
         int rows = metaData.getAreaHeight();
         int cols = metaData.getAreaWidth();
-        List<Geometry> squares = new ArrayList<>();
+        List<List<Point>> geometryPoints = new ArrayList<>();
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -52,15 +61,15 @@ public class TransformerDataProcessor implements ItemProcessor<TransformerDataIt
                     Point leftTop = Point.fromLngLat(verticalPos, hotizontalPos);
                     List<Point> points = new ArrayList<>();
                     points.add(leftTop);
-                    points.add(Point.fromLngLat(verticalPos, hotizontalPos - height));
-                    points.add(Point.fromLngLat(verticalPos + width, hotizontalPos - height));
-                    points.add(Point.fromLngLat(verticalPos + width, hotizontalPos));
+                    points.add(Point.fromLngLat(verticalPos, hotizontalPos - (height * ENL)));
+                    points.add(Point.fromLngLat(verticalPos + (width * ENL), hotizontalPos - (height * ENL)));
+                    points.add(Point.fromLngLat(verticalPos + (width * ENL), hotizontalPos));
                     points.add(leftTop);
-                    squares.add(Polygon.fromLngLats(Arrays.asList(points)));
+                    geometryPoints.add(points);
                 }
             }
         }
-        return squares;
+        return Polygon.fromLngLats(geometryPoints);
     }
 
 

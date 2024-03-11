@@ -11,6 +11,7 @@ repositories {
 }
 
 dependencies {
+    implementation project(':calculators:geo-calculator')
     implementation project(':calculators:geo-tiff')
     implementation project(':calculators:shared')
     //LOMBOK
