@@ -18,12 +18,12 @@ public class JtsCalculationService {
         if (polygons.isEmpty()) {
             return null;
         }
-        MultiPolygon cumulative = toMultiPolygon(polygons.get(0));
+        Geometry cumulative = toMultiPolygon(polygons.get(0));
         if (polygons.size() < 2) {
             return toTurfGeometry(cumulative);
         }
         for (int i = 1; i < polygons.size(); i++) {//skip first
-            cumulative.union(polygons.get(i));
+            cumulative = cumulative.union(polygons.get(i));
         }
         return toTurfGeometry(cumulative);
     }
