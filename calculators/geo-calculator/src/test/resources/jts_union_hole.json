@@ -30,7 +30,16 @@
                 49.09958333862941
               ]
             ]
-          ],
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
           [
             [
               [
@@ -54,7 +63,16 @@
                 49.09958333862941
               ]
             ]
-          ],
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
           [
             [
               [
@@ -78,7 +96,16 @@
                 49.09958333862941
               ]
             ]
-          ],
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
           [
             [
               [
@@ -102,7 +129,16 @@
                 49.09125000532908
               ]
             ]
-          ],
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
           [
             [
               [
@@ -126,7 +162,16 @@
                 49.09125000532908
               ]
             ]
-          ],
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
           [
             [
               [
@@ -150,7 +195,16 @@
                 49.08291667202875
               ]
             ]
-          ],
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
           [
             [
               [
@@ -174,7 +228,16 @@
                 49.08291667202875
               ]
             ]
-          ],
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
           [
             [
               [
