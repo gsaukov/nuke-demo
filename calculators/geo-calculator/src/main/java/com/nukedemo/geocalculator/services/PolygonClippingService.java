@@ -35,7 +35,10 @@ public class PolygonClippingService {
         return toTurfGeometry(cumulative);
     }
 
-    private com.mapbox.geojson.Geometry toTurfGeometry(List<List<List<double[]>>> cumulative) {
+    public com.mapbox.geojson.Geometry toTurfGeometry(List<List<List<double[]>>> cumulative) {
+        List<com.mapbox.geojson.Polygon> resPolygons = new ArrayList<>();
+        List<List<com.mapbox.geojson.Point>> polygons = createPointsFromLngLatsWithHoles(cumulative);
+        com.mapbox.geojson.Polygon.fromLngLats(polygons);
         return com.mapbox.geojson.MultiPolygon.fromPolygons(new ArrayList<>());
     }
 
@@ -76,11 +79,29 @@ public class PolygonClippingService {
         return polygonCoordinates;
     }
 
-    private void sample( ) {
+    public static List<List<com.mapbox.geojson.Point>> createPointsFromLngLatsWithHoles(List<List<List<double[]>>> lngLatLists) {
+        List<List<com.mapbox.geojson.Point>> pointsWithHoles = new ArrayList<>();
+        for (List<List<double[]>> polygonLngLats : lngLatLists) {
+            for (List<double[]> ringLngLats : polygonLngLats) {
+                pointsWithHoles.add(createPointsFromLngLats(List.of(ringLngLats))); // Convert to single-element list
+            }
+        }
+        return pointsWithHoles;
+    }
+
+    public static List<com.mapbox.geojson.Point> createPointsFromLngLats(List<List<double[]>> lngLatLists) {
+        List<com.mapbox.geojson.Point> points = new ArrayList<>();
+        for (List<double[]> lngLatList : lngLatLists) {
+            double[] lngLat = lngLatList.get(0);
+            points.add(com.mapbox.geojson.Point.fromLngLat(lngLat[0], lngLat[1]));
+        }
+        return points;
+    }
+
+    private void sample() {
         List<Polygon> pols = Arrays.asList(
                 polygon(
                         region(
-
                                 point(9.992083316153526, 49.09958333862941),
                                 point(9.992083316153526, 49.09124917199628),
                                 point(10.000417482787183, 49.09124917199628),
@@ -97,7 +118,6 @@ public class PolygonClippingService {
                         )),
                 polygon(
                         region(
-
                                 point(10.008749982753116, 49.09958333862941),
                                 point(10.008749982753116, 49.09124917199628),
                                 point(10.017084149386774, 49.09124917199628),
@@ -111,7 +131,6 @@ public class PolygonClippingService {
                                 point(10.000417482787183, 49.08291583869595),
                                 point(10.000417482787183, 49.09125000532908),
                                 point(9.992083316153526, 49.09125000532908)
-
                         )),
                 polygon(
                         region(
@@ -120,11 +139,9 @@ public class PolygonClippingService {
                                 point(10.017084149386774, 49.08291583869595),
                                 point(10.017084149386774, 49.09125000532908),
                                 point(10.008749982753116, 49.09125000532908)
-
                         )),
                 polygon(
                         region(
-
                                 point(9.992083316153526, 49.08291667202875),
                                 point(9.992083316153526, 49.074582505395625),
                                 point(10.000417482787183, 49.074582505395625),
