@@ -4,14 +4,12 @@ import com.mapbox.geojson.Feature;
 import com.menecats.polybool.Epsilon;
 import com.menecats.polybool.PolyBool;
 import com.menecats.polybool.models.Polygon;
-import com.menecats.polybool.models.geojson.Geometry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.menecats.polybool.helpers.PolyBoolHelper.*;
 import static com.menecats.polybool.helpers.PolyBoolHelper.point;
@@ -23,11 +21,11 @@ public class PolygonClippingService {
     private static final Epsilon EPSILON = epsilon();
 
     public com.mapbox.geojson.Geometry union(List<Feature> features) throws Exception {
-        List<Geometry.MultiPolygonGeometry> polygons = getPolygons(features);
+        List<List<List<List<double[]>>>> polygons = extractFeaturesCoordinates(features);
         if (polygons.isEmpty()) {
             return null;
         }
-        Geometry.MultiPolygonGeometry cumulative = polygons.get(0);
+        List<List<List<double[]>>> cumulative = polygons.get(0);
         if (polygons.size() < 2) {
             return toTurfGeometry(cumulative);
         }
@@ -37,34 +35,45 @@ public class PolygonClippingService {
         return toTurfGeometry(cumulative);
     }
 
-    private com.mapbox.geojson.Geometry toTurfGeometry(Geometry.MultiPolygonGeometry cumulative) {
+    private com.mapbox.geojson.Geometry toTurfGeometry(List<List<List<double[]>>> cumulative) {
         return com.mapbox.geojson.MultiPolygon.fromPolygons(new ArrayList<>());
     }
 
-    public List<Geometry.MultiPolygonGeometry> getPolygons(List<com.mapbox.geojson.Feature> features) {
-        List<Geometry.MultiPolygonGeometry> polygons = features.stream()
-                .filter(f -> (f.geometry() instanceof com.mapbox.geojson.Polygon))
-                .map(f -> toPolygon((com.mapbox.geojson.Polygon)f.geometry())).collect(Collectors.toList());
-
-        List<Geometry.MultiPolygonGeometry> multiPolygons = features.stream()
-                .filter(f -> (f.geometry() instanceof com.mapbox.geojson.MultiPolygon))
-                .map(f -> toMultiPolygon((com.mapbox.geojson.MultiPolygon)f.geometry()))
-                .collect(Collectors.toList());
-        polygons.addAll(multiPolygons);
+    public List<List<List<List<double[]>>>> extractFeaturesCoordinates(List<com.mapbox.geojson.Feature> features) {
+        List<List<List<List<double[]>>>> polygons = new ArrayList<>();
+        for (com.mapbox.geojson.Feature feature : features) {
+            polygons.add(extractFeatureCoordinates(feature));
+        }
         return polygons;
     }
 
-    private Geometry.MultiPolygonGeometry toMultiPolygon(com.mapbox.geojson.MultiPolygon multiPolygon) {
-        List<com.mapbox.geojson.Polygon> turfMultiPolygon = multiPolygon.polygons();
-        for (com.mapbox.geojson.Polygon polygon : turfMultiPolygon) {
+    public List<List<List<double[]>>> extractFeatureCoordinates(com.mapbox.geojson.Feature feature) {
+        List<List<List<double[]>>> coordinates = new ArrayList<>();
+        com.mapbox.geojson.Geometry geometry = feature.geometry();
 
+        if (geometry instanceof com.mapbox.geojson.Polygon) {
+            coordinates.add(extractPolygonCoordinates((com.mapbox.geojson.Polygon) geometry));
+        } else if (geometry instanceof com.mapbox.geojson.MultiPolygon) {
+            com.mapbox.geojson.MultiPolygon multiPolygon = (com.mapbox.geojson.MultiPolygon) geometry;
+            for (com.mapbox.geojson.Polygon polygon : multiPolygon.polygons()) {
+                coordinates.add(extractPolygonCoordinates(polygon));
+            }
         }
-        return new Geometry.MultiPolygonGeometry();
+
+        return coordinates;
     }
 
+    public List<List<double[]>> extractPolygonCoordinates(com.mapbox.geojson.Polygon polygon) {
+        List<List<double[]>> polygonCoordinates = new ArrayList<>();
+        List<com.mapbox.geojson.Point> ring = polygon.coordinates().get(0);
 
-    public Geometry.MultiPolygonGeometry toPolygon(com.mapbox.geojson.Polygon turfPolygon) {
-        return new Geometry.MultiPolygonGeometry();
+        List<double[]> ringList = new ArrayList<>();
+        for (com.mapbox.geojson.Point coordinate : ring) {
+            ringList.add(new double[]{coordinate.longitude(), coordinate.latitude()});  // Swap order for lat/lng
+        }
+        polygonCoordinates.add(ringList);
+
+        return polygonCoordinates;
     }
 
     private void sample( ) {
