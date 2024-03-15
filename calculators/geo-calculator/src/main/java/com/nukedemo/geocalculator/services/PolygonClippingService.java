@@ -21,25 +21,19 @@ public class PolygonClippingService {
     private static final Epsilon EPSILON = epsilon();
 
     public com.mapbox.geojson.Geometry union(List<Feature> features) throws Exception {
-        List<List<List<List<double[]>>>> polygons = extractFeaturesCoordinates(features);
-        if (polygons.isEmpty()) {
+        List<List<List<List<double[]>>>> featuresCoordinates = extractFeaturesCoordinates(features);
+        if (featuresCoordinates.isEmpty()) {
             return null;
         }
-        List<List<List<double[]>>> cumulative = polygons.get(0);
-        if (polygons.size() < 2) {
-            return toTurfGeometry(cumulative);
+        Polygon cumulative = new Polygon();
+        for (List<List<List<double[]>>> feature : featuresCoordinates) {
+            for (List<List<double[]>> polygons : feature) {
+                for (List<double[]> polygon : polygons) {
+                    cumulative = PolyBool.union(EPSILON, cumulative, polygon(polygon));
+                }
+            }
         }
-        for (int i = 1; i < polygons.size(); i++) {//skip first
-//            cumulative = PolyBool.union(EPSILON, cumulative, polygons.get(i));;
-        }
-        return toTurfGeometry(cumulative);
-    }
-
-    public com.mapbox.geojson.Geometry toTurfGeometry(List<List<List<double[]>>> cumulative) {
-        List<com.mapbox.geojson.Polygon> resPolygons = new ArrayList<>();
-        List<List<com.mapbox.geojson.Point>> polygons = createPointsFromLngLatsWithHoles(cumulative);
-        com.mapbox.geojson.Polygon.fromLngLats(polygons);
-        return com.mapbox.geojson.MultiPolygon.fromPolygons(new ArrayList<>());
+        return toTurfGeometry(cumulative.getRegions());
     }
 
     public List<List<List<List<double[]>>>> extractFeaturesCoordinates(List<com.mapbox.geojson.Feature> features) {
@@ -72,31 +66,30 @@ public class PolygonClippingService {
 
         List<double[]> ringList = new ArrayList<>();
         for (com.mapbox.geojson.Point coordinate : ring) {
-            ringList.add(new double[]{coordinate.longitude(), coordinate.latitude()});  // Swap order for lat/lng
+            ringList.add(new double[]{coordinate.longitude(), coordinate.latitude()});
         }
         polygonCoordinates.add(ringList);
 
         return polygonCoordinates;
     }
 
-    public static List<List<com.mapbox.geojson.Point>> createPointsFromLngLatsWithHoles(List<List<List<double[]>>> lngLatLists) {
-        List<List<com.mapbox.geojson.Point>> pointsWithHoles = new ArrayList<>();
-        for (List<List<double[]>> polygonLngLats : lngLatLists) {
-            for (List<double[]> ringLngLats : polygonLngLats) {
-                pointsWithHoles.add(createPointsFromLngLats(List.of(ringLngLats))); // Convert to single-element list
-            }
-        }
-        return pointsWithHoles;
+    public com.mapbox.geojson.Geometry toTurfGeometry(List<List<double[]>> coordinates) {
+        List<List<com.mapbox.geojson.Point>> polygonPoints = createPolygonPoints(coordinates);
+        return com.mapbox.geojson.MultiPolygon.fromPolygons(Arrays.asList(com.mapbox.geojson.Polygon.fromLngLats(polygonPoints)));
     }
 
-    public static List<com.mapbox.geojson.Point> createPointsFromLngLats(List<List<double[]>> lngLatLists) {
-        List<com.mapbox.geojson.Point> points = new ArrayList<>();
-        for (List<double[]> lngLatList : lngLatLists) {
-            double[] lngLat = lngLatList.get(0);
-            points.add(com.mapbox.geojson.Point.fromLngLat(lngLat[0], lngLat[1]));
+    public List<List<com.mapbox.geojson.Point>> createPolygonPoints(List<List<double[]>> coordinates) {
+        List<List<com.mapbox.geojson.Point>> polygonPoints = new ArrayList<>();
+        for (List<double[]> polygon : coordinates) {
+            List<com.mapbox.geojson.Point> points = new ArrayList<>();
+            for (double[] point : polygon) {
+                points.add(com.mapbox.geojson.Point.fromLngLat(point[0], point[1]));
+            }
+            polygonPoints.add(points);
         }
-        return points;
+        return polygonPoints;
     }
+
 
     private void sample() {
         List<Polygon> pols = Arrays.asList(
