@@ -28,9 +28,8 @@ public class PolygonClippingService {
         Polygon cumulative = new Polygon();
         for (List<List<List<double[]>>> feature : featuresCoordinates) {
             for (List<List<double[]>> polygons : feature) {
-                for (List<double[]> polygon : polygons) {
-                    cumulative = PolyBool.union(EPSILON, cumulative, polygon(polygon));
-                }
+                List<double[]>[] regions = polygons.stream().toArray(List[]::new);
+                cumulative = PolyBool.union(EPSILON, cumulative, polygon(regions));
             }
         }
         return toTurfGeometry(cumulative.getRegions());
@@ -62,14 +61,13 @@ public class PolygonClippingService {
 
     public List<List<double[]>> extractPolygonCoordinates(com.mapbox.geojson.Polygon polygon) {
         List<List<double[]>> polygonCoordinates = new ArrayList<>();
-        List<com.mapbox.geojson.Point> ring = polygon.coordinates().get(0);
-
-        List<double[]> ringList = new ArrayList<>();
-        for (com.mapbox.geojson.Point coordinate : ring) {
-            ringList.add(new double[]{coordinate.longitude(), coordinate.latitude()});
+        for(List<com.mapbox.geojson.Point> region : polygon.coordinates()) {
+            List<double[]> ringList = new ArrayList<>();
+            for (com.mapbox.geojson.Point coordinate : region) {
+                ringList.add(new double[]{coordinate.longitude(), coordinate.latitude()});
+            }
+            polygonCoordinates.add(ringList);
         }
-        polygonCoordinates.add(ringList);
-
         return polygonCoordinates;
     }
 
