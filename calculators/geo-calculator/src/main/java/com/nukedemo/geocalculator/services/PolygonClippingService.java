@@ -61,7 +61,7 @@ public class PolygonClippingService {
 
     public List<List<double[]>> extractPolygonCoordinates(com.mapbox.geojson.Polygon polygon) {
         List<List<double[]>> polygonCoordinates = new ArrayList<>();
-        for(List<com.mapbox.geojson.Point> region : polygon.coordinates()) {
+        for (List<com.mapbox.geojson.Point> region : polygon.coordinates()) {
             List<double[]> ringList = new ArrayList<>();
             for (com.mapbox.geojson.Point coordinate : region) {
                 ringList.add(new double[]{coordinate.longitude(), coordinate.latitude()});
@@ -78,11 +78,14 @@ public class PolygonClippingService {
 
     public List<List<com.mapbox.geojson.Point>> createPolygonPoints(List<List<double[]>> coordinates) {
         List<List<com.mapbox.geojson.Point>> polygonPoints = new ArrayList<>();
-        for (List<double[]> polygon : coordinates) {
+        // backward loop fixes polygon outer ring position that should be first, but it comes last.
+        for (int i = coordinates.size() - 1; i >= 0; i--) {
+            List<double[]> polygon = coordinates.get(i);
             List<com.mapbox.geojson.Point> points = new ArrayList<>();
             for (double[] point : polygon) {
                 points.add(com.mapbox.geojson.Point.fromLngLat(point[0], point[1]));
             }
+            points.add(points.get(0)); //add closing 5th point
             polygonPoints.add(points);
         }
         return polygonPoints;
