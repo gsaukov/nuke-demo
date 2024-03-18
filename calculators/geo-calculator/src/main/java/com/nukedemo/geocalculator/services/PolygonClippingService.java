@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import static com.menecats.polybool.helpers.PolyBoolHelper.*;
@@ -25,14 +26,31 @@ public class PolygonClippingService {
         if (featuresCoordinates.isEmpty()) {
             return null;
         }
-        Polygon cumulative = new Polygon();
+        LinkedList<Polygon> cumulatives = new LinkedList<>();
+        cumulatives.add(new Polygon());
+        int i = 0;
         for (List<List<List<double[]>>> feature : featuresCoordinates) {
             for (List<List<double[]>> polygons : feature) {
                 List<double[]>[] regions = polygons.stream().toArray(List[]::new);
-                cumulative = PolyBool.union(EPSILON, cumulative, polygon(regions));
+                Polygon toMerge = polygon(regions);
+                LinkedList<Polygon> cumulativesTemp = new LinkedList<>();
+                while (!cumulatives.isEmpty()) {
+                    Polygon cumulative = cumulatives.pop();
+                    if(hasIntersect(cumulative, toMerge)) {
+                        toMerge = PolyBool.union(EPSILON, cumulative, toMerge);
+                    } else {
+                        cumulativesTemp.add(cumulative);
+                    }
+                }
+                cumulativesTemp.add(toMerge);
+                cumulatives = cumulativesTemp;
+                i++;
+                if(i%1000 == 0) {
+                    log.info("Processed: " + i);
+                }
             }
         }
-        return toTurfGeometry(cumulative.getRegions());
+        return toTurfGeometries(cumulatives);
     }
 
     public List<List<List<List<double[]>>>> extractFeaturesCoordinates(List<com.mapbox.geojson.Feature> features) {
@@ -71,6 +89,15 @@ public class PolygonClippingService {
         return polygonCoordinates;
     }
 
+    public com.mapbox.geojson.Geometry toTurfGeometries(List<Polygon> cumulatives) {
+        List<com.mapbox.geojson.Polygon> multiPolygon = new ArrayList<>();
+        for(Polygon cumulative : cumulatives) {
+            List<List<double[]>> coordinates = cumulative.getRegions();
+            multiPolygon.add(com.mapbox.geojson.Polygon.fromLngLats(createPolygonPoints(coordinates)));
+        }
+        return com.mapbox.geojson.MultiPolygon.fromPolygons(multiPolygon);
+    }
+
     public com.mapbox.geojson.Geometry toTurfGeometry(List<List<double[]>> coordinates) {
         List<List<com.mapbox.geojson.Point>> polygonPoints = createPolygonPoints(coordinates);
         return com.mapbox.geojson.MultiPolygon.fromPolygons(Arrays.asList(com.mapbox.geojson.Polygon.fromLngLats(polygonPoints)));
@@ -85,12 +112,15 @@ public class PolygonClippingService {
             for (double[] point : polygon) {
                 points.add(com.mapbox.geojson.Point.fromLngLat(point[0], point[1]));
             }
-            points.add(points.get(0)); //add closing 5th point
+            points.add(points.get(0)); //add closing point
             polygonPoints.add(points);
         }
         return polygonPoints;
     }
 
+    public boolean hasIntersect(Polygon poly1, Polygon poly2) {
+        return PolyBool.intersect(EPSILON, poly1, poly2).getRegions().size() > 0;
+    }
 
     private void sample() {
         List<Polygon> pols = Arrays.asList(
