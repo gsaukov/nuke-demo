@@ -4,7 +4,7 @@ import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.Geometry;
 import com.mapbox.geojson.Point;
 import com.nukedemo.GhslMetaData;
-import com.nukedemo.geocalculator.services.JtsCalculationService;
+import com.nukedemo.geocalculator.services.PolygonClippingService;
 import com.nukedemo.population.batch.JobCompletionListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -28,20 +28,19 @@ public class TransformerDataProcessor implements ItemProcessor<TransformerDataIt
     JobCompletionListener jobCompletionListener;
 
     @Autowired
-    private JtsCalculationService jtsCalculationService;
+    private PolygonClippingService polygonClippingService;
 
     public TransformerDataProcessor() {
     }
 
     @Override
     public TransformerDataItem process(TransformerDataItem item) throws Exception {
-        Geometry squares = createSquares(item);
-        Feature feature = Feature.fromGeometry(squares);
-        Geometry geometry = jtsCalculationService.union(Arrays.asList(feature));
+        List<Feature> features = createSquares(item);
+        Geometry geometry = polygonClippingService.union(features);
         return item;
     }
 
-    private Geometry createSquares(TransformerDataItem item) {
+    private List<Feature> createSquares(TransformerDataItem item) {
         int[] data = item.getIntData();
         GhslMetaData metaData = item.getMetaData();
         double top = metaData.getTopLeftCorner()[0]; // lon
@@ -50,12 +49,13 @@ public class TransformerDataProcessor implements ItemProcessor<TransformerDataIt
         double width = metaData.getPixelWidthDegrees();
         int rows = metaData.getAreaHeight();
         int cols = metaData.getAreaWidth();
-        List<List<Point>> geometryPoints = new ArrayList<>();
+        List<Feature> features = new ArrayList<>();
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 double pixel = data[(i * cols) + j];
                 if (pixel > 0) {
+                    List<List<Point>> geometryPoints = new ArrayList<>();
                     double verticalPos = top + (j * height);
                     double hotizontalPos = left - (i * width);
                     Point leftTop = Point.fromLngLat(verticalPos, hotizontalPos);
@@ -66,10 +66,11 @@ public class TransformerDataProcessor implements ItemProcessor<TransformerDataIt
                     points.add(Point.fromLngLat(verticalPos + (width * ENL), hotizontalPos));
                     points.add(leftTop);
                     geometryPoints.add(points);
+                    features.add(Feature.fromGeometry(Polygon.fromLngLats(geometryPoints)));
                 }
             }
         }
-        return Polygon.fromLngLats(geometryPoints);
+        return features;
     }
 
 
