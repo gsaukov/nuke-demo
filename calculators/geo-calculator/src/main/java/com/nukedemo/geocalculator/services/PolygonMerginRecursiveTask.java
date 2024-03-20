@@ -10,15 +10,16 @@ import java.util.stream.Collectors;
 public class PolygonMerginRecursiveTask extends RecursiveTask<List<List<List<List<double[]>>>>> {
     private List<List<List<List<double[]>>>> features;
 
-    private static final int THRESHOLD = 1000;
+    private final int threshold;
 
-    public PolygonMerginRecursiveTask(List<List<List<List<double[]>>>> features) {
+    public PolygonMerginRecursiveTask(List<List<List<List<double[]>>>> features, int threshold) {
         this.features = features;
+        this.threshold = threshold;
     }
 
     @Override
     protected List<List<List<List<double[]>>>> compute() {
-        if (features.size() > THRESHOLD) {
+        if (features.size() > threshold) {
             return ForkJoinTask.invokeAll(createSubtasks())
                     .stream()
                     .map(ForkJoinTask::join)
@@ -31,12 +32,12 @@ public class PolygonMerginRecursiveTask extends RecursiveTask<List<List<List<Lis
 
     private Collection<PolygonMerginRecursiveTask> createSubtasks() {
         List<PolygonMerginRecursiveTask> dividedTasks = new ArrayList<>();
-        dividedTasks.add(new PolygonMerginRecursiveTask(features.subList(0, features.size() / 2)));
-        dividedTasks.add(new PolygonMerginRecursiveTask(features.subList(features.size() / 2, features.size())));
+        dividedTasks.add(new PolygonMerginRecursiveTask(features.subList(0, features.size() / 2), threshold));
+        dividedTasks.add(new PolygonMerginRecursiveTask(features.subList(features.size() / 2, features.size()), threshold));
         return dividedTasks;
     }
 
     private List<List<List<List<double[]>>>> process(List<List<List<List<double[]>>>> features) {
-        return features;
+        return PolygonClippingService.merge(features);
     }
 }
