@@ -32,7 +32,7 @@ dependencies {
 
     implementation 'org.springframework:spring-context'
     implementation 'org.slf4j:slf4j-api'
-    implementation 'org.slf4j:slf4j-simple'
+    implementation 'ch.qos.logback:logback-classic'
     implementation 'org.apache.commons:commons-math3:3.6.1'
     implementation 'de.grundid.opendatalab:geojson-jackson:1.14'
     implementation 'org.locationtech.jts:jts-core:1.19.0'

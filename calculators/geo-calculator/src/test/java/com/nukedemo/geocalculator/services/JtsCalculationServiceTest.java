@@ -24,7 +24,7 @@ class JtsCalculationServiceTest {
 
     @BeforeAll
     static void beforeAll() throws IOException {
-        Path path = new PathMatchingResourcePatternResolver().getResource("jts_union_hole.json").getFile().toPath();
+        Path path = new PathMatchingResourcePatternResolver().getResource("union_hole_double.json").getFile().toPath();
         GEOJSON = Files.readString(path, StandardCharsets.UTF_8);
         FEATURE_COLLECTION = FeatureCollection.fromJson(GEOJSON);
     }
