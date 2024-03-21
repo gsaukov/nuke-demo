@@ -1,15 +1,21 @@
 package com.nukedemo.geocalculator.services;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import com.menecats.polybool.Epsilon;
+import com.menecats.polybool.PolyBool;
+import com.menecats.polybool.models.Polygon;
+
+import java.util.*;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveTask;
 import java.util.stream.Collectors;
 
-public class PolygonMerginRecursiveTask extends RecursiveTask<List<List<List<List<double[]>>>>> {
-    private List<List<List<List<double[]>>>> features;
+import static com.menecats.polybool.helpers.PolyBoolHelper.epsilon;
 
+public class PolygonMerginRecursiveTask extends RecursiveTask<List<List<List<List<double[]>>>>> {
+
+    public static final Epsilon EPSILON = epsilon();
+
+    private List<List<List<List<double[]>>>> features;
     private final int threshold;
 
     public PolygonMerginRecursiveTask(List<List<List<List<double[]>>>> features, int threshold) {
@@ -20,11 +26,11 @@ public class PolygonMerginRecursiveTask extends RecursiveTask<List<List<List<Lis
     @Override
     protected List<List<List<List<double[]>>>> compute() {
         if (features.size() > threshold) {
-            return ForkJoinTask.invokeAll(createSubtasks())
+            return process(ForkJoinTask.invokeAll(createSubtasks())
                     .stream()
-                    .map(ForkJoinTask::join)
+                    .map(t -> t.join())
                     .flatMap(Collection::stream)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toList()));
         } else {
             return process(features);
         }
@@ -38,6 +44,37 @@ public class PolygonMerginRecursiveTask extends RecursiveTask<List<List<List<Lis
     }
 
     private List<List<List<List<double[]>>>> process(List<List<List<List<double[]>>>> features) {
-        return PolygonClippingService.merge(features);
+        if (features.size() > 1) {
+            return merge(features);
+        } else {
+            return features;
+        }
     }
+
+    public static List<List<List<List<double[]>>>> merge(List<List<List<List<double[]>>>> features) {
+        LinkedList<List<List<double[]>>> cumulatives = new LinkedList<>();
+        for (List<List<List<double[]>>> feature : features) {
+            cumulatives.add(feature.get(0));
+            for (int i = 1; i < feature.size(); i++) {
+                Polygon toMerge = new Polygon(feature.get(i));
+                LinkedList<List<List<double[]>>> cumulativesNext = new LinkedList<>();
+                while (!cumulatives.isEmpty()) {
+                    Polygon cumulative = new Polygon(cumulatives.pop());
+                    if(hasIntersect(cumulative, toMerge)) {
+                        toMerge = PolyBool.union(EPSILON, cumulative, toMerge);
+                    } else {
+                        cumulativesNext.add(cumulative.getRegions());
+                    }
+                }
+                cumulativesNext.add(toMerge.getRegions());
+                cumulatives = cumulativesNext;
+            }
+        }
+        return Arrays.asList(cumulatives);
+    }
+
+    public static boolean hasIntersect(Polygon poly1, Polygon poly2) {
+        return PolyBool.intersect(EPSILON, poly1, poly2).getRegions().size() > 0;
+    }
+
 }

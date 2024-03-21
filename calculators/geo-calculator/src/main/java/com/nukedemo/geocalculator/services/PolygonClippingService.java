@@ -1,30 +1,20 @@
 package com.nukedemo.geocalculator.services;
 
 import com.mapbox.geojson.Feature;
-import com.menecats.polybool.Epsilon;
-import com.menecats.polybool.PolyBool;
 import com.menecats.polybool.models.Polygon;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ForkJoinTask;
-import java.util.concurrent.RecursiveTask;
-import java.util.stream.Collectors;
-
-import static com.menecats.polybool.helpers.PolyBoolHelper.*;
-import static com.menecats.polybool.helpers.PolyBoolHelper.point;
 
 @Slf4j
 @Service
 public class PolygonClippingService {
 
-    private static final Epsilon EPSILON = epsilon();
-
-
-    public com.mapbox.geojson.Geometry unionMerge(List<Feature> features) throws Exception {
-
+    public com.mapbox.geojson.Geometry union(List<Feature> features) {
         ForkJoinPool forkJoinPool = new ForkJoinPool(16);
 
         List<List<List<List<double[]>>>> featuresCoordinates = forkJoinPool.invoke(new PolygonMerginRecursiveTask(extractFeaturesCoordinates(features), 2));
@@ -32,103 +22,18 @@ public class PolygonClippingService {
             return null;
         }
 
-        LinkedList<Polygon> cumulatives = new LinkedList<>();
-        cumulatives.add(new Polygon());
-        int i = 0;
-        for (List<List<List<double[]>>> feature : featuresCoordinates) {
-            for (List<List<double[]>> polygons : feature) {
-                List<double[]>[] regions = polygons.stream().toArray(List[]::new);
-                Polygon toMerge = polygon(regions);
-                LinkedList<Polygon> cumulativesTemp = new LinkedList<>();
-                while (!cumulatives.isEmpty()) {
-                    Polygon cumulative = cumulatives.pop();
-                    if(hasIntersect(cumulative, toMerge)) {
-                        toMerge = PolyBool.union(EPSILON, cumulative, toMerge);
-                    } else {
-                        cumulativesTemp.add(cumulative);
-                    }
-                }
-                cumulativesTemp.add(toMerge);
-                cumulatives = cumulativesTemp;
-                i++;
-                if (i % 1000 == 0) {
-                    log.info("Processed: " + i);
-                }
-            }
-        }
-        return toTurfGeometries(cumulatives);
+        return toTurfGeometriesList(featuresCoordinates.get(0));
     }
 
-    public static List<List<List<List<double[]>>>> merge (List<List<List<List<double[]>>>> featuresCoordinates) {
-        LinkedList<Polygon> cumulatives = new LinkedList<>();
-        cumulatives.add(new Polygon());
-        int i = 0;
-        for (List<List<List<double[]>>> feature : featuresCoordinates) {
-            for (List<List<double[]>> polygons : feature) {
-                List<double[]>[] regions = polygons.stream().toArray(List[]::new);
-                Polygon toMerge = polygon(regions);
-                LinkedList<Polygon> cumulativesTemp = new LinkedList<>();
-                while (!cumulatives.isEmpty()) {
-                    Polygon cumulative = cumulatives.pop();
-                    if(hasIntersect(cumulative, toMerge)) {
-                        toMerge = PolyBool.union(EPSILON, cumulative, toMerge);
-                    } else {
-                        cumulativesTemp.add(cumulative);
-                    }
-                }
-                cumulativesTemp.add(toMerge);
-                cumulatives = cumulativesTemp;
-                i++;
-                if (i % 1000 == 0) {
-                    log.info("Processed: " + i);
-                }
-            }
-        }
-        return Arrays.asList(cumulatives.stream().map(p -> p.getRegions())
-                .collect(Collectors.toList()));
-    }
-
-    public com.mapbox.geojson.Geometry union(List<Feature> features) throws Exception {
-        List<List<List<List<double[]>>>> featuresCoordinates = extractFeaturesCoordinates(features);
-        if (featuresCoordinates.isEmpty()) {
-            return null;
-        }
-        LinkedList<Polygon> cumulatives = new LinkedList<>();
-        cumulatives.add(new Polygon());
-        int i = 0;
-        for (List<List<List<double[]>>> feature : featuresCoordinates) {
-            for (List<List<double[]>> polygons : feature) {
-                List<double[]>[] regions = polygons.stream().toArray(List[]::new);
-                Polygon toMerge = polygon(regions);
-                LinkedList<Polygon> cumulativesTemp = new LinkedList<>();
-                while (!cumulatives.isEmpty()) {
-                    Polygon cumulative = cumulatives.pop();
-                    if(hasIntersect(cumulative, toMerge)) {
-                        toMerge = PolyBool.union(EPSILON, cumulative, toMerge);
-                    } else {
-                        cumulativesTemp.add(cumulative);
-                    }
-                }
-                cumulativesTemp.add(toMerge);
-                cumulatives = cumulativesTemp;
-                i++;
-                if (i % 1000 == 0) {
-                    log.info("Processed: " + i);
-                }
-            }
-        }
-        return toTurfGeometries(cumulatives);
-    }
-
-    public static List<List<List<List<double[]>>>> extractFeaturesCoordinates(List<com.mapbox.geojson.Feature> features) {
+    public List<List<List<List<double[]>>>> extractFeaturesCoordinates(List<Feature> features) {
         List<List<List<List<double[]>>>> polygons = new ArrayList<>();
-        for (com.mapbox.geojson.Feature feature : features) {
+        for (Feature feature : features) {
             polygons.add(extractFeatureCoordinates(feature));
         }
         return polygons;
     }
 
-    public static List<List<List<double[]>>> extractFeatureCoordinates(com.mapbox.geojson.Feature feature) {
+    public List<List<List<double[]>>> extractFeatureCoordinates(Feature feature) {
         List<List<List<double[]>>> coordinates = new ArrayList<>();
         com.mapbox.geojson.Geometry geometry = feature.geometry();
 
@@ -144,7 +49,7 @@ public class PolygonClippingService {
         return coordinates;
     }
 
-    public static List<List<double[]>> extractPolygonCoordinates(com.mapbox.geojson.Polygon polygon) {
+    public List<List<double[]>> extractPolygonCoordinates(com.mapbox.geojson.Polygon polygon) {
         List<List<double[]>> polygonCoordinates = new ArrayList<>();
         for (List<com.mapbox.geojson.Point> region : polygon.coordinates()) {
             List<double[]> ringList = new ArrayList<>();
@@ -154,6 +59,14 @@ public class PolygonClippingService {
             polygonCoordinates.add(ringList);
         }
         return polygonCoordinates;
+    }
+
+    public com.mapbox.geojson.Geometry toTurfGeometriesList(List<List<List<double[]>>> cumulatives) {
+        List<com.mapbox.geojson.Polygon> multiPolygon = new ArrayList<>();
+        for (List<List<double[]>> coordinates : cumulatives) {
+            multiPolygon.add(com.mapbox.geojson.Polygon.fromLngLats(createPolygonPoints(coordinates)));
+        }
+        return com.mapbox.geojson.MultiPolygon.fromPolygons(multiPolygon);
     }
 
     public com.mapbox.geojson.Geometry toTurfGeometries(List<Polygon> cumulatives) {
@@ -183,86 +96,5 @@ public class PolygonClippingService {
             polygonPoints.add(points);
         }
         return polygonPoints;
-    }
-
-    public static boolean hasIntersect(Polygon poly1, Polygon poly2) {
-        return PolyBool.intersect(EPSILON, poly1, poly2).getRegions().size() > 0;
-    }
-
-    private void sample() {
-        List<Polygon> pols = Arrays.asList(
-                polygon(
-                        region(
-                                point(9.992083316153526, 49.09958333862941),
-                                point(9.992083316153526, 49.09124917199628),
-                                point(10.000417482787183, 49.09124917199628),
-                                point(10.000417482787183, 49.09958333862941),
-                                point(9.992083316153526, 49.09958333862941)
-                        )),
-                polygon(
-                        region(
-                                point(10.00041664945332, 49.09958333862941),
-                                point(10.00041664945332, 49.09124917199628),
-                                point(10.008750816086978, 49.09124917199628),
-                                point(10.008750816086978, 49.09958333862941),
-                                point(10.00041664945332, 49.09958333862941)
-                        )),
-                polygon(
-                        region(
-                                point(10.008749982753116, 49.09958333862941),
-                                point(10.008749982753116, 49.09124917199628),
-                                point(10.017084149386774, 49.09124917199628),
-                                point(10.017084149386774, 49.09958333862941),
-                                point(10.008749982753116, 49.09958333862941)
-                        )),
-                polygon(
-                        region(
-                                point(9.992083316153526, 49.09125000532908),
-                                point(9.992083316153526, 49.08291583869595),
-                                point(10.000417482787183, 49.08291583869595),
-                                point(10.000417482787183, 49.09125000532908),
-                                point(9.992083316153526, 49.09125000532908)
-                        )),
-                polygon(
-                        region(
-                                point(10.008749982753116, 49.09125000532908),
-                                point(10.008749982753116, 49.08291583869595),
-                                point(10.017084149386774, 49.08291583869595),
-                                point(10.017084149386774, 49.09125000532908),
-                                point(10.008749982753116, 49.09125000532908)
-                        )),
-                polygon(
-                        region(
-                                point(9.992083316153526, 49.08291667202875),
-                                point(9.992083316153526, 49.074582505395625),
-                                point(10.000417482787183, 49.074582505395625),
-                                point(10.000417482787183, 49.08291667202875),
-                                point(9.992083316153526, 49.08291667202875)
-                        )),
-                polygon(
-                        region(
-                                point(10.00041664945332, 49.08291667202875),
-                                point(10.00041664945332, 49.074582505395625),
-                                point(10.008750816086978, 49.074582505395625),
-                                point(10.008750816086978, 49.08291667202875),
-                                point(10.00041664945332, 49.08291667202875)
-                        )),
-                polygon(
-                        region(
-                                point(10.008749982753116, 49.08291667202875),
-                                point(10.008749982753116, 49.074582505395625),
-                                point(10.017084149386774, 49.074582505395625),
-                                point(10.017084149386774, 49.08291667202875),
-                                point(10.008749982753116, 49.08291667202875)
-                        ))
-
-        );
-
-        Polygon cum = pols.get(0);
-
-        for (int i = 1; i < pols.size(); i++) {
-            cum = PolyBool.union(EPSILON, cum, pols.get(i));
-        }
-        log.info(cum.toString());
     }
 }
