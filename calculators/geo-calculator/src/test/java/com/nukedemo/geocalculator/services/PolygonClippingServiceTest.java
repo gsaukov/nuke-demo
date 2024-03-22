@@ -5,6 +5,7 @@ import com.mapbox.geojson.Geometry;
 import com.menecats.polybool.PolyBool;
 import com.menecats.polybool.models.Polygon;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -34,14 +35,24 @@ class PolygonClippingServiceTest {
     void unionMergeSimple() throws Exception {
         FeatureCollection featureCollection = getFeatureCollection("union_hole_simple.json");
         Geometry geometry = service.union(featureCollection.features());
-        log.info("union merge simple: " + geometry.toJson());
+        Geometry expectedGeometry = getFeatureCollection("union_hole_simple_result.json").features().get(0).geometry();
+        Assertions.assertEquals(expectedGeometry.toJson(), geometry.toJson());
     }
 
     @Test
     void unionMergeAdvanced() throws Exception {
         FeatureCollection featureCollection = getFeatureCollection("union_hole_double.json");
         Geometry geometry = service.union(featureCollection.features());
-        log.info("union merge advance: " + geometry.toJson());
+        Geometry expectedGeometry = getFeatureCollection("union_hole_double_result.json").features().get(0).geometry();
+        Assertions.assertEquals(expectedGeometry.toJson(), geometry.toJson());
+    }
+
+    @Test
+    void unionMergeNoIntersect() throws Exception {
+        FeatureCollection featureCollection = getFeatureCollection("union_no_intersect.json");
+        Geometry geometry = service.union(featureCollection.features());
+        Geometry expectedGeometry = getFeatureCollection("union_no_intersect_result.json").features().get(0).geometry();
+        Assertions.assertEquals(expectedGeometry.toJson(), geometry.toJson());
     }
 
     FeatureCollection getFeatureCollection(String fileName) throws IOException {
