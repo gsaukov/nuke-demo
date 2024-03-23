@@ -1,7 +1,6 @@
 package com.nukedemo.population.batch.transformerstep;
 
 import com.mapbox.geojson.Feature;
-import com.mapbox.geojson.Geometry;
 import com.mapbox.geojson.Point;
 import com.nukedemo.GhslMetaData;
 import com.nukedemo.geocalculator.services.PolygonClippingService;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 import com.mapbox.geojson.Polygon;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -27,16 +25,16 @@ public class TransformerDataProcessor implements ItemProcessor<TransformerDataIt
     @Autowired
     JobCompletionListener jobCompletionListener;
 
-    @Autowired
     private PolygonClippingService polygonClippingService;
 
-    public TransformerDataProcessor() {
+    public TransformerDataProcessor(@Autowired PolygonClippingService polygonClippingService) {
+        this.polygonClippingService = polygonClippingService;
     }
 
     @Override
     public TransformerDataItem process(TransformerDataItem item) throws Exception {
         List<Feature> features = createSquares(item);
-        Geometry geometry = polygonClippingService.union(features);
+        item.setTransformedGeometry(polygonClippingService.union(features));
         return item;
     }
 
