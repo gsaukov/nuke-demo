@@ -1,9 +1,11 @@
 package com.nukedemo;
 
 
-import java.awt.image.Raster;
+import java.awt.*;
+import java.awt.image.*;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.apache.commons.io.FileUtils;
@@ -15,6 +17,8 @@ import org.geotools.geometry.DirectPosition2D;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.geometry.DirectPosition;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
+import javax.imageio.ImageIO;
 
 // Geotiff Mollweide and geotools 
 // https://gis.stackexchange.com/questions/314421/geotiff-geotools-mollweide-customer-projection-not-recognized
@@ -82,6 +86,11 @@ public class TiffPopulationDataContainer {
     public double[] toDoubleArray() {
         return tiffRaster.getPixels(0, 0, rasterWidth, rasterHeight, new double[rasterHeight * rasterWidth]);
     }
+
+    public void writeAsPNG() throws IOException {
+        ImageIO.write(cov.getRenderedImage(), "png", new File("testbbbn.png"));
+    }
+
 
     public GhslMetaData getMetaData() {
         //GHS_POP_E2030_GLOBE_R2023A_4326_30ss_V1_0_R4_C20
