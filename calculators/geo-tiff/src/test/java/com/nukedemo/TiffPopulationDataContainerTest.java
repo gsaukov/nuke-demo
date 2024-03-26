@@ -5,6 +5,8 @@ import org.geotools.coverage.grid.GridCoordinates2D;
 import org.geotools.geometry.DirectPosition2D;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,6 +34,19 @@ class TiffPopulationDataContainerTest {
     public void testTiffPopulationDataContainerString() throws Exception {
         TiffPopulationDataContainer container = new TiffPopulationDataContainer(filepath);
         assertNotNull(container);
+    }
+
+
+    @Test
+    public void testPngRendering() throws Exception {
+        TiffPopulationDataContainer container = new TiffPopulationDataContainer(filepath);
+        File outputFile = new File("test_res.png");
+        byte[] res = container.writeToPngByteArray();
+        try (FileOutputStream fos = new FileOutputStream(outputFile)) {
+            fos.write(res);
+        }
+        assertTrue(outputFile.getTotalSpace() > 1000); //smthng hass been written.
+        outputFile.delete();
     }
 
     @Test
