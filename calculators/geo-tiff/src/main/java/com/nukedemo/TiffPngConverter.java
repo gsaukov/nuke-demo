@@ -13,12 +13,12 @@ import org.opengis.filter.FilterFactory2;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class TiffPngConverter {
 
-    public static void convert(GridCoverage2D cov) throws IllegalArgumentException, IOException {
+    public static byte[] convert(GridCoverage2D cov) throws IllegalArgumentException, IOException {
         BufferedImage image = new BufferedImage(cov.getGridGeometry().getGridRange2D().width,
                 cov.getGridGeometry().getGridRange2D().height, BufferedImage.TYPE_4BYTE_ABGR);
         MapContent mapContent = new MapContent();
@@ -29,8 +29,9 @@ public class TiffPngConverter {
         draw.setMapContent(mapContent);
         Graphics2D graphics = image.createGraphics();
         draw.paint(graphics, cov.getGridGeometry().getGridRange2D(), mapContent.getMaxBounds());
-        File out = new File("test.png");
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
         ImageIO.write(image, "PNG", out);
+        return out.toByteArray();
     }
 
     private static Style createStyle() {
