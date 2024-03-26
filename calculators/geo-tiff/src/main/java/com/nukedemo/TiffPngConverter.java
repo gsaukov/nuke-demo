@@ -19,19 +19,23 @@ import java.io.IOException;
 public class TiffPngConverter {
 
     public static byte[] convert(GridCoverage2D cov) throws IllegalArgumentException, IOException {
-        BufferedImage image = new BufferedImage(cov.getGridGeometry().getGridRange2D().width,
-                cov.getGridGeometry().getGridRange2D().height, BufferedImage.TYPE_4BYTE_ABGR);
         MapContent mapContent = new MapContent();
-        mapContent.getViewport().setCoordinateReferenceSystem(cov.getCoordinateReferenceSystem());
-        Layer rasterLayer = new GridCoverageLayer(cov, createStyle());
-        mapContent.addLayer(rasterLayer);
-        GTRenderer draw = new StreamingRenderer();
-        draw.setMapContent(mapContent);
-        Graphics2D graphics = image.createGraphics();
-        draw.paint(graphics, cov.getGridGeometry().getGridRange2D(), mapContent.getMaxBounds());
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ImageIO.write(image, "PNG", out);
-        return out.toByteArray();
+        try {
+            BufferedImage image = new BufferedImage(cov.getGridGeometry().getGridRange2D().width,
+                    cov.getGridGeometry().getGridRange2D().height, BufferedImage.TYPE_4BYTE_ABGR);
+            mapContent.getViewport().setCoordinateReferenceSystem(cov.getCoordinateReferenceSystem());
+            Layer rasterLayer = new GridCoverageLayer(cov, createStyle());
+            mapContent.addLayer(rasterLayer);
+            GTRenderer draw = new StreamingRenderer();
+            draw.setMapContent(mapContent);
+            Graphics2D graphics = image.createGraphics();
+            draw.paint(graphics, cov.getGridGeometry().getGridRange2D(), mapContent.getMaxBounds());
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            ImageIO.write(image, "PNG", out);
+            return out.toByteArray();
+        } finally {
+            mapContent.dispose();
+        }
     }
 
     private static Style createStyle() {
