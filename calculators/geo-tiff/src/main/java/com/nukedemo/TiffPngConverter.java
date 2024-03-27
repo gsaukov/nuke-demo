@@ -17,8 +17,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /*
- *  Possible Color Map:
+ *  Bleak Color Map:
+ * 	color: #00FF00 value: 100
+ * 	color: #00FF00 value: 1000
+ *  color: #00FFFF value: 5000
+ *  color: #0000FF value: 10000
  *
+ *  Intense Color Map:
  * 	color: #f4fbf2 value: 20-99
  * 	color: #d9f2e5 value: 100-399
  *  color: #a8e3e5 value: 400-1k
@@ -63,36 +68,28 @@ public class TiffPngConverter {
     private static Style createStyle() {
         FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
         StyleFactory sf = CommonFactoryFinder.getStyleFactory();
-
         RasterSymbolizer sym = sf.getDefaultRasterSymbolizer();
-        ColorMap cMap = sf.createColorMap();
-        ColorMapEntry start = sf.createColorMapEntry();
-        start.setColor(ff.literal("#00FF00"));
-        start.setOpacity(ff.literal(0.0));
-        start.setQuantity(ff.literal(0.0));
-        ColorMapEntry end = sf.createColorMapEntry();
-        end.setColor(ff.literal("#00FF00"));
-        end.setOpacity(ff.literal(0.3));
-        end.setQuantity(ff.literal(100.0));
-        ColorMapEntry ext = sf.createColorMapEntry();
-        ext.setColor(ff.literal("#00FFFF"));
-        ext.setOpacity(ff.literal(0.4));
-        ext.setQuantity(ff.literal(1000.0));
-        ColorMapEntry ext2 = sf.createColorMapEntry();
-        ext2.setColor(ff.literal("#0000FF"));
-        ext2.setOpacity(ff.literal(0.5));
-        ext2.setQuantity(ff.literal(10000.0));
-
-        cMap.addColorMapEntry(start);
-        cMap.addColorMapEntry(end);
-        cMap.addColorMapEntry(ext);
-        cMap.addColorMapEntry(ext2);
-
-        sym.setColorMap(cMap);
-
+        sym.setColorMap(bleak(ff, sf));
         Style style = SLD.wrapSymbolizers(sym);
-
         return style;
+    }
+
+    private static ColorMap bleak(FilterFactory2 ff, StyleFactory sf) {
+        ColorMap cMap = sf.createColorMap();
+        fillColorMap(ff, sf, cMap, "#00FF00", 0.0, 0.0);
+        fillColorMap(ff, sf, cMap, "#00FF00", 0.3, 100.0);
+        fillColorMap(ff, sf, cMap, "#00FFFF", 0.4, 1000.0);
+        fillColorMap(ff, sf, cMap, "#0000FF", 0.4, 5000.0);
+        fillColorMap(ff, sf, cMap, "#0000FF", 0.5, 10000.0);
+        return cMap;
+    }
+
+    private static void fillColorMap(FilterFactory2 ff, StyleFactory sf, ColorMap cMap, String color, double opacity, double value) {
+        ColorMapEntry entry = sf.createColorMapEntry();
+        entry.setColor(ff.literal(color));
+        entry.setOpacity(ff.literal(opacity));
+        entry.setQuantity(ff.literal(value));
+        cMap.addColorMapEntry(entry);
     }
 
 
