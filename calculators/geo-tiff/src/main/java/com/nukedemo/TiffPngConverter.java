@@ -16,6 +16,28 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+/*
+ *  Possible Color Map:
+ *
+ * 	color: #f4fbf2 value: 20-99
+ * 	color: #d9f2e5 value: 100-399
+ *  color: #a8e3e5 value: 400-1k
+ *  color: #71c7d7 value: 1k-2k
+ * 	color: #428acb value: 2k-3.5k
+ *  color: #2d6bb3 value: 3.5k-5.5k
+ * 	color: #0c4c9f value: 5.5k-7.5k
+ *  color: #00309f value: 7.5k-10k
+ * 	color: #521f8b value: 10k-12k
+ *  color: #700080 value: 12k-16k
+ * 	color: #990049 value: 16k-22k
+ *  color: #cc003d value: 22k-30k
+ * 	color: #ff0000 value: 30k-50k
+ *  color: #ff6200 value: 50k-100k
+ * 	color: #ff9e00 value: 100k-200k
+ *  color: #ffc300 value: 200k+
+ * */
+
+
 public class TiffPngConverter {
 
     public static byte[] convert(GridCoverage2D cov) throws IllegalArgumentException, IOException {
