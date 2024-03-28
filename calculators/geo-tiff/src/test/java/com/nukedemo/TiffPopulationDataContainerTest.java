@@ -41,7 +41,7 @@ class TiffPopulationDataContainerTest {
     public void testPngRendering() throws Exception {
         TiffPopulationDataContainer container = new TiffPopulationDataContainer(filepath);
         File outputFile = new File("test_res.png");
-        byte[] res = container.writeToPngByteArray();
+        byte[] res = container.writeToPngByteArray(TiffPngConverter.DENSITY_30SS);
         try (FileOutputStream fos = new FileOutputStream(outputFile)) {
             fos.write(res);
         }

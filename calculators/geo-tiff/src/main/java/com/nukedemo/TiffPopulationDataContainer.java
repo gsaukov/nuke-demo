@@ -82,8 +82,8 @@ public class TiffPopulationDataContainer {
         return tiffRaster.getPixels(0, 0, rasterWidth, rasterHeight, new double[rasterHeight * rasterWidth]);
     }
 
-    public byte[] writeToPngByteArray() throws IOException {
-        return TiffPngConverter.convert(cov);
+    public byte[] writeToPngByteArray(int density) throws IOException {
+        return TiffPngConverter.convert(cov, density);
     }
 
     public GhslMetaData getMetaData() {
