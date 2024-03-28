@@ -64,6 +64,9 @@ public class PopulationBatchConfig {
     @Autowired
     TransformerDataPartitioner transformerDataPartitioner;
 
+    @Autowired
+    JobCompletionListener jobCompletionListener;
+
     @Bean
     public JobLauncher  jobLauncher() throws Exception {
         TaskExecutorJobLauncher jobLauncher = new TaskExecutorJobLauncher();
@@ -76,10 +79,10 @@ public class PopulationBatchConfig {
     public Job processJob() {
         return new JobBuilder("population-processing-job", jobRepository)
                 .incrementer(new RunIdIncrementer())
-                .listener(listener())
+                .listener(jobCompletionListener)
                 .flow(downloadingPartition())
                 .next(processingPartition())
-                .next(transformerPartition())
+//                .next(transformerPartition())
                 .end()
                 .build();
     }
@@ -128,7 +131,7 @@ public class PopulationBatchConfig {
         return new StepBuilder("data-transforming-partition", jobRepository)
                 .partitioner("transforming-partition-step", transformerDataPartitioner)
                 .step(transformerStep())
-                .gridSize(4)
+                .gridSize(1)
                 .taskExecutor(taskExecutor())
                 .build();
     }
@@ -141,11 +144,6 @@ public class PopulationBatchConfig {
                 .processor(transformerDataProcessor)
                 .writer(transformerDataWriter)
                 .build();
-    }
-
-    @Bean
-    public JobCompletionListener listener() {
-        return new JobCompletionListener();
     }
 
     public TaskExecutor taskExecutor() {
