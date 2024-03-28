@@ -13,6 +13,8 @@ public class PopulationDataItem {
 
     private TiffPopulationDataContainer populationDataContainer;
 
+    private byte[] pngSource;
+
     private GhslMetaData metaData;
 
     private PopulationDataInt populationDataInt;
