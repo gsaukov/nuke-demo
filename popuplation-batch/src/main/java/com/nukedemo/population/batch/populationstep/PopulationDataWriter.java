@@ -37,6 +37,7 @@ public class PopulationDataWriter implements ItemWriter<PopulationDataItem> {
         for(PopulationDataItem item : chunk.getItems()){
             try {
                 writeToTifFile(item);
+                writeToPngFile(item);
                 writeToPopulationDataIntFile(item);
                 writeToPopulationDataDoubleFile(item);
             } catch (Exception e) {
@@ -46,18 +47,29 @@ public class PopulationDataWriter implements ItemWriter<PopulationDataItem> {
     }
 
     private void writeToTifFile(PopulationDataItem item) throws IOException {
-        File outputFolder = new File(resultFolder + "/temp/");
+        File outputFolder = new File(resultFolder + "/img/");
         FileUtils.writeByteArrayToFile(new File(outputFolder, item.getDataName()), item.getTifSource());
     }
 
+    private void writeToPngFile(PopulationDataItem item) throws IOException {
+        File outputFolder = new File(resultFolder + "/img/");
+        String itemName = item.getDataName().replace(".tif", ".png");
+        FileUtils.writeByteArrayToFile(new File(outputFolder, itemName), item.getPngSource());
+
+    }
+
     private void writeToPopulationDataIntFile(PopulationDataItem item) throws Exception {
-        String itemName = item.getDataName().replace(".tif", "_int.json");
-        FileUtils.writeStringToFile(new File(outputFolder, itemName), toJson(item.getMetaData(), item.getPopulationDataInt()));
+        if(item.getPopulationDataInt() != null) {
+            String itemName = item.getDataName().replace(".tif", "_int.json");
+            FileUtils.writeStringToFile(new File(outputFolder, itemName), toJson(item.getMetaData(), item.getPopulationDataInt()));
+        }
     }
 
     private void writeToPopulationDataDoubleFile(PopulationDataItem item) throws Exception {
-        String itemName = item.getDataName().replace(".tif", "_double.json");
-        FileUtils.writeStringToFile(new File(outputFolder, itemName), toJson(item.getMetaData(), item.getPopulationDataDouble()));
+        if(item.getPopulationDataDouble() != null) {
+            String itemName = item.getDataName().replace(".tif", "_double.json");
+            FileUtils.writeStringToFile(new File(outputFolder, itemName), toJson(item.getMetaData(), item.getPopulationDataDouble()));
+        }
     }
 
     private String toJson (GhslMetaData metaData, Object data) throws Exception {
