@@ -9,7 +9,9 @@ import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,7 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @StepScope
 @SpringBatchTest()
 @EnableAutoConfiguration
+@EnableConfigurationProperties
 @ContextConfiguration(classes = {PopulationBatchApplication.class})
+@TestPropertySource(properties = {"populationBatch.ghsl.resultFolder=test"})
 class GhslApiClientTest {
 
     private static final String WSG84_RESOLUTION = "4326_30ss";
