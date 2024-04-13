@@ -72,42 +72,48 @@ public class TiffPngConverter {
         FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
         StyleFactory sf = CommonFactoryFinder.getStyleFactory();
         RasterSymbolizer sym = sf.getDefaultRasterSymbolizer();
-        sym.setColorMap(intense(ff, sf, density));
+        sym.setColorMap(intense(ff, sf, 1, density));
         Style style = SLD.wrapSymbolizers(sym);
         return style;
     }
 
-    private static ColorMap bleak(FilterFactory2 ff, StyleFactory sf, int density) {
+    private static ColorMap bleak(FilterFactory2 ff, StyleFactory sf, double opacity, int density) {
         ColorMap cMap = sf.createColorMap();
-        fillColorMap(ff, sf, cMap, "#00FF00", 0.0, 0.0 * density);
-        fillColorMap(ff, sf, cMap, "#00FF00", 0.3, 1.0 * density);
-        fillColorMap(ff, sf, cMap, "#00FFFF", 0.4, 10.0 * density);
-        fillColorMap(ff, sf, cMap, "#0000FF", 0.4, 50.0 * density);
-        fillColorMap(ff, sf, cMap, "#0000FF", 0.5, 100.0 * density);
+        fillColorMap(ff, sf, cMap, "#00FF00", getOpacity(0.0, opacity), 0.0 * density);
+        fillColorMap(ff, sf, cMap, "#00FF00", getOpacity(0.2, opacity), 0.01 * density);
+        fillColorMap(ff, sf, cMap, "#00FF00", getOpacity(0.3, opacity), 1.0 * density);
+        fillColorMap(ff, sf, cMap, "#00FFFF", getOpacity(0.4, opacity), 10.0 * density);
+        fillColorMap(ff, sf, cMap, "#0000FF", getOpacity(0.4, opacity), 50.0 * density);
+        fillColorMap(ff, sf, cMap, "#0000FF", getOpacity(0.5, opacity), 100.0 * density);
         return cMap;
     }
 
 
-    private static ColorMap intense(FilterFactory2 ff, StyleFactory sf, int density) {
+    private static ColorMap intense(FilterFactory2 ff, StyleFactory sf, double opacity, int density) {
         ColorMap cMap = sf.createColorMap();
-        fillColorMap(ff, sf, cMap, "#00FF00", 0.0, 0.0 * density);
-        fillColorMap(ff, sf, cMap, "#f4fbf2", 0.2, 1.0 * density);  //color: #f4fbf2 value: 20-99
-        fillColorMap(ff, sf, cMap, "#d9f2e5", 0.2, 2.0 * density);  //color: #d9f2e5 value: 100-399
-        fillColorMap(ff, sf, cMap, "#a8e3e5", 0.2, 6.0 * density);  //color: #a8e3e5 value: 400-1k
-        fillColorMap(ff, sf, cMap, "#71c7d7", 0.3, 15.0 * density);  //color: #71c7d7 value: 1k-2k
-        fillColorMap(ff, sf, cMap, "#428acb", 0.3, 27.0 * density);  //color: #428acb value: 2k-3.5k
-        fillColorMap(ff, sf, cMap, "#2d6bb3", 0.3, 42.0 * density);  //color: #2d6bb3 value: 3.5k-5.5k
-        fillColorMap(ff, sf, cMap, "#0c4c9f", 0.3, 62.0 * density);  //color: #0c4c9f value: 5.5k-7.5k
-        fillColorMap(ff, sf, cMap, "#00309f", 0.3, 82.0 * density);  //color: #00309f value: 7.5k-10k
-        fillColorMap(ff, sf, cMap, "#521f8b", 0.3, 110.0 * density);  //color: #521f8b value: 10k-12k
-        fillColorMap(ff, sf, cMap, "#700080", 0.3, 140.0 * density);  //color: #700080 value: 12k-16k
-        fillColorMap(ff, sf, cMap, "#990049", 0.4, 190.0 * density);  //color: #990049 value: 16k-22k
-        fillColorMap(ff, sf, cMap, "#cc003d", 0.4, 260.0 * density);  //color: #cc003d value: 22k-30k
-        fillColorMap(ff, sf, cMap, "#ff0000", 0.4, 400.0 * density);  //color: #ff0000 value: 30k-50k
-        fillColorMap(ff, sf, cMap, "#ff6200", 0.5, 750.0 * density);  //color: #ff6200 value: 50k-100k
-        fillColorMap(ff, sf, cMap, "#ff9e00", 0.5, 1500.0 * density);  //color: #ff9e00 value: 100k-200k
-        fillColorMap(ff, sf, cMap, "#ffc300", 0.5, 3000.0 * density);  //color: #ffc300 value: 200k+
+        fillColorMap(ff, sf, cMap, "#00FF00", getOpacity(0.0, opacity), 0.0 * density);  //color: transparent value: 0-10
+        fillColorMap(ff, sf, cMap, "#f4fbf2", getOpacity(0.1, opacity), 0.01 * density);  //color: #f4fbf2 value: 10-49
+        fillColorMap(ff, sf, cMap, "#f4fbf2", getOpacity(0.2, opacity), 1.0 * density);  //color: #f4fbf2 value: 50-129
+        fillColorMap(ff, sf, cMap, "#d9f2e5", getOpacity(0.2, opacity), 2.0 * density);  //color: #d9f2e5 value: 130-399
+        fillColorMap(ff, sf, cMap, "#a8e3e5", getOpacity(0.2, opacity), 6.0 * density);  //color: #a8e3e5 value: 400-1k
+        fillColorMap(ff, sf, cMap, "#71c7d7", getOpacity(0.3, opacity), 15.0 * density);  //color: #71c7d7 value: 1k-2k
+        fillColorMap(ff, sf, cMap, "#428acb", getOpacity(0.3, opacity), 27.0 * density);  //color: #428acb value: 2k-3.5k
+        fillColorMap(ff, sf, cMap, "#2d6bb3", getOpacity(0.3, opacity), 42.0 * density);  //color: #2d6bb3 value: 3.5k-5.5k
+        fillColorMap(ff, sf, cMap, "#0c4c9f", getOpacity(0.3, opacity), 62.0 * density);  //color: #0c4c9f value: 5.5k-7.5k
+        fillColorMap(ff, sf, cMap, "#00309f", getOpacity(0.3, opacity), 82.0 * density);  //color: #00309f value: 7.5k-10k
+        fillColorMap(ff, sf, cMap, "#521f8b", getOpacity(0.3, opacity), 110.0 * density);  //color: #521f8b value: 10k-12k
+        fillColorMap(ff, sf, cMap, "#700080", getOpacity(0.3, opacity), 140.0 * density);  //color: #700080 value: 12k-16k
+        fillColorMap(ff, sf, cMap, "#990049", getOpacity(0.4, opacity), 190.0 * density);  //color: #990049 value: 16k-22k
+        fillColorMap(ff, sf, cMap, "#cc003d", getOpacity(0.4, opacity), 260.0 * density);  //color: #cc003d value: 22k-30k
+        fillColorMap(ff, sf, cMap, "#ff0000", getOpacity(0.4, opacity), 400.0 * density);  //color: #ff0000 value: 30k-50k
+        fillColorMap(ff, sf, cMap, "#ff6200", getOpacity(0.5, opacity), 750.0 * density);  //color: #ff6200 value: 50k-100k
+        fillColorMap(ff, sf, cMap, "#ff9e00", getOpacity(0.5, opacity), 1500.0 * density);  //color: #ff9e00 value: 100k-200k
+        fillColorMap(ff, sf, cMap, "#ffc300", getOpacity(0.5, opacity), 3000.0 * density);  //color: #ffc300 value: 200k+
         return cMap;
+    }
+
+    private static double getOpacity(double value, double coefficient) {
+        return Math.min(value * coefficient, 1.0);
     }
 
     private static void fillColorMap(FilterFactory2 ff, StyleFactory sf, ColorMap cMap, String color, double opacity, double value) {
@@ -117,6 +123,5 @@ public class TiffPngConverter {
         entry.setQuantity(ff.literal(value));
         cMap.addColorMapEntry(entry);
     }
-
 
 }
