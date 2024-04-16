@@ -3,7 +3,7 @@ package com.nukedemo;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class ImageConcatenation {
+public class ImageTransformations {
 
     public static BufferedImage concatenateImagesHorizontally(BufferedImage img1, BufferedImage img2) {
         // Get the width and height of the resulting image
@@ -41,6 +41,25 @@ public class ImageConcatenation {
         g2d.dispose();
 
         return concatenatedImage;
+    }
+
+    public static BufferedImage compressImage(BufferedImage original, int factor) {
+        int newWidth = original.getWidth() / factor;
+        int newHeight = original.getHeight() / factor;
+        BufferedImage compressedImage = new BufferedImage(newWidth, newHeight, original.getType());
+        Graphics2D g2d = compressedImage.createGraphics();
+        g2d.drawImage(original, 0, 0, newWidth, newHeight, null);
+        g2d.dispose();
+        return compressedImage;
+    }
+
+    public static BufferedImage getTransparentDummyImage(int width, int height, int type) {
+        BufferedImage dummyImage = new BufferedImage(width, height, type);
+        Graphics2D g2d = dummyImage.createGraphics();
+        // Set the background to transparent
+        g2d.setComposite(AlphaComposite.Clear);
+        g2d.fillRect(0, 0, width, height);
+        return dummyImage;
     }
 
 }

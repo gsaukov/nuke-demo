@@ -31,8 +31,8 @@ class TiffPopulationDataContainer3ssTest {
         BufferedImage a = ImageIO.read(new File("./src/main/resources/GHS_POP_E2025_GLOBE_R2023A_4326_30ss_V1_0_R4_C20.png"));
         BufferedImage b = ImageIO.read(new File("./src/main/resources/GHS_POP_E2025_GLOBE_R2023A_4326_30ss_V1_0_R5_C20.png"));
         BufferedImage c = ImageIO.read(new File("./src/main/resources/GHS_POP_E2025_GLOBE_R2023A_4326_30ss_V1_0_R6_C20.png"));
-        BufferedImage d = ImageConcatenation.concatenateImagesVertically(a, b);
-        BufferedImage e = ImageConcatenation.concatenateImagesVertically(d, c);
+        BufferedImage d = ImageTransformations.concatenateImagesVertically(a, b);
+        BufferedImage e = ImageTransformations.concatenateImagesVertically(d, c);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ImageIO.write(e, "PNG", out);
         File outputFile = new File("test_res.png");
