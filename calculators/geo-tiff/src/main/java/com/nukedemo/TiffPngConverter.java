@@ -72,7 +72,7 @@ public class TiffPngConverter {
         FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
         StyleFactory sf = CommonFactoryFinder.getStyleFactory();
         RasterSymbolizer sym = sf.getDefaultRasterSymbolizer();
-        sym.setColorMap(intense(ff, sf, 1, density));
+        sym.setColorMap(intense(ff, sf, 1.6, density));
         Style style = SLD.wrapSymbolizers(sym);
         return style;
     }
@@ -92,9 +92,9 @@ public class TiffPngConverter {
     private static ColorMap intense(FilterFactory2 ff, StyleFactory sf, double opacity, int density) {
         ColorMap cMap = sf.createColorMap();
         fillColorMap(ff, sf, cMap, "#00FF00", getOpacity(0.0, opacity), 0.0 * density);  //color: transparent value: 0-10
-        fillColorMap(ff, sf, cMap, "#f4fbf2", getOpacity(0.1, opacity), 0.01 * density);  //color: #f4fbf2 value: 10-49
-        fillColorMap(ff, sf, cMap, "#f4fbf2", getOpacity(0.2, opacity), 1.0 * density);  //color: #f4fbf2 value: 50-129
-        fillColorMap(ff, sf, cMap, "#d9f2e5", getOpacity(0.2, opacity), 2.0 * density);  //color: #d9f2e5 value: 130-399
+        fillColorMap(ff, sf, cMap, "#f4fbf2", getOpacity(0.01, opacity), 0.01 * density);  //color: #f4fbf2 value: 10-49
+        fillColorMap(ff, sf, cMap, "#f4fbf2", getOpacity(0.05, opacity), 1.0 * density);  //color: #f4fbf2 value: 50-129
+        fillColorMap(ff, sf, cMap, "#d9f2e5", getOpacity(0.1, opacity), 2.0 * density);  //color: #d9f2e5 value: 130-399
         fillColorMap(ff, sf, cMap, "#a8e3e5", getOpacity(0.2, opacity), 6.0 * density);  //color: #a8e3e5 value: 400-1k
         fillColorMap(ff, sf, cMap, "#71c7d7", getOpacity(0.3, opacity), 15.0 * density);  //color: #71c7d7 value: 1k-2k
         fillColorMap(ff, sf, cMap, "#428acb", getOpacity(0.3, opacity), 27.0 * density);  //color: #428acb value: 2k-3.5k
