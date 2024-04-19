@@ -2,7 +2,6 @@ package com.nukedemo.population.batch.layercompressionstep;
 
 import lombok.Data;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 
@@ -10,5 +9,8 @@ import java.util.List;
 public class LayerCompressionInputItem implements Serializable {
 
     private final List<List<String>> block;
+
+    //TopLeft, BottomRight [lon,lat]
+    private final double [][] blockDimensions;
 
 }
