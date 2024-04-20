@@ -47,7 +47,7 @@ public class LayerCompressionDataProcessor implements ItemProcessor<LayerCompres
         //concatenate vertically.
         BufferedImage mergedImage = horizontalMergedImages.get(0);
         for(int i = 1; i < horizontalMergedImages.size(); i++) {
-            mergedImage = ImageTransformations.concatenateImagesHorizontally(mergedImage, horizontalMergedImages.get(i));
+            mergedImage = ImageTransformations.concatenateImagesVertically(mergedImage, horizontalMergedImages.get(i));
         }
         return mergedImage;
     }
