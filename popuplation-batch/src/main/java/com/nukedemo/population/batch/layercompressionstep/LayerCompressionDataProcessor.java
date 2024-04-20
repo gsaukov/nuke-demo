@@ -8,7 +8,10 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,29 +27,35 @@ public class LayerCompressionDataProcessor implements ItemProcessor<LayerCompres
     }
 
     @Override
-    public LayerCompressionDataItem process(LayerCompressionDataItem item) {
-
+    public LayerCompressionDataItem process(LayerCompressionDataItem item) throws IOException {
+        BufferedImage merged = mergeImages(item.getBlock());
+        merged = ImageTransformations.compressImage(merged, 3);
+        item.setCompressedLayer(toByteArray(merged));
         return item;
     }
 
     private BufferedImage mergeImages(List<List<BufferedImage>> images) {
-        List<BufferedImage> horizontalImages =new ArrayList<>();
+        List<BufferedImage> horizontalMergedImages =new ArrayList<>();
         //concatenate horizontally.
         for(List<BufferedImage> row : images) {
             BufferedImage horizontalImage = row.get(0);
             for(int i = 1; i < row.size(); i++) {
                 horizontalImage = ImageTransformations.concatenateImagesHorizontally(horizontalImage, row.get(i));
             }
-            horizontalImages.add(horizontalImage);
+            horizontalMergedImages.add(horizontalImage);
         }
-
         //concatenate vertically.
-        BufferedImage mergedImage = horizontalImages.get(0);
-        for(int i = 1; i < horizontalImages.size(); i++) {
-            mergedImage = ImageTransformations.concatenateImagesHorizontally(mergedImage, horizontalImages.get(i));
+        BufferedImage mergedImage = horizontalMergedImages.get(0);
+        for(int i = 1; i < horizontalMergedImages.size(); i++) {
+            mergedImage = ImageTransformations.concatenateImagesHorizontally(mergedImage, horizontalMergedImages.get(i));
         }
-
         return mergedImage;
+    }
+
+    private byte[] toByteArray(BufferedImage image) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ImageIO.write(image, "PNG", out);
+        return out.toByteArray();
     }
 
 }
