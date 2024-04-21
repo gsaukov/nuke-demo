@@ -53,7 +53,7 @@ public class PopulationBatchConfig {
                 .flow(ghslFileStep.downloadingPartition())
                 .next(populationStep.processingPartition())
                 .next(transformerStep.transformerPartition())
-//                .next(layerCompressionStep.layerCompressionPartition())
+                .next(layerCompressionStep.layerCompressionPartition())
                 .end()
                 .build();
     }
