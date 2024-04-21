@@ -26,7 +26,7 @@ import static com.nukedemo.population.batch.layercompressionstep.LayerCompressio
 @StepScope
 public class LayerCompressionDataReader implements ItemReader<LayerCompressionDataItem> {
 
-    private final Map<String, BufferedImage> MAP = new ConcurrentHashMap<>();
+    private static final Map<String, BufferedImage> MAP = new ConcurrentHashMap<>();
 
     private LinkedList<LayerCompressionInputItem> areas;
 
