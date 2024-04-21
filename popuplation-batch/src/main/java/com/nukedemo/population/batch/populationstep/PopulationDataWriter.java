@@ -47,15 +47,18 @@ public class PopulationDataWriter implements ItemWriter<PopulationDataItem> {
     }
 
     private void writeToTifFile(PopulationDataItem item) throws IOException {
-        File outputFolder = new File(resultFolder + "/img/");
-        FileUtils.writeByteArrayToFile(new File(outputFolder, item.getDataName()), item.getTifSource());
+        if(item.getTifSource() != null) {
+            File outputFolder = new File(resultFolder + "/img/");
+            FileUtils.writeByteArrayToFile(new File(outputFolder, item.getDataName()), item.getTifSource());
+        }
     }
 
     private void writeToPngFile(PopulationDataItem item) throws IOException {
-        File outputFolder = new File(resultFolder + "/img/");
-        String itemName = item.getDataName().replace(".tif", ".png");
-        FileUtils.writeByteArrayToFile(new File(outputFolder, itemName), item.getPngSource());
-
+        if(item.getPngSource() != null) {
+            File outputFolder = new File(resultFolder + "/img/");
+            String itemName = item.getDataName().replace(".tif", ".png");
+            FileUtils.writeByteArrayToFile(new File(outputFolder, itemName), item.getPngSource());
+        }
     }
 
     private void writeToPopulationDataIntFile(PopulationDataItem item) throws Exception {
