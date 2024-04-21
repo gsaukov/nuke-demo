@@ -67,7 +67,7 @@ public class LayerCompressionDataPartitioner implements Partitioner {
                 List<List<String>> block = getBlock(row, column);
                 if(block != null){
                     double [][] blockDimensions = calculateBlockDimensions(row, column);
-                    LayerCompressionInputItem item = new LayerCompressionInputItem(block, blockDimensions);
+                    LayerCompressionInputItem item = new LayerCompressionInputItem(row, column, block, blockDimensions);
                     items.add(item);
                 }
             }
