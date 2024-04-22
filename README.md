@@ -1,5 +1,17 @@
 # nuke-demo
 🥳
+## Spring batch async cloud computing and master slave setup
+
+Usually done with JMS/Kafka layer integrating master workers. 
+
+* Remote Chunking - only processor/writer actions are scaled/delegated to worker nodes. The advantage of this approach is that you can feed chuck of work from the live systems.
+* Remote Partitioning - all steps (read, process, write) delegated to worker nodes.
+
+https://stackoverflow.com/questions/20323229/difference-between-spring-batch-remote-chunking-and-remote-partitioning  
+https://medium.com/@eddybayonne1/remote-chunking-with-spring-batch-integration-63c9df75e361  
+https://arnoldgalovics.com/spring-batch-remote-partitioning-kafka/  
+
+
 
 ## External sources:
 * Openstreet map tag info: https://wiki.openstreetmap.org/wiki/Tag%3Amilitary%3Dbase
