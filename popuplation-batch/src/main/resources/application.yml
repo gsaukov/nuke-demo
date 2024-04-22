@@ -26,9 +26,10 @@ populationBatch:
     # 54009_100  - Mollweide 100m
     # 54009_1000 - Mollweide 1000m
     skipDownload: true
-    skipProcessing: true
-    resolution: 4326_30ss
+    skipProcessing: false
+    resolution: 4326_3ss
     overwriteSourceZipFiles: false
-    maxRow: 18
+    maxRow: 15 #mollweide 18
     maxColumn: 36
-    resultFolder: "./data/res/population/ghsl/${populationBatch.ghsl.resolution}/"
+    basePath: "./data/res/population/ghsl"
+    resultFolder: "${populationBatch.ghsl.basePath}/${populationBatch.ghsl.resolution}/"
