@@ -12,7 +12,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Component
 public class LayerCompressionStepConfiguration implements Cloneable {
 
-    public static final String SOURCE_PATH = "./data/res/population/ghsl";
+    public static final String ORIGINAL_RESOLUTION = "4326_30ss";
+    public static final String TARGET_RESOLUTION = "4326_90ss";
 
     @Autowired
     private JobRepository jobRepository;
@@ -32,6 +33,9 @@ public class LayerCompressionStepConfiguration implements Cloneable {
     @Autowired
     LayerCompressionDataPartitioner layerCompressionDataPartitioner;
 
+    @Autowired
+    LayerCompressionStepCompletionListener layerCompressionStepCompletionListener;
+
     public Step layerCompressionPartition() {
 
         return new StepBuilder("layer-compression-partition", jobRepository)
@@ -39,6 +43,7 @@ public class LayerCompressionStepConfiguration implements Cloneable {
                 .step(layerCompressionStep())
                 .gridSize(4)
                 .taskExecutor(taskExecutor())
+                .listener(layerCompressionStepCompletionListener)
                 .build();
     }
 
