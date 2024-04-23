@@ -1,7 +1,7 @@
 package com.nukedemo.population.batch.layercompressionstep;
 
+import com.nukedemo.GhslMetaData;
 import com.nukedemo.ImageTransformations;
-import com.nukedemo.population.batch.JobCompletionListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
@@ -15,13 +15,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.nukedemo.population.batch.layercompressionstep.LayerCompressionDataPartitioner.getGhslKey;
+import static com.nukedemo.population.batch.layercompressionstep.LayerCompressionStepConfiguration.TARGET_RESOLUTION;
+
 @Slf4j
 @Service
 @StepScope
 public class LayerCompressionDataProcessor implements ItemProcessor<LayerCompressionDataItem, LayerCompressionDataItem> {
 
     @Autowired
-    JobCompletionListener jobCompletionListener;
+    LayerCompressionStepCompletionListener layerCompressionStepCompletionListener;
 
     public LayerCompressionDataProcessor() {
     }
@@ -31,6 +34,7 @@ public class LayerCompressionDataProcessor implements ItemProcessor<LayerCompres
         BufferedImage merged = mergeImages(item.getBlock());
         merged = ImageTransformations.compressImage(merged, 3);
         item.setCompressedLayer(toByteArray(merged));
+        updateGlobalMetadata(item, merged.getWidth(), merged.getHeight());
         return item;
     }
 
@@ -56,6 +60,32 @@ public class LayerCompressionDataProcessor implements ItemProcessor<LayerCompres
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ImageIO.write(image, "PNG", out);
         return out.toByteArray();
+    }
+
+    private void updateGlobalMetadata(LayerCompressionDataItem item, int width, int height) {
+        LayerCompressionInputItem  inputItem = item.getInputItem();
+        GhslMetaData metaData = getMetaData(inputItem, width, height);
+        layerCompressionStepCompletionListener.addMetaData(getGhslKey(TARGET_RESOLUTION, inputItem.getRow(), inputItem.getColumn()), metaData);
+    }
+
+    private GhslMetaData getMetaData(LayerCompressionInputItem inputItem, int width, int height) {
+        double[] topLeftCorner = inputItem.getBlockDimensions()[0];
+        double[] bottomRightCorner = inputItem.getBlockDimensions()[1];
+        double[] topRightCorner = new double[]{topLeftCorner[0], bottomRightCorner[1]};
+        double[] bottomLeftCorner = new double[]{bottomRightCorner[0], topLeftCorner[1]};
+        //Measurement units degrees
+        double pixelHeight = Math.abs(topRightCorner[1] - bottomRightCorner[1]) / height;
+        double pixelWidth = Math.abs(bottomLeftCorner[0] - bottomRightCorner[0]) / width;
+        return GhslMetaData.builder()
+                .withAreaWidth(width)
+                .withAreaHeight(height)
+                .withTopRightCorner(topRightCorner)
+                .withBottomLeftCorner(bottomLeftCorner)
+                .withTopLeftCorner(topLeftCorner)
+                .withBottomRightCorner(bottomRightCorner)
+                .withPixelHeightDegrees(pixelHeight)
+                .withPixelWidthDegrees(pixelWidth)
+                .build();
     }
 
 }
