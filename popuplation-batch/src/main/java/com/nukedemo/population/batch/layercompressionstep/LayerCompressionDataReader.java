@@ -18,13 +18,16 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.nukedemo.population.batch.layercompressionstep.LayerCompressionDataPartitioner.DUMMY;
-import static com.nukedemo.population.batch.layercompressionstep.LayerCompressionDataPartitioner.ORIGINAL_RESOLUTION;
-import static com.nukedemo.population.batch.layercompressionstep.LayerCompressionStepConfiguration.SOURCE_PATH;
+import static com.nukedemo.population.batch.layercompressionstep.LayerCompressionStepConfiguration.ORIGINAL_RESOLUTION;
+import static com.nukedemo.population.batch.populationstep.PopulationDataWriter.POPULATION_IMG_FOLDER;
 
 @Slf4j
 @Service
 @StepScope
 public class LayerCompressionDataReader implements ItemReader<LayerCompressionDataItem> {
+
+    @Value("${populationBatch.ghsl.basePath}")
+    private String basePath;
 
     private static final Map<String, BufferedImage> MAP = new ConcurrentHashMap<>();
 
@@ -51,7 +54,7 @@ public class LayerCompressionDataReader implements ItemReader<LayerCompressionDa
                 if(DUMMY.equals(key)) {
                     rowImages.add(getSingletonDummyImage());
                 } else {
-                    rowImages.add(ImageIO.read(new File(SOURCE_PATH + "/" + ORIGINAL_RESOLUTION + "/img/", key + ".png")));
+                    rowImages.add(ImageIO.read(new File(basePath + "/" + ORIGINAL_RESOLUTION + POPULATION_IMG_FOLDER, key + ".png")));
                 }
             }
             files.add(rowImages);

@@ -5,17 +5,23 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
 
-import static com.nukedemo.population.batch.layercompressionstep.LayerCompressionStepConfiguration.SOURCE_PATH;
+import static com.nukedemo.population.batch.layercompressionstep.LayerCompressionDataPartitioner.getGhslKey;
+import static com.nukedemo.population.batch.layercompressionstep.LayerCompressionStepConfiguration.TARGET_RESOLUTION;
+import static com.nukedemo.population.batch.populationstep.PopulationDataWriter.POPULATION_IMG_FOLDER;
 
 @Slf4j
 @Service
 @StepScope
 public class LayerCompressionDataWriter implements ItemWriter<LayerCompressionDataItem> {
+
+    @Value("${populationBatch.ghsl.basePath}")
+    private String basePath;
 
     public LayerCompressionDataWriter() {
     }
@@ -33,9 +39,9 @@ public class LayerCompressionDataWriter implements ItemWriter<LayerCompressionDa
 
     private void writeToPngFile(LayerCompressionDataItem item) throws IOException {
         if(item.getCompressedLayer() != null) {
-            File outputFolder = new File(SOURCE_PATH + "/4326_90ss/img/");
+            File outputFolder = new File(basePath + "/" + TARGET_RESOLUTION + POPULATION_IMG_FOLDER);
             LayerCompressionInputItem inputItem = item.getInputItem();
-            String itemName = "R"+ inputItem.getRow() + "_C" + inputItem.getColumn() + ".png";
+            String itemName = getGhslKey(TARGET_RESOLUTION, inputItem.getRow(), inputItem.getColumn()) + ".png";
             FileUtils.writeByteArrayToFile(new File(outputFolder, itemName), item.getCompressedLayer());
         }
     }
