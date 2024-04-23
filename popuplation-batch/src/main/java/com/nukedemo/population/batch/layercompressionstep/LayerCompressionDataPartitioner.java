@@ -16,17 +16,19 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-import static com.nukedemo.population.batch.layercompressionstep.LayerCompressionStepConfiguration.SOURCE_PATH;
+import static com.nukedemo.population.batch.layercompressionstep.LayerCompressionStepConfiguration.ORIGINAL_RESOLUTION;
+import static com.nukedemo.population.batch.populationstep.PopulationDataWriter.POPULATION_IMG_FOLDER;
 
 @Slf4j
 @StepScope
 @Service
 public class LayerCompressionDataPartitioner implements Partitioner {
 
-    private static final String RESOLUTION = "4326_90ss";
-    public static final String ORIGINAL_RESOLUTION = "4326_30ss";
     public static final String DUMMY = "DUMMY";
     private static final int BLOCK_SIZE = 3;
+
+    @Value("${populationBatch.ghsl.basePath}")
+    private String basePath;
 
     @Value("${populationBatch.ghsl.maxRow}")
     private int maxRow;
@@ -62,15 +64,20 @@ public class LayerCompressionDataPartitioner implements Partitioner {
         Map<String, GhslMetaData> meta = getMetaData();
         calculateGrid(meta);
         List<LayerCompressionInputItem> items = new ArrayList<>();
+        int compressedRow = 1;
+        int compressedColumn = 1;
         for (int row = 1; row < maxRow; row = row + BLOCK_SIZE) {
             for (int column = 1; column < maxColumn; column = column + BLOCK_SIZE) {
                 List<List<String>> block = getBlock(row, column);
                 if(block != null){
                     double [][] blockDimensions = calculateBlockDimensions(row, column);
-                    LayerCompressionInputItem item = new LayerCompressionInputItem(row, column, block, blockDimensions);
+                    LayerCompressionInputItem item = new LayerCompressionInputItem(compressedRow, compressedColumn, block, blockDimensions);
                     items.add(item);
                 }
+                compressedColumn++; //this increases compressed column number that does not match original
             }
+            compressedColumn = 1; //reset on a new row
+            compressedRow++; //this increases compressed row number that does not match original
         }
         return items;
     }
@@ -86,7 +93,7 @@ public class LayerCompressionDataPartitioner implements Partitioner {
     }
 
     private Map<String, GhslMetaData> getMetaData() throws IOException {
-        File metaDataFile = new File(SOURCE_PATH + "/" + ORIGINAL_RESOLUTION + "/", "metaData.json");
+        File metaDataFile = new File(basePath + "/" + ORIGINAL_RESOLUTION + "/", "metaData.json");
         MapType ref = TypeFactory.defaultInstance().constructMapType(HashMap.class, String.class, GhslMetaData.class);
         return NdJsonUtils.MAPPER.readValue(metaDataFile, ref);
     }
@@ -117,7 +124,7 @@ public class LayerCompressionDataPartitioner implements Partitioner {
             List<String> rowBlock = new ArrayList<>();
             for (int column = columnStart; column < columnStart + BLOCK_SIZE; column++) {
                 if (exists(row, column)) {
-                    rowBlock.add(getGhslKey(row, column));
+                    rowBlock.add(getGhslKey(ORIGINAL_RESOLUTION, row, column));
                     hasData = true;
                 } else {
                     rowBlock.add(DUMMY);
@@ -130,12 +137,12 @@ public class LayerCompressionDataPartitioner implements Partitioner {
 
 
     private boolean exists(int row, int column) {
-        String fileName = getGhslKey(row, column) + ".png";
-        return new File(SOURCE_PATH + "/" + ORIGINAL_RESOLUTION + "/img/", fileName).exists();
+        String fileName = getGhslKey(ORIGINAL_RESOLUTION, row, column) + ".png";
+        return new File(basePath + "/" + ORIGINAL_RESOLUTION + POPULATION_IMG_FOLDER, fileName).exists();
     }
 
-    private String getGhslKey(int row, int column) {
-        return "GHS_POP_E2025_GLOBE_R2023A_" + ORIGINAL_RESOLUTION + "_V1_0_R" + row + "_C" + column;
+    public static String getGhslKey(String resolution, int row, int column) {
+        return "GHS_POP_E2025_GLOBE_R2023A_" + resolution + "_V1_0_R" + row + "_C" + column;
     }
 
 }
