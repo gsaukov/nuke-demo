@@ -64,7 +64,11 @@ public class ImageTransformations {
             for (int col = 0; col < factor; col++) {
                 BufferedImage splitImage = new BufferedImage(newWidth, newHeight, original.getType());
                 Graphics2D g2d = splitImage.createGraphics();
-                g2d.drawImage(original, row * newWidth, col * newHeight, newWidth, newHeight, null);
+                int originalXPos = row * newWidth;
+                int originalYPos = col * newHeight;
+                int originalXPosEnd = originalXPos + newWidth;
+                int originalYPosEnd = originalYPos + newHeight;
+                g2d.drawImage(original, 0, 0, newWidth, newHeight, originalXPos, originalYPos, originalXPosEnd, originalYPosEnd, null);
                 g2d.dispose();
                 imagesRow.add(splitImage);
             }
