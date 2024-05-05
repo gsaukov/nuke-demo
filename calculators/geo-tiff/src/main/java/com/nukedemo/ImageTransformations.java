@@ -2,6 +2,8 @@ package com.nukedemo;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ImageTransformations {
 
@@ -51,6 +53,24 @@ public class ImageTransformations {
         g2d.drawImage(original, 0, 0, newWidth, newHeight, null);
         g2d.dispose();
         return compressedImage;
+    }
+
+    public static List<List<BufferedImage>> splitImage(BufferedImage original, int factor) {
+        int newWidth = original.getWidth() / factor;
+        int newHeight = original.getHeight() / factor;
+        List<List<BufferedImage>> splitImages = new ArrayList<>();
+        for (int row = 0; row < factor; row++) {
+            List<BufferedImage> imagesRow = new ArrayList<>();
+            for (int col = 0; col < factor; col++) {
+                BufferedImage splitImage = new BufferedImage(newWidth, newHeight, original.getType());
+                Graphics2D g2d = splitImage.createGraphics();
+                g2d.drawImage(original, row * newWidth, col * newHeight, newWidth, newHeight, null);
+                g2d.dispose();
+                imagesRow.add(splitImage);
+            }
+            splitImages.add(imagesRow);
+        }
+        return splitImages;
     }
 
     public static BufferedImage getTransparentDummyImage(int width, int height, int type) {
