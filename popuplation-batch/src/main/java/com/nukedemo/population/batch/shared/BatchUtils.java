@@ -1,8 +1,14 @@
 package com.nukedemo.population.batch.shared;
 
+import com.fasterxml.jackson.databind.type.MapType;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.nukedemo.GhslMetaData;
+import com.nukedemo.shared.utils.NdJsonUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.springframework.batch.item.ExecutionContext;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +31,12 @@ public class BatchUtils {
 
     public static String getGhslKey(String resolution, int row, int column) {
         return "GHS_POP_E2025_GLOBE_R2023A_" + resolution + "_V1_0_R" + row + "_C" + column;
+    }
+
+    public static Map<String, GhslMetaData> getMetaData(String path) throws IOException {
+        File metaDataFile = new File(path, "metaData.json");
+        MapType ref = TypeFactory.defaultInstance().constructMapType(HashMap.class, String.class, GhslMetaData.class);
+        return NdJsonUtils.MAPPER.readValue(metaDataFile, ref);
     }
 
 }

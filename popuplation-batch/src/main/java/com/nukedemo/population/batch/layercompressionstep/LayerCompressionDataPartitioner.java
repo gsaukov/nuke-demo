@@ -19,6 +19,7 @@ import java.util.*;
 import static com.nukedemo.population.batch.layercompressionstep.LayerCompressionStepConfiguration.ORIGINAL_RESOLUTION;
 import static com.nukedemo.population.batch.populationstep.PopulationDataWriter.POPULATION_IMG_FOLDER;
 import static com.nukedemo.population.batch.shared.BatchUtils.getGhslKey;
+import static com.nukedemo.population.batch.shared.BatchUtils.getMetaData;
 
 @Slf4j
 @StepScope
@@ -62,7 +63,7 @@ public class LayerCompressionDataPartitioner implements Partitioner {
     }
 
     private List<LayerCompressionInputItem> getInputItems() throws IOException {
-        Map<String, GhslMetaData> meta = getMetaData();
+        Map<String, GhslMetaData> meta = getMetaData(basePath + "/" + ORIGINAL_RESOLUTION + "/");
         calculateGrid(meta);
         List<LayerCompressionInputItem> items = new ArrayList<>();
         int compressedRow = 1;
@@ -91,12 +92,6 @@ public class LayerCompressionDataPartitioner implements Partitioner {
                 {topLeftLons.get(lonIndex), topLeftLats.get(latIndex)},
                 {bottomRightLons.get(lonIndex + step), bottomRightLats.get(latIndex + step)}
         };
-    }
-
-    private Map<String, GhslMetaData> getMetaData() throws IOException {
-        File metaDataFile = new File(basePath + "/" + ORIGINAL_RESOLUTION + "/", "metaData.json");
-        MapType ref = TypeFactory.defaultInstance().constructMapType(HashMap.class, String.class, GhslMetaData.class);
-        return NdJsonUtils.MAPPER.readValue(metaDataFile, ref);
     }
 
     private void calculateGrid(Map<String, GhslMetaData> meta) {
