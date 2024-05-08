@@ -23,4 +23,8 @@ public class BatchUtils {
         return result;
     }
 
+    public static String getGhslKey(String resolution, int row, int column) {
+        return "GHS_POP_E2025_GLOBE_R2023A_" + resolution + "_V1_0_R" + row + "_C" + column;
+    }
+
 }
