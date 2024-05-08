@@ -18,6 +18,7 @@ import java.util.*;
 
 import static com.nukedemo.population.batch.layercompressionstep.LayerCompressionStepConfiguration.ORIGINAL_RESOLUTION;
 import static com.nukedemo.population.batch.populationstep.PopulationDataWriter.POPULATION_IMG_FOLDER;
+import static com.nukedemo.population.batch.shared.BatchUtils.getGhslKey;
 
 @Slf4j
 @StepScope
@@ -139,10 +140,6 @@ public class LayerCompressionDataPartitioner implements Partitioner {
     private boolean exists(int row, int column) {
         String fileName = getGhslKey(ORIGINAL_RESOLUTION, row, column) + ".png";
         return new File(basePath + "/" + ORIGINAL_RESOLUTION + POPULATION_IMG_FOLDER, fileName).exists();
-    }
-
-    public static String getGhslKey(String resolution, int row, int column) {
-        return "GHS_POP_E2025_GLOBE_R2023A_" + resolution + "_V1_0_R" + row + "_C" + column;
     }
 
 }

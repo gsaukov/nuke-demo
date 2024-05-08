@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 
-import static com.nukedemo.population.batch.layercompressionstep.LayerCompressionDataPartitioner.getGhslKey;
 import static com.nukedemo.population.batch.layercompressionstep.LayerCompressionStepConfiguration.TARGET_RESOLUTION;
 import static com.nukedemo.population.batch.populationstep.PopulationDataWriter.POPULATION_IMG_FOLDER;
+import static com.nukedemo.population.batch.shared.BatchUtils.getGhslKey;
 
 @Slf4j
 @Service

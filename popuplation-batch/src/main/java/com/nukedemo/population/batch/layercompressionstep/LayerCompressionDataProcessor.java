@@ -15,8 +15,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.nukedemo.population.batch.layercompressionstep.LayerCompressionDataPartitioner.getGhslKey;
 import static com.nukedemo.population.batch.layercompressionstep.LayerCompressionStepConfiguration.TARGET_RESOLUTION;
+import static com.nukedemo.population.batch.shared.BatchUtils.getGhslKey;
 
 @Slf4j
 @Service
