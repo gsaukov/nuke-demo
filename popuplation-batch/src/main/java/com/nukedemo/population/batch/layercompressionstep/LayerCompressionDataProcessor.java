@@ -71,8 +71,8 @@ public class LayerCompressionDataProcessor implements ItemProcessor<LayerCompres
     private GhslMetaData getMetaData(LayerCompressionInputItem inputItem, int width, int height) {
         double[] topLeftCorner = inputItem.getBlockDimensions()[0];
         double[] bottomRightCorner = inputItem.getBlockDimensions()[1];
-        double[] topRightCorner = new double[]{topLeftCorner[0], bottomRightCorner[1]};
-        double[] bottomLeftCorner = new double[]{bottomRightCorner[0], topLeftCorner[1]};
+        double[] topRightCorner = new double[]{bottomRightCorner[0], topLeftCorner[1]};
+        double[] bottomLeftCorner = new double[]{topLeftCorner[0], bottomRightCorner[1]};
         //Measurement units degrees
         double pixelHeight = Math.abs(topRightCorner[1] - bottomRightCorner[1]) / height;
         double pixelWidth = Math.abs(bottomLeftCorner[0] - bottomRightCorner[0]) / width;
