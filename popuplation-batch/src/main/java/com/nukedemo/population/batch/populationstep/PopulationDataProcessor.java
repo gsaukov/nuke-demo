@@ -20,7 +20,7 @@ public class PopulationDataProcessor implements ItemProcessor<PopulationDataItem
     private String resolution;
 
     @Autowired
-    JobCompletionListener jobCompletionListener;
+    PopulationStepCompletionListener stepCompletionListener;
 
     public PopulationDataProcessor() {
     }
@@ -41,9 +41,9 @@ public class PopulationDataProcessor implements ItemProcessor<PopulationDataItem
     }
 
     private void updateGlobalMetadata(String dataName, GhslMetaData metaData) {
-        jobCompletionListener.addCount(metaData.getTotalPixelCount());
-        jobCompletionListener.addValue(metaData.getTotalPixelValue());
-        jobCompletionListener.addMetaData(dataName, metaData);
+        stepCompletionListener.addCount(metaData.getTotalPixelCount());
+        stepCompletionListener.addValue(metaData.getTotalPixelValue());
+        stepCompletionListener.addMetaData(dataName, metaData);
     }
 
     private int resolveDensity() {

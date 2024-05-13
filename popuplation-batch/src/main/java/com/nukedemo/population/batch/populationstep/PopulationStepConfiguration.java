@@ -36,6 +36,9 @@ public class PopulationStepConfiguration {
     @Autowired
     PopulationDataPartitioner populationDataPartitioner;
 
+    @Autowired
+    PopulationStepCompletionListener stepCompletionListener;
+
 
     public Step processingPartition() {
         return new StepBuilder("data-processing-partition", jobRepository)
@@ -52,6 +55,7 @@ public class PopulationStepConfiguration {
                 .reader(populationDataReader)
                 .processor(populationDataProcessor)
                 .writer(populationDataWriter)
+                .listener(stepCompletionListener)
                 .build();
     }
 
