@@ -8,14 +8,13 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.nukedemo.population.batch.layercompressionstep.LayerCompressionStepConfiguration.TARGET_RESOLUTION;
+import static com.nukedemo.population.batch.shared.BatchUtils.bufferedImageToByteArray;
 import static com.nukedemo.population.batch.shared.BatchUtils.getGhslKey;
 
 @Slf4j
@@ -33,7 +32,7 @@ public class LayerCompressionDataProcessor implements ItemProcessor<LayerCompres
     public LayerCompressionDataItem process(LayerCompressionDataItem item) throws IOException {
         BufferedImage merged = mergeImages(item.getBlock());
         merged = ImageTransformations.compressImage(merged, 3);
-        item.setCompressedLayer(toByteArray(merged));
+        item.setCompressedLayer(bufferedImageToByteArray(merged, "PNG"));
         updateGlobalMetadata(item, merged.getWidth(), merged.getHeight());
         return item;
     }
@@ -54,12 +53,6 @@ public class LayerCompressionDataProcessor implements ItemProcessor<LayerCompres
             mergedImage = ImageTransformations.concatenateImagesVertically(mergedImage, horizontalMergedImages.get(i));
         }
         return mergedImage;
-    }
-
-    private byte[] toByteArray(BufferedImage image) throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ImageIO.write(image, "PNG", out);
-        return out.toByteArray();
     }
 
     private void updateGlobalMetadata(LayerCompressionDataItem item, int width, int height) {
