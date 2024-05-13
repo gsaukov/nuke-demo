@@ -22,6 +22,7 @@ import java.util.Map;
 public class PopulationDataWriter implements ItemWriter<PopulationDataItem> {
 
     public static String POPULATION_JSON_FOLDER = "/populationJson";
+    public static String POPULATION_IMG_FOLDER = "/img";
 
     private final String resultFolder;
     private final File outputFolder;
@@ -48,29 +49,30 @@ public class PopulationDataWriter implements ItemWriter<PopulationDataItem> {
 
     private void writeToTifFile(PopulationDataItem item) throws IOException {
         if(item.getTifSource() != null) {
-            File outputFolder = new File(resultFolder + "/img/");
-            FileUtils.writeByteArrayToFile(new File(outputFolder, item.getDataName()), item.getTifSource());
+            File outputFolder = new File(resultFolder + POPULATION_IMG_FOLDER);
+            String itemName = item.getDataName() + ".tif";
+            FileUtils.writeByteArrayToFile(new File(outputFolder, itemName), item.getTifSource());
         }
     }
 
     private void writeToPngFile(PopulationDataItem item) throws IOException {
         if(item.getPngSource() != null) {
-            File outputFolder = new File(resultFolder + "/img/");
-            String itemName = item.getDataName().replace(".tif", ".png");
+            File outputFolder = new File(resultFolder + POPULATION_IMG_FOLDER);
+            String itemName = item.getDataName() + ".png";
             FileUtils.writeByteArrayToFile(new File(outputFolder, itemName), item.getPngSource());
         }
     }
 
     private void writeToPopulationDataIntFile(PopulationDataItem item) throws Exception {
         if(item.getPopulationDataInt() != null) {
-            String itemName = item.getDataName().replace(".tif", "_int.json");
+            String itemName = item.getDataName() + "_int.json";
             FileUtils.writeStringToFile(new File(outputFolder, itemName), toJson(item.getMetaData(), item.getPopulationDataInt()));
         }
     }
 
     private void writeToPopulationDataDoubleFile(PopulationDataItem item) throws Exception {
         if(item.getPopulationDataDouble() != null) {
-            String itemName = item.getDataName().replace(".tif", "_double.json");
+            String itemName = item.getDataName() + "_double.json";
             FileUtils.writeStringToFile(new File(outputFolder, itemName), toJson(item.getMetaData(), item.getPopulationDataDouble()));
         }
     }

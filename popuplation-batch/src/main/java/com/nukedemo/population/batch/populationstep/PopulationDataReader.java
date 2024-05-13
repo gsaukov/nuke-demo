@@ -47,7 +47,7 @@ public class PopulationDataReader implements ItemReader<PopulationDataItem> {
             log.info("Tif file was not found in {} reading next entry.", area.getFile().getName());
             return read();
         } else {
-            return new PopulationDataItem(zipEntryContainer.getEntryName(), zipEntryContainer.getSource());
+            return new PopulationDataItem(removeExtension(zipEntryContainer.getEntryName()), zipEntryContainer.getSource());
         }
     }
 
@@ -70,6 +70,10 @@ public class PopulationDataReader implements ItemReader<PopulationDataItem> {
             }
         }
         return null;
+    }
+
+    private String removeExtension(String name) {
+        return name.replace(".tif", "");
     }
 
     @Data
