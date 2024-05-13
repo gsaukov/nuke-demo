@@ -7,6 +7,9 @@ import com.nukedemo.shared.utils.NdJsonUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.springframework.batch.item.ExecutionContext;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,6 +40,12 @@ public class BatchUtils {
         File metaDataFile = new File(path, "metaData.json");
         MapType ref = TypeFactory.defaultInstance().constructMapType(HashMap.class, String.class, GhslMetaData.class);
         return NdJsonUtils.MAPPER.readValue(metaDataFile, ref);
+    }
+
+    public static byte[] bufferedImageToByteArray(BufferedImage image, String formatName) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ImageIO.write(image, formatName, out);
+        return out.toByteArray();
     }
 
 }
