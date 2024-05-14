@@ -45,7 +45,7 @@ public class LayerSplittingDataProcessor implements ItemProcessor<LayerSplitting
         for (int row = 0; row < split.size(); row++) {
             for (int col = 0; col < split.size(); col++) {
                 String name = createName(rc, row + 1, col + 1);
-                BufferedImage image = split.get(row).get(col);
+                BufferedImage image = split.get(col).get(row);
                 byte[] data = bufferedImageToByteArray(image, "PNG");
                 res.put(name, data);
                 GhslMetaData metaData = createMetadata(image, inputItem.getMetaData(), row, col);
@@ -60,9 +60,9 @@ public class LayerSplittingDataProcessor implements ItemProcessor<LayerSplitting
     private GhslMetaData createMetadata(BufferedImage image, GhslMetaData origin, int row, int col) {
         double heightStep = (origin.getAreaHeight() * origin.getPixelHeightDegrees()) / SPLIT_FACTOR;
         double widthStep = (origin.getAreaWidth() * origin.getPixelWidthDegrees()) / SPLIT_FACTOR;
-        double top = origin.getTopLeftCorner()[0] - (heightStep * col);
+        double top = origin.getTopLeftCorner()[0] + (heightStep * col);
         double left = origin.getTopLeftCorner()[1] - (widthStep * row);
-        double bottom = origin.getTopLeftCorner()[0] - (heightStep * (col + 1));
+        double bottom = origin.getTopLeftCorner()[0] + (heightStep * (col + 1));
         double right = origin.getTopLeftCorner()[1] - (widthStep * (row + 1));
         //Measurement units degrees
         return GhslMetaData.builder()
