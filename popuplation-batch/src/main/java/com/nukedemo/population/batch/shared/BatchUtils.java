@@ -19,6 +19,10 @@ import java.util.Map;
 
 public class BatchUtils {
 
+    public static String DATA_PREFIX = "GHS_POP_E2025_GLOBE_R2023A_";
+    public static String DATA_VERSION = "_V1_0_R";
+    public static String DATA_COLUMN = "_C";
+
     public static <T> Map<String, ExecutionContext> executions(int gridSize, List<T> items) {
         int itemsPerPartition = items.size() / gridSize + 1;
         List<List<T>> partitions = ListUtils.partition(items, itemsPerPartition);
@@ -33,7 +37,7 @@ public class BatchUtils {
     }
 
     public static String getGhslKey(String resolution, int row, int column) {
-        return "GHS_POP_E2025_GLOBE_R2023A_" + resolution + "_V1_0_R" + row + "_C" + column;
+        return DATA_PREFIX + resolution + DATA_VERSION + row + DATA_COLUMN + column;
     }
 
     public static Map<String, GhslMetaData> getMetaData(String path) throws IOException {
