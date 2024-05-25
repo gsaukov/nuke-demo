@@ -1,6 +1,8 @@
 package com.nukedemo;
 
-public class GhslMetaData {
+import java.io.Serializable;
+
+public class GhslMetaData implements Serializable {
     private int areaWidth;
     private int  areaHeight;
     //[lon,lat]
