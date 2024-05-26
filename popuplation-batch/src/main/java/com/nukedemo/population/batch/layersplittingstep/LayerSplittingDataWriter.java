@@ -1,6 +1,5 @@
 package com.nukedemo.population.batch.layersplittingstep;
 
-import com.nukedemo.population.batch.layercompressionstep.LayerCompressionInputItem;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.batch.core.configuration.annotation.StepScope;
