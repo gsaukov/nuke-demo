@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -39,22 +40,31 @@ public class LayerSplittingDataProcessor implements ItemProcessor<LayerSplitting
 
     private Map<String, byte[]> splitImages(LayerSplittingInputItem inputItem, BufferedImage source) throws IOException {
         String[] rc = getRowColumnFromKey(ORIGINAL_RESOLUTION, inputItem.getKey());
-        List<List<BufferedImage>> split = ImageTransformations.splitImage(source, 4);
+        List<List<BufferedImage>> split = ImageTransformations.splitImage(source, SPLIT_FACTOR);
         Map<String, byte[]> res = new HashMap<>();
-        Map<String, GhslMetaData> sample = new HashMap<>();
         for (int row = 0; row < split.size(); row++) {
             for (int col = 0; col < split.size(); col++) {
-                String name = createName(rc, row + 1, col + 1);
                 BufferedImage image = split.get(col).get(row);
-                byte[] data = bufferedImageToByteArray(image, "PNG");
-                res.put(name, data);
-                GhslMetaData metaData = createMetadata(image, inputItem.getMetaData(), row, col);
-                layerSplittingStepCompletionListener.addMetaData(name, metaData);
-                sample.put(name, metaData);
-
+                if(hasData(image)) {
+                    String name = createName(rc, row + 1, col + 1);
+                    byte[] data = bufferedImageToByteArray(image, "PNG");
+                    res.put(name, data);
+                    GhslMetaData metaData = createMetadata(image, inputItem.getMetaData(), row, col);
+                    layerSplittingStepCompletionListener.addMetaData(name, metaData);
+                }
             }
         }
         return res;
+    }
+
+    private boolean hasData(BufferedImage image) {
+        DataBuffer dataBuffer = image.getData().getDataBuffer();
+        for (int i = 0; i < dataBuffer.getSize(); i++) {
+            if (dataBuffer.getElemDouble(i) > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private GhslMetaData createMetadata(BufferedImage image, GhslMetaData origin, int row, int col) {
