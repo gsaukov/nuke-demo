@@ -2,6 +2,7 @@ package com.nukedemo.population.batch;
 
 import com.nukedemo.population.batch.ghslstep.GhslFileStepConfiguration;
 import com.nukedemo.population.batch.layercompressionstep.LayerCompressionStepConfiguration;
+import com.nukedemo.population.batch.layersplittingstep.LayerSplittingStepConfiguration;
 import com.nukedemo.population.batch.populationstep.PopulationStepConfiguration;
 import com.nukedemo.population.batch.transformerstep.TransformerStepConfiguration;
 import org.springframework.batch.core.Job;
@@ -37,6 +38,9 @@ public class PopulationBatchConfig {
     @Autowired
     LayerCompressionStepConfiguration layerCompressionStep;
 
+    @Autowired
+    LayerSplittingStepConfiguration layerSplittingStep;
+
     @Bean
     public JobLauncher jobLauncher() throws Exception {
         TaskExecutorJobLauncher jobLauncher = new TaskExecutorJobLauncher();
@@ -54,6 +58,7 @@ public class PopulationBatchConfig {
                 .next(populationStep.processingPartition())
                 .next(transformerStep.transformerPartition())
                 .next(layerCompressionStep.layerCompressionPartition())
+                .next(layerSplittingStep.layerSplittingPartition())
                 .end()
                 .build();
     }
