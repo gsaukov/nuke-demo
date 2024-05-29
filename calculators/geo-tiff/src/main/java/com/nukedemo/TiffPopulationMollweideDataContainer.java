@@ -16,6 +16,7 @@ import java.nio.channels.FileChannel;
 
 /*
 * This class is still in development...
+* //try mollwide conversion: https://gis.stackexchange.com/questions/221552/proj4j-not-precise-for-epsg3857-transformations
 * */
 public class TiffPopulationMollweideDataContainer {
     public CoordinateReferenceSystem mollweide;
