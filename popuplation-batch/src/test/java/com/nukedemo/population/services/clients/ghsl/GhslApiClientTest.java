@@ -7,9 +7,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
@@ -24,8 +25,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBatchTest()
 @EnableAutoConfiguration
 @EnableConfigurationProperties
-@ContextConfiguration(classes = {PopulationBatchApplication.class})
-@TestPropertySource(properties = {"populationBatch.ghsl.resultFolder=test"})
+@ContextConfiguration(classes = {PopulationBatchApplication.class}, initializers = {ConfigDataApplicationContextInitializer.class})
+@ActiveProfiles("test") //application-test.yml will only work if you provide profile.
+@TestPropertySource(locations = "classpath:/application-test.yml")
 class GhslApiClientTest {
 
     private static final String WSG84_RESOLUTION = "4326_30ss";

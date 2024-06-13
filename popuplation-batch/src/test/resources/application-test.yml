@@ -1,0 +1,11 @@
+populationBatch:
+  h2Enabled: true
+  ghsl:
+    skipDownload: true
+    skipProcessing: false
+    resolution: 4326_3ss
+    overwriteSourceZipFiles: false
+    maxRow: 15 #mollweide 18
+    maxColumn: 36
+    basePath: "test"
+    resultFolder: "test"
