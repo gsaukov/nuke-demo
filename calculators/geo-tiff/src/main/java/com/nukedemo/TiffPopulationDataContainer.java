@@ -65,7 +65,7 @@ public class TiffPopulationDataContainer {
 
     public GridCoordinates2D coordFromXY(double lat, double lon) throws Exception {
         GridGeometry2D gg = cov.getGridGeometry();
-        DirectPosition2D posWorld = new DirectPosition2D(wgs84, lon, lat); // longitude supplied first
+        DirectPosition2D posWorld = new DirectPosition2D(wgs84, lat, lon);
         return gg.worldToGrid(posWorld);
     }
 

@@ -28,6 +28,7 @@ plugins {
 }
 
 dependencies {
+    implementation project(path: ':calculators:shared')
     implementation 'com.sun.media:jai-codec:1.1.3'
     implementation 'org.json:json:20220924'
 
