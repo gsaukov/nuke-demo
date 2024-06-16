@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenLayers Square</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v8.2.0/ol.css" type="text/css">
+    <style>
+        #map {
+            width: 100%;
+            height: 800px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/ol@v8.2.0/dist/ol.js"></script>
+</head>
+<body>
+<div id="map" class="map"></div>
+<script>
+    // Function to load JSON file
+    console.log('start')
+    function loadJSON(callback) {
+        var xobj = new XMLHttpRequest();
+        console.log('reading file')
+        xobj.overrideMimeType("application/json");
+        xobj.open('GET', 'munich-ghsl.json', true); // Replace 'data.json' with your JSON file name
+        xobj.onreadystatechange = function () {
+            console.log('finish reading')
+            if (xobj.readyState == 4 && xobj.status == 200) {
+                callback(xobj.responseText);
+            }
+        };
+        xobj.send(null);
+    }
+
+    function getStyle(num) {
+        let color
+
+        if(num < 0) {
+            color = 'rgba(0, 0, 255, 0.1)'
+        } else if (num < 5) {
+            color = 'rgba(0, 0, 255, 0.15)'
+        } else if (num < 10) {
+            color = 'rgba(0, 0, 255, 0.2)'
+        } else if (num < 20) {
+            color = 'rgba(0, 0, 255, 0.25)'
+        } else if (num < 30) {
+            color = 'rgba(0, 0, 255, 0.3)'
+        } else if (num < 50) {
+            color = 'rgba(0, 0, 255, 0.35)'
+        } else if (num < 100) {
+            color = 'rgba(0, 0, 255, 0.4)'
+        } else if (num < 500) {
+            color = 'rgba(0, 0, 255, 0.45)'
+        }else if (num > 500) {
+            color = 'rgba(0, 0, 255, 0.50)'
+        }
+        return new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: color
+            }),
+            stroke: new ol.style.Stroke({
+                color: 'rgba(0, 0, 0, 0)'
+            })
+        });
+    }
+
+    // Usage:
+    loadJSON(function(response) {
+        // Parse JSON string into object
+        var jsonObject = JSON.parse(response);
+
+        const top = jsonObject.metaData.topLeftCorner[0]; // lon
+        const left = jsonObject.metaData.topLeftCorner[1]; // lat
+        const bottom = jsonObject.metaData.bottomRightCorner[0]; // lon
+        const right = jsonObject.metaData.bottomRightCorner[1]; // lat
+        const height = jsonObject.metaData.pixelHeightDegrees;
+        const width = jsonObject.metaData.pixelWidthDegrees;
+        const rows = jsonObject.metaData.areaWidth
+        const cols = jsonObject.metaData.areaHeight
+        const data = jsonObject.data
+        const squares = []
+        let olCenter
+        // Style for the rectangle
+        var style = new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: 'rgba(0, 0, 255, 0.3)'
+            }),
+            stroke: new ol.style.Stroke({
+                color: 'rgba(0, 0, 0, 0)'
+            })
+        });
+        const center = [top, left];
+        olCenter = ol.proj.fromLonLat(center);
+
+        for(let i = 0; i < rows; i++) {
+            for(let j = 0; j < cols; j++) {
+                const pixel = data[(i*cols) + j]
+                if(pixel > 0) {
+                    let verticalPos = top + (j * height);
+                    let hotizontalPos = left - (i * width);
+                    const leftTop = [verticalPos, hotizontalPos];
+
+                    // Create a square feature
+                    const squareFeature = new ol.Feature({
+                        geometry: new ol.geom.Polygon([[
+                            ol.proj.fromLonLat([leftTop[0], leftTop[1]]),
+                            ol.proj.fromLonLat([leftTop[0], leftTop[1] - height]),
+                            ol.proj.fromLonLat([leftTop[0] + width, leftTop[1] - height]),
+                            ol.proj.fromLonLat([leftTop[0] + width, leftTop[1]]),
+                            ol.proj.fromLonLat([leftTop[0], leftTop[1]]),
+                        ]])
+                    });
+                    squareFeature.setStyle(getStyle(pixel));
+                    squares.push(squareFeature)
+                }
+            }
+        }
+
+
+        // Create a vector layer to display the square
+        const vectorLayer = new ol.layer.Vector({
+            source: new ol.source.Vector({
+                features: squares
+            }),
+        });
+
+        // Create the map
+        const map = new ol.Map({
+            target: 'map',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM()
+                }),
+                vectorLayer
+            ],
+            controls: ol.control.defaults.defaults().extend([new ol.control.ScaleLine({
+                units: 'metric',
+            })]),
+            view: new ol.View({
+                center: olCenter,
+                zoom: 8
+            })
+        });
+    });
+</script>
+</body>
+</html>
