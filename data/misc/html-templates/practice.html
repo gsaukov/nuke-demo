@@ -36,23 +36,23 @@
         let color
 
         if(num < 0) {
-            color = 'rgba(0, 0, 255, 0.1)'
-        } else if (num < 5) {
-            color = 'rgba(0, 0, 255, 0.15)'
-        } else if (num < 10) {
             color = 'rgba(0, 0, 255, 0.2)'
+        } else if (num < 5) {
+            color = 'rgba(94,0,255,0.25)'
+        } else if (num < 10) {
+            color = 'rgba(153,0,255,0.3)'
         } else if (num < 20) {
-            color = 'rgba(0, 0, 255, 0.25)'
+            color = 'rgba(255,0,221,0.3)'
         } else if (num < 30) {
-            color = 'rgba(0, 0, 255, 0.3)'
+            color = 'rgba(255,0,77,0.3)'
         } else if (num < 50) {
-            color = 'rgba(0, 0, 255, 0.35)'
+            color = 'rgba(255,0,0,0.35)'
         } else if (num < 100) {
-            color = 'rgba(0, 0, 255, 0.4)'
+            color = 'rgba(255,47,0,0.4)'
         } else if (num < 500) {
-            color = 'rgba(0, 0, 255, 0.45)'
+            color = 'rgba(255,98,0,0.45)'
         }else if (num > 500) {
-            color = 'rgba(0, 0, 255, 0.50)'
+            color = 'rgba(255,196,0,0.5)'
         }
         return new ol.style.Style({
             fill: new ol.style.Fill({
