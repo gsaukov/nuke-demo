@@ -59,7 +59,7 @@
                 <td>
                     Munich <br>
                     Population density <br>
-                    1 pixel 100x100m<sup>2</sup>
+                    per block:
                 </td>
             </tr>
             </thead>
@@ -76,6 +76,11 @@
                 <tr><td class="legend-table-row" style="background-color:rgba(255,98,0,0.6)"><130</td></tr>
                 <tr><td class="legend-table-row" style="background-color:rgba(255,213,0,0.6)">>130</td></tr>
             </tbody>
+            <tfoot class="legend-table-header">
+            <tr>
+                <td>block 100x100m<sup>2</sup></td>
+            </tr>
+            </tfoot>
         </table>
     </div>
 <script>
@@ -191,12 +196,17 @@
             }),
         });
 
+        const attributions = 'Vladimir Saukov ' +
+            '| <a href="https://human-settlement.emergency.copernicus.eu/download.php?ds=pop" target="_blank" style="color:blue;">GHSL Data</a> ' +
+            '<br>' +
+            '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" style="color:blue;">OpenStreetMap</a> contributors'
+
         // Create the map
         const map = new ol.Map({
             target: 'map',
             layers: [
                 new ol.layer.Tile({
-                    source: new ol.source.OSM()
+                    source: new ol.source.OSM({attributions: attributions})
                 }),
                 vectorLayer
             ],
