@@ -152,19 +152,11 @@
         const data = jsonObject.data
         const squares = []
         let olCenter
-        // Style for the rectangle
-        var style = new ol.style.Style({
-            fill: new ol.style.Fill({
-                color: 'rgba(0, 0, 255, 0.3)'
-            }),
-            stroke: new ol.style.Stroke({
-                color: 'rgba(0, 0, 0, 0)'
-            })
-        });
+
         const center = [top + (cols/2 * height), left - (rows/3 * width) ] ;
         olCenter = ol.proj.fromLonLat(center);
 
-        for(let i = 0; i < rows - 190; i++) {
+        for(let i = 0; i < rows - 200; i++) {
             for(let j = 0; j < cols; j++) {
                 const pixel = data[(i*cols) + j]
                 if(pixel > 0) {
@@ -188,6 +180,22 @@
             }
         }
 
+        const rectangle = new ol.Feature({
+            geometry: new ol.geom.Polygon([[
+                ol.proj.fromLonLat([top, left]),
+                ol.proj.fromLonLat([bottom, left]),
+                ol.proj.fromLonLat([bottom, right + (cols / 2.73 * height)]),
+                ol.proj.fromLonLat([top, right + (cols / 2.73 * height)]),
+                ol.proj.fromLonLat([top, left]),
+            ]])
+        });
+        rectangle.setStyle(new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: 'rgb(0, 0, 255, 0.3)'
+            })
+        }));
+
+        squares.push(rectangle)
 
         // Create a vector layer to display the square
         const vectorLayer = new ol.layer.Vector({
