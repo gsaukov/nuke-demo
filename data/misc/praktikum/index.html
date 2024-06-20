@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Munich Population Density Map</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v8.2.0/ol.css" type="text/css">
+    <style>
+        #map {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+        }
+
+        .legend-content {
+            top: 5em;
+            position: fixed;
+            height: 100%;
+            align-items: center;
+            justify-content: center;
+            overflow: visible;
+            background-color: transparent;
+            border: none;
+        }
+
+        .legend-table {
+            margin-left: 0.5em;
+            border: 2px solid;
+            border-radius: 5px;
+            border-color: rgb(67, 67, 110, 0.65);
+            background: white;
+            border-spacing:0;
+        }
+
+        .legend-table-header {
+            font-size: 17px;
+            text-align: center;
+            background-color: rgb(67, 67, 110, 0.65);
+            color: white;
+        }
+
+        .legend-table-row {
+            font-size: 17px;
+            color: black;
+            text-align: center;
+            /*text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black !important;*/
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/ol@v8.2.0/dist/ol.js"></script>
+</head>
+<body>
+<div id="map" class="map"></div>
+<div class="legend-content">
+    <table class="legend-table">
+        <thead class="legend-table-header">
+        <tr>
+            <td>
+                Munich <br>
+                Population density <br>
+                per block:
+            </td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr><td class="legend-table-row" style="background-color:rgba(217,242,229,0.3)"><2</td></tr>
+        <tr><td class="legend-table-row" style="background-color:rgba(168,227,229,0.3)"><5</td></tr>
+        <tr><td class="legend-table-row" style="background-color:rgba(113,199,215,0.3)"><10</td></tr>
+        <tr><td class="legend-table-row" style="background-color:rgba(66,138,203,0.3)"><20</td></tr>
+        <tr><td class="legend-table-row" style="background-color:rgba(45,107,179,0.4)"><35</td></tr>
+        <tr><td class="legend-table-row" style="background-color:rgba(12,76,159,0.4)"><50</td></tr>
+        <tr><td class="legend-table-row" style="background-color:rgba(0,48,159,0.5)"><70</td></tr>
+        <tr><td class="legend-table-row" style="background-color:rgba(103,31,139,0.5)"><90</td></tr>
+        <tr><td class="legend-table-row" style="background-color:rgba(255,0,0,0.6)"><110</td></tr>
+        <tr><td class="legend-table-row" style="background-color:rgba(255,98,0,0.6)"><130</td></tr>
+        <tr><td class="legend-table-row" style="background-color:rgba(255,213,0,0.6)">>130</td></tr>
+        </tbody>
+        <tfoot class="legend-table-header">
+        <tr>
+            <td>block 100x100m<sup>2</sup></td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+<script>
+    // Function to load JSON file
+    console.log('start')
+    function loadJSON(callback) {
+        var xobj = new XMLHttpRequest();
+        console.log('reading file')
+        xobj.overrideMimeType("application/json");
+        xobj.open('GET', 'munich-ghsl.json', true);
+        xobj.onreadystatechange = function () {
+            console.log('finish reading')
+            if (xobj.readyState == 4 && xobj.status == 200) {
+                callback(xobj.responseText);
+            }
+        };
+        xobj.send(null);
+    }
+
+    function getStyle(num) {
+        let color
+
+        if(num < 2) {
+            color = 'rgba(217,242,229,0.3)'
+        } else if (num < 5) {
+            color = 'rgba(168,227,229,0.3)'
+        } else if (num < 10) {
+            color = 'rgba(113,199,215,0.3)'
+        } else if (num < 20) {
+            color = 'rgba(66,138,203,0.3)'
+        } else if (num < 35) {
+            color = 'rgba(45,107,179,0.4)'
+        } else if (num < 50) {
+            color = 'rgba(12,76,159,0.4)'
+        } else if (num < 70) {
+            color = 'rgba(0,48,159,0.5)'
+        } else if (num < 90) {
+            color = 'rgba(103,31,139,0.5)'
+        } else if (num < 110) {
+            color = 'rgba(255,0,0,0.6)'
+        } else if (num < 130) {
+            color = 'rgba(255,98,0,0.6)'
+        } else if (num >= 130) {
+            color = 'rgba(255,213,0,0.6)'
+        }
+        return new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: color
+            }),
+            stroke: new ol.style.Stroke({
+                color: 'rgba(0, 0, 0, 0)'
+            })
+        });
+    }
+
+    // Usage:
+    loadJSON(function(response) {
+        // Parse JSON string into object
+        var jsonObject = JSON.parse(response);
+
+        const top = jsonObject.metaData.topLeftCorner[0]; // lon
+        const left = jsonObject.metaData.topLeftCorner[1]; // lat
+        const bottom = jsonObject.metaData.bottomRightCorner[0]; // lon
+        const right = jsonObject.metaData.bottomRightCorner[1]; // lat
+        const height = jsonObject.metaData.pixelHeightDegrees;
+        const width = jsonObject.metaData.pixelWidthDegrees;
+        const rows = jsonObject.metaData.areaWidth
+        const cols = jsonObject.metaData.areaHeight
+        const data = jsonObject.data
+        const squares = []
+        let olCenter
+
+        const center = [top + (cols/2 * height), left - (rows/3 * width) ] ;
+        olCenter = ol.proj.fromLonLat(center);
+
+        for(let i = 0; i < rows - 200; i++) {
+            for(let j = 0; j < cols; j++) {
+                const pixel = data[(i*cols) + j]
+                if(pixel > 0) {
+                    let verticalPos = top + (j * height);
+                    let hotizontalPos = left - (i * width);
+                    const leftTop = [verticalPos, hotizontalPos];
+
+                    // Create a square feature
+                    const squareFeature = new ol.Feature({
+                        geometry: new ol.geom.Polygon([[
+                            ol.proj.fromLonLat([leftTop[0], leftTop[1]]),
+                            ol.proj.fromLonLat([leftTop[0], leftTop[1] - height]),
+                            ol.proj.fromLonLat([leftTop[0] + width, leftTop[1] - height]),
+                            ol.proj.fromLonLat([leftTop[0] + width, leftTop[1]]),
+                            ol.proj.fromLonLat([leftTop[0], leftTop[1]]),
+                        ]])
+                    });
+                    squareFeature.setStyle(getStyle(pixel));
+                    squares.push(squareFeature)
+                }
+            }
+        }
+
+        const rectangle = new ol.Feature({
+            geometry: new ol.geom.Polygon([[
+                ol.proj.fromLonLat([top, left]),
+                ol.proj.fromLonLat([bottom, left]),
+                ol.proj.fromLonLat([bottom, right + (cols / 2.73 * height)]),
+                ol.proj.fromLonLat([top, right + (cols / 2.73 * height)]),
+                ol.proj.fromLonLat([top, left]),
+            ]])
+        });
+        rectangle.setStyle(new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: 'rgb(0, 0, 255, 0.3)'
+            })
+        }));
+
+        squares.push(rectangle)
+
+        // Create a vector layer to display the square
+        const vectorLayer = new ol.layer.Vector({
+            source: new ol.source.Vector({
+                features: squares
+            }),
+        });
+
+        const attributions = 'Vladimir Saukov ' +
+            '| <a href="https://human-settlement.emergency.copernicus.eu/download.php?ds=pop" target="_blank" style="color:blue;">GHSL Data</a> ' +
+            '<br>' +
+            '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" style="color:blue;">OpenStreetMap</a> contributors'
+
+        // Create the map
+        const map = new ol.Map({
+            target: 'map',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM({attributions: attributions})
+                }),
+                vectorLayer
+            ],
+            controls: ol.control.defaults.defaults().extend([new ol.control.ScaleLine({
+                units: 'metric',
+            })]),
+            view: new ol.View({
+                center: olCenter,
+                zoom: 11
+            })
+        });
+    });
+</script>
+</body>
+</html>
