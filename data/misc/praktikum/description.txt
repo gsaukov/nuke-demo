@@ -1,0 +1,29 @@
+1. Client Server relations.
+2. HTML and JSON documents data formats.
+3. JavaScript as programming languge that is executed in browser.
+4. OL library that embeds all necessary functions to draws a map and the layer.
+5. Array, of numbers and most common actions for cycle and access by index.
+6. If clause and numbers comparisson.
+7. General understanding of the application and its bussines logic:
+
+Load Client:
+  First step is load the resources: HTML document, Openlayers layers library and JSON file with data.
+  The JavaScript program starts by reading data from a JSON file, which is a way to store data in text format.
+
+Understand the Map Area:
+  It looks at the corners of a big rectangle (population map) to understand where the map starts and ends.
+  It checks how wide and tall this rectangle is in terms of tiny squares.
+  Setup the Center: It finds the middle point of the map, so it knows where to focus when showing the map.
+
+Loop Through the Data:
+  The program looks at a array of numbers that represent human density on the map and wants to represent this array as blocks or pixels.
+  For each number in the array, it checks a number to see if there's at least one person living theree.
+  If there are people (the number is bigger than 0), it remembers this block and calculates its position on the map.
+
+Create the Map:
+  With help of openlayers library creates a maps and loads
+  It sets the view to the middle of the map and zooms in so you can see it clearly.
+
+Draw Layer Blocks:
+  For each remembered block, it draws a small square on the map using block's position.
+  The color or style of each block change based on how many people live there (this is decided by a function called getStyle).
