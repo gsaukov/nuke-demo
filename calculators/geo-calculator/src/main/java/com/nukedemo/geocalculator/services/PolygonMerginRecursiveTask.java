@@ -13,7 +13,7 @@ import static com.menecats.polybool.helpers.PolyBoolHelper.epsilon;
 
 public class PolygonMerginRecursiveTask extends RecursiveTask<List<List<List<List<double[]>>>>> {
 
-    public static final Epsilon EPSILON = epsilon(1e-11);
+    public static final Epsilon EPSILON = epsilon(1e-12);
 
     private List<List<List<List<double[]>>>> features;
     private final int threshold;
@@ -54,20 +54,22 @@ public class PolygonMerginRecursiveTask extends RecursiveTask<List<List<List<Lis
     public static List<List<List<List<double[]>>>> merge(List<List<List<List<double[]>>>> features) {
         LinkedList<List<List<double[]>>> cumulatives = new LinkedList<>();
         for (List<List<List<double[]>>> feature : features) {
-            cumulatives.add(feature.get(0));
-            for (int i = 1; i < feature.size(); i++) {
-                Polygon toMerge = new Polygon(feature.get(i));
-                LinkedList<List<List<double[]>>> cumulativesNext = new LinkedList<>();
-                while (!cumulatives.isEmpty()) {
-                    Polygon cumulative = new Polygon(cumulatives.pop());
-                    if(hasIntersect(cumulative, toMerge)) {
-                        toMerge = PolyBool.union(EPSILON, cumulative, toMerge);
-                    } else {
-                        cumulativesNext.add(cumulative.getRegions());
+            if(!feature.isEmpty()){
+                cumulatives.add(feature.get(0));
+                for (int i = 1; i < feature.size(); i++) {
+                    Polygon toMerge = new Polygon(feature.get(i));
+                    LinkedList<List<List<double[]>>> cumulativesNext = new LinkedList<>();
+                    while (!cumulatives.isEmpty()) {
+                        Polygon cumulative = new Polygon(cumulatives.pop());
+                        if(hasIntersect(cumulative, toMerge)) {
+                            toMerge = PolyBool.union(EPSILON, cumulative, toMerge);
+                        } else {
+                            cumulativesNext.add(cumulative.getRegions());
+                        }
                     }
+                    cumulativesNext.add(toMerge.getRegions());
+                    cumulatives = cumulativesNext;
                 }
-                cumulativesNext.add(toMerge.getRegions());
-                cumulatives = cumulativesNext;
             }
         }
         return Arrays.asList(cumulatives);
