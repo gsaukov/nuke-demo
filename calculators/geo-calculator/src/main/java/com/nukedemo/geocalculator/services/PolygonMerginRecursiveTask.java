@@ -13,7 +13,7 @@ import static com.menecats.polybool.helpers.PolyBoolHelper.epsilon;
 
 public class PolygonMerginRecursiveTask extends RecursiveTask<List<List<List<List<double[]>>>>> {
 
-    public static final Epsilon EPSILON = epsilon(1e-12);
+    public static final Epsilon EPSILON = epsilon(1e-12, true);
 
     private List<List<List<List<double[]>>>> features;
     private final int threshold;
