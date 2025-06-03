@@ -66,3 +66,6 @@ Parsing: https://taylor.callsen.me/parsing-geotiff-files-in-java/
 [Client](https://nuke-calculator.netlify.app/)
 
 [GitHub Repo](https://github.com/gsaukov/nuke-client)
+
+## OpenStreetMap graphana
+https://prometheus.openstreetmap.org/d/bfz1HzFMk/network?orgId=1&from=now-24h&to=now&timezone=utc&var-instance=albi&var-external=enp1s0f0&var-internal=&refresh=1m
