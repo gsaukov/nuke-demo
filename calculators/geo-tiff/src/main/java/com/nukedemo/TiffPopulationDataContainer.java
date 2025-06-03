@@ -86,6 +86,10 @@ public class TiffPopulationDataContainer {
         return TiffPngConverter.convert(cov, density);
     }
 
+    public byte[] writeToPngGrayscaleByteArray() throws IOException {
+        return TiffPngGrayscaleConverter.convert(cov);
+    }
+
     public GhslMetaData getMetaData() {
         //GHS_POP_E2030_GLOBE_R2023A_4326_30ss_V1_0_R4_C20
         //[lon,lat]
